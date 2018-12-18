@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CollectionViewCellStyleTitleImage" customModule="AMPlayer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Obd-9Q-OCG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5zh-G9-n6s">
+                        <rect key="frame" x="15" y="40" width="345" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_tick" translatesAutoresizingMaskIntoConstraints="NO" id="PQF-wM-pTL">
+                        <rect key="frame" x="330" y="30" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="30" id="IvV-RW-HRi"/>
+                            <constraint firstAttribute="height" constant="30" id="a63-YO-xi9"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="Obd-9Q-OCG" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="5IS-Z2-E9T"/>
+                <constraint firstAttribute="bottom" secondItem="Obd-9Q-OCG" secondAttribute="bottom" id="GaD-On-IPL"/>
+                <constraint firstItem="Obd-9Q-OCG" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="KdX-WR-5bO"/>
+                <constraint firstAttribute="bottom" secondItem="5zh-G9-n6s" secondAttribute="bottom" constant="9" id="ME2-P6-Jqb"/>
+                <constraint firstAttribute="trailing" secondItem="PQF-wM-pTL" secondAttribute="trailing" constant="15" id="N4o-8P-3e2"/>
+                <constraint firstAttribute="trailing" secondItem="5zh-G9-n6s" secondAttribute="trailing" constant="15" id="OMf-1M-rXx"/>
+                <constraint firstItem="Obd-9Q-OCG" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="OQH-Lc-zkI"/>
+                <constraint firstAttribute="bottom" secondItem="PQF-wM-pTL" secondAttribute="bottom" constant="10" id="Pdq-dU-QvC"/>
+                <constraint firstItem="5zh-G9-n6s" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="S8V-6w-bY7"/>
+                <constraint firstAttribute="trailing" secondItem="Obd-9Q-OCG" secondAttribute="trailing" id="SJZ-Py-MKg"/>
+                <constraint firstItem="Obd-9Q-OCG" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="wJ1-Yd-EdI"/>
+                <constraint firstAttribute="trailing" secondItem="Obd-9Q-OCG" secondAttribute="trailing" id="wh2-Wu-Zoh"/>
+                <constraint firstAttribute="bottom" secondItem="Obd-9Q-OCG" secondAttribute="bottom" id="zeO-ce-15f"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="imgView" destination="Obd-9Q-OCG" id="4GK-mR-m14"/>
+                <outlet property="lblTitle" destination="5zh-G9-n6s" id="R12-ki-6fb"/>
+                <outlet property="tickImageView" destination="PQF-wM-pTL" id="4HX-Rg-ERH"/>
+            </connections>
+            <point key="canvasLocation" x="33.5" y="54"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="icon_tick" width="20" height="20"/>
+    </resources>
+</document>

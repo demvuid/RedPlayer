@@ -1,0 +1,73 @@
+/* 
+  Localizable.strings
+  LifeSite iOS
+
+  Created by Nang Nguyen on 5/11/18.
+  Copyright © 2018 Evizi. All rights reserved.
+*/
+
+/// Generic
+"generic.button.title.cancel" = "Cancel";
+"generic.button.title.add" = "Add";
+"generic.button.title.no" = "No";
+"generic.button.title.ok" = "OK";
+"generic.button.title.yes" = "Yes";
+"generic.error.alert.title" = "Error";
+"generic.button.title.done" = "Done";
+"generic.button.title.back" = "Back";
+"generic.button.title.home" = "Home";
+"generic.search" = "Search";
+"generic.save" = "Save";
+"generic.success" = "Success";
+"generic.new" = "New";
+"generic.next" = "Next";
+"generic.start" = "Start";
+"generic.viewmore" = "View more";
+"generic.unknown" = "Unknown";
+
+/// Passcode
+"passcode.change6digit" = "Use 6-digit Passcode Instead";
+"passcode.change4digit" = "Use 4-digit Passcode Instead";
+"passcode.notmatch" = "Passcodes did not match. Try again.";
+"passcode.create" = "Create a passcode";
+"passcode.create.description" = "Use this passcode to unlock %@ app";
+"passcode.create.verify" = "Verify your new passcode";
+"passcode.create.enter" = "Enter your passcode";
+"passcode.biometry.touchid" = "Authenticate with Touch ID";
+"passcode.biometry.faceid" = "Authenticate with Face ID";
+"passcode.biometry.reason" = "Unlock access to %@ app";
+"passcode.biometry.authenticate.failed" = "Failed to authenticate";
+"passcode.biometry.unavaiable" = "The device is not support Face ID or Touch ID";
+"passcode.enter.pin" = "Enter Pin";
+"passcode.title" = "Passcode";
+"passcode.change.title" = "Change Passcode";
+"passcode.enable" = "Enable Passcode";
+
+/// Browser
+"browser.title" = "Browser";
+
+/// Settings
+"settings.title" = "Settings";
+"settings.help.title" = "Help";
+"settings.version.title" = "Version";
+"settings.review.title" = "Review";
+"settings.share.title" = "Share";
+"settings.email.title" = "Email to feedback";
+"settings.about.title" = "About";
+"settings.version.upgrade" = "Upgrade to remove ads";
+"settings.version.restore" = "Restore previous purchases";
+"settings.browser.title" = "Browser's default URL";
+"settings.browser.url.custom" = "Custom URL";
+"settings.browser.url.input" = "Input URL";
+"settings.browser.url.required" = "Please enter a valid URL.";
+"settings.browser.url.set" = "Set Default URL";
+"settings.browser.search.engine" = "Search Engine";
+"settings.lock.title" = "Lock settings";
+"settings.lock.passcode.active" = "Active Passcode";
+"settings.lock.passcode.change" = "Change Passcode";
+
+"folder.title" = "Folder";
+"folder.name.title" = "Folder Name";
+"folder.name.placeholder" = "Input Folder Name";
+"folder.create.title" = "Create Folder";
+"folder.cover.photo" = "Cover Photo";

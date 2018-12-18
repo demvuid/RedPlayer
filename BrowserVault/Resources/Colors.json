@@ -1,0 +1,23 @@
+{
+    "navigationBarColor": "#008497",
+    "navigationBarTintColor": "#FFFFFF",
+    "navigationBarTitleColor": "#FFFFFF",
+    "tabBarTintColor": "#F8F8F8",
+    "tabBarIconColor": "#008497",
+    "tabBarHighlightIconColor": "#C1C0C9",
+    "iconTintColor": "#008497",
+    "mainColor": "#008497",
+    "mainButtonBgColor": "#FF057C",
+    "mainButtonTitleColor": "#FFFFFF",
+    "titleColor": "#000000",
+    "subTitleColor": "#8E8E93",
+    "whiteColor": "#FFFFFF",
+    "greenColor": "#007AFF",
+    "darkTintColor": "#022D41",
+    "errorTextColor": "#FF0000",
+    "backgroundColorFirst": "#008497",
+    "backgroundColorSecond": "#7C64D5",
+    "backgroundColorThird": "#FF057C",
+    "backgroundOrange": "#FF8960",
+    "backgroundPink": "#FF62A5"
+}

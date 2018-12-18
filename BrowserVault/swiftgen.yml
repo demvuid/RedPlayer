@@ -1,0 +1,16 @@
+strings:
+  paths: Resources/Localizable.strings
+  templateName: structured-swift4
+  output: Resources/Generated/StringConstants.swift
+xcassets:
+  paths: Assets.xcassets
+  templateName: swift4
+  output: Resources/Generated/ImageConstants.swift
+fonts:
+  paths: Resources/Fonts
+  templateName: swift4
+  output: Resources/Generated/FontConstants.swift
+colors:
+  paths: Resources/Colors.json
+  templateName: literals-swift4
+  output: Resources/Generated/ColorConstants.swift

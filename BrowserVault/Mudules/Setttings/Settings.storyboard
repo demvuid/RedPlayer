@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--About View-->
+        <scene sceneID="k29-XN-DuI">
+            <objects>
+                <viewController id="cUk-lj-YDa" customClass="AboutView" customModule="BrowserVault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VMx-Ns-FJg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I Love Japanese" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kJe-rE-4kH">
+                                <rect key="frame" x="17" y="45" width="315" height="24"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version: 2.2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lq3-wK-8J4">
+                                <rect key="frame" x="17" y="73" width="82.5" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="lCG-HH-DlJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="15"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ote-4i-ATa">
+                                <rect key="frame" x="10" y="94" width="355" height="553"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <string key="text">AMPlayer is video player for the IOS operating system which allows you to watch all popular video formats on your phone or tablet with hardware acceleration for faster and smoother HD playback with unparalleled ease and comfort.
+
+Features
+––––––––
+- AMPLayer plays most local video files, as well as network streams.
+- AMPLayer can download or play file from internet
+- Browsing web and save your favorite video sites like youtube, vimeo ….
+- All formats are supported, including MKV, MP4, AVI, MOV, FLV … All codecs are included with no separate downloads</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ote-4i-ATa" firstAttribute="top" secondItem="lq3-wK-8J4" secondAttribute="bottom" id="OBl-RZ-Sjf"/>
+                            <constraint firstItem="8gu-Hu-tbD" firstAttribute="trailing" secondItem="ote-4i-ATa" secondAttribute="trailing" constant="10" id="Ogz-2e-fsJ"/>
+                            <constraint firstItem="kJe-rE-4kH" firstAttribute="leading" secondItem="8gu-Hu-tbD" secondAttribute="leading" constant="17" id="Upe-BP-AeZ"/>
+                            <constraint firstItem="lq3-wK-8J4" firstAttribute="top" secondItem="kJe-rE-4kH" secondAttribute="bottom" constant="4" id="YHH-xR-7iv"/>
+                            <constraint firstItem="8gu-Hu-tbD" firstAttribute="trailing" secondItem="kJe-rE-4kH" secondAttribute="trailing" constant="43" id="odp-K0-fpO"/>
+                            <constraint firstItem="lq3-wK-8J4" firstAttribute="leading" secondItem="kJe-rE-4kH" secondAttribute="leading" id="qw6-Ki-0Ge"/>
+                            <constraint firstItem="8gu-Hu-tbD" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lq3-wK-8J4" secondAttribute="trailing" constant="20" symbolic="YES" id="ryV-Oe-9Lf"/>
+                            <constraint firstItem="kJe-rE-4kH" firstAttribute="top" secondItem="8gu-Hu-tbD" secondAttribute="top" constant="25" id="wRu-mX-tUk"/>
+                            <constraint firstItem="ote-4i-ATa" firstAttribute="leading" secondItem="8gu-Hu-tbD" secondAttribute="leading" constant="10" id="xUd-Cx-WHE"/>
+                            <constraint firstItem="8gu-Hu-tbD" firstAttribute="bottom" secondItem="ote-4i-ATa" secondAttribute="bottom" constant="20" id="zuT-U0-tgV"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="8gu-Hu-tbD"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Cj8-Zs-RU9"/>
+                    <connections>
+                        <outlet property="lblNameApplication" destination="kJe-rE-4kH" id="jBr-mU-GRw"/>
+                        <outlet property="lblVersion" destination="lq3-wK-8J4" id="cDH-6c-uuo"/>
+                        <outlet property="tvDescription" destination="ote-4i-ATa" id="5Hr-Ei-S5c"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fBz-PS-xPd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1782" y="877"/>
+        </scene>
+        <!--Settings View-->
+        <scene sceneID="GFR-sC-1FS">
+            <objects>
+                <viewController storyboardIdentifier="SettingsView" id="XCI-Rm-2Yp" customClass="SettingsView" customModule="BrowserVault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SzR-w2-fVb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <viewLayoutGuide key="safeArea" id="Le2-2X-JPv"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="yod-Vc-iI8"/>
+                    <connections>
+                        <segue destination="cUk-lj-YDa" kind="custom" identifier="about_app" customClass="BasePushSegue" customModule="BrowserVault" customModuleProvider="target" id="5Gq-fp-Cj8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TRJ-l3-oBs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1031" y="1473"/>
+        </scene>
+    </scenes>
+</document>

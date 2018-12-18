@@ -1,0 +1,13 @@
+//
+//  BrowserVaultHeader.pch
+//  BrowserVault
+//
+//  Created by HaiLe on 12/8/18.
+//  Copyright © 2018 GreenSolution. All rights reserved.
+//
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "LoggerMacros-ObjC.h" // Import logger's macros automatically
+#endif
