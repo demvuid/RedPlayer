@@ -14,6 +14,11 @@ class SettingLockRouter: Router {
         let entryModule = AppModules.passcode.build()
         entryModule.router.show(from: self._view, embedInNavController: true, setupData: true)
     }
+    
+    func authenticatePasscodeWithCompletionBlock(_ block: ((Bool)->())?) {
+        let entryModule = AppModules.passcode.build()
+        entryModule.router.show(from: self._view, embedInNavController: true, setupData: block)
+    }
 }
 
 // MARK: - VIPER COMPONENTS API (Auto-generated code)

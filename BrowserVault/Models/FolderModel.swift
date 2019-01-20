@@ -8,26 +8,39 @@
 
 import RealmSwift
 
-class FolderModel: BaseModel {
+public class FolderModel: BaseModel {
     @objc dynamic var id = UUID().uuidString
     @objc dynamic var name = ""
     @objc dynamic var enablePasscode = false
-    @objc dynamic var url: String? = nil
-    var image: UIImage!
     @objc dynamic var lastPathImage: String? = nil
+    @objc dynamic var isLibrary = false
+    let medias = LinkingObjects(fromType: Media.self, property: "folder")
     
-    var imageURL: URL? {
-        if let lastPathImage = lastPathImage, let url = URL(string: "\(documentPathURL.absoluteString)\(lastPathImage)") {
-            return url
-        }
-        return nil
-    }
+    var url: String? = nil
+    var image: UIImage!
     
-    override class func primaryKey() -> String? {
+    override public class func primaryKey() -> String? {
         return "id"
     }
     
-    override class func ignoredProperties() -> [String] {
+    override public class func ignoredProperties() -> [String] {
         return ["image", "url"]
+    }
+}
+
+extension FolderModel {
+    var folderURL: URL {
+        let folderURL = documentURL.appendingPathComponent(name)
+        if !fileManger.fileExists(atPath: folderURL.path) {
+            try! fileManger.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
+        }
+        return folderURL
+    }
+    
+    var imageURL: URL? {
+        if let lastPathImage = lastPathImage {
+            return folderURL.appendingPathComponent(lastPathImage)
+        }
+        return nil
     }
 }

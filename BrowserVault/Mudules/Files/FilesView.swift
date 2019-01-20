@@ -11,20 +11,30 @@ import Viperit
 
 //MARK: - Public Interface Protocol
 protocol FilesViewInterface {
+    func reloadView()
+    func showAdverstive()
 }
 
 //MARK: FilesView Class
-final class FilesView: UserInterface {
+final class FilesView: BaseUserInterface {
     lazy var filesForm: FilesFormView = {
-        var form = FilesFormView(folders: self.presenter.getListFolders())
+        var form = FilesFormView(folders: self.presenter.getListFolders(), handlerDeleteFolder: self.presenter.handlerDeleteFolder)
+        form.folderSubject = self.presenter.folderSubject
         return form
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = L10n.Settings.title
         self.navigationItem.title = L10n.Folder.title
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self.presenter, action: #selector(self.presenter.addFolder))
+        
+        if self.presenter.isAddFile {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
+        } else {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self.presenter, action: #selector(self.presenter.addFolder))
+            self.updateEditButton()
+        }
+        self.showBanner()
+        self.createAndLoadAdvertise()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -36,10 +46,32 @@ final class FilesView: UserInterface {
             self.addChild(self.filesForm)
         }
     }
+    
+    private func updateEditButton() {
+        let sytemItem: UIBarButtonItem.SystemItem = self.filesForm.tableView?.isEditing == true ? .done : .edit
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: sytemItem, target: self, action: #selector(self.editView))
+    }
+    
+    @objc func editView() {
+        self.filesForm.tableView.setEditing(!self.filesForm.tableView.isEditing, animated: true)
+        self.updateEditButton()
+    }
+    
+    override func showBannerView(_ bannerView: BannerView) {
+        self.filesForm.tableView.tableHeaderView = bannerView
+    }
 }
+
 
 //MARK: - Public interface
 extension FilesView: FilesViewInterface {
+    func reloadView() {
+        self.filesForm.reloadFolders(self.presenter.getListFolders())
+    }
+    
+    func showAdverstive() {
+        self.presentAdverstive()
+    }
 }
 
 // MARK: - VIPER COMPONENTS API (Auto-generated code)

@@ -8,5 +8,5 @@
 
 import RealmSwift
 
-class BaseModel: Object {
+public class BaseModel: Object {
 }

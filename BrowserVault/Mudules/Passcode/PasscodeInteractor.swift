@@ -26,7 +26,7 @@ class PasscodeInteractor: Interactor {
             DispatchQueue.main.async {[weak self] in
                 guard let self = self else {return}
                 if success {
-                    self.presenter.gotoDashboard()
+                    self.presenter.verifiedPasscode()
                 } else if let message = error?.localizedDescription {
                     self.presenter.presentAlert(title: L10n.Generic.Error.Alert.title, message: message)
                 }

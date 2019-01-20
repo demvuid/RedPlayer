@@ -24,8 +24,14 @@ fileprivate let PASSCODE_SALT_KEY = "passcodeSalt"
 fileprivate let PASSCODE_IV_KEY = "passcodeIV"
 fileprivate let PASSCODE_KEY = "passcode"
 fileprivate let ENABLE_PASSCODE_KEY = "enablePasscode"
+fileprivate let ENABLE_TOUCHID_KEY = "enableTouchdId"
 
 fileprivate let defaultPIN = "cdapanh123nfhtl1gacp154(@98431nr"
+
+fileprivate let UPGRADE_VERSION_KEY = "upgradeVersion"
+
+fileprivate let NUMBER_PLAY_VIDEO_KEY = "NumberPlayVideo"
+fileprivate let NUMBER_DETAIL_FOLDER_KEY = "NumberDetailFolder"
 
 class UserSession {
     static let shared = UserSession()
@@ -35,6 +41,38 @@ class UserSession {
     private init() {
         let service = "ls3.lifesitevault.keychain"
         self.keyChainStore = Keychain(service: service)
+    }
+    
+    var countPlayVideo: Int {
+        set {
+            do {
+                try self.keyChainStore.set("\(newValue)", key: NUMBER_PLAY_VIDEO_KEY)
+            } catch let error {
+                Logger.debug("Error: \(error.localizedDescription)")
+            }
+        }
+        get {
+            guard let numberPlay = try? self.keyChainStore.getString(NUMBER_PLAY_VIDEO_KEY), numberPlay != nil, let number = Int(numberPlay!) else {
+                return 0
+            }
+            return number
+        }
+    }
+    
+    var countDetailFolder: Int {
+        set {
+            do {
+                try self.keyChainStore.set("\(newValue)", key: NUMBER_DETAIL_FOLDER_KEY)
+            } catch let error {
+                Logger.debug("Error: \(error.localizedDescription)")
+            }
+        }
+        get {
+            guard let numberDetailFolder = try? self.keyChainStore.getString(NUMBER_DETAIL_FOLDER_KEY), numberDetailFolder != nil, let number = Int(numberDetailFolder!) else {
+                return 0
+            }
+            return number
+        }
     }
     
     func decryptedPassword(pin: String = defaultPIN) -> String? {
@@ -72,7 +110,7 @@ class UserSession {
             return nil
         }
         
-        guard let salt = try? self.keyChainStore.getData(PASSCODE_SALT_KEY), let iv = try? self.keyChainStore.getData(PASSCODE_IV_KEY) else {
+        guard let salt = try? self.keyChainStore.getData(PASSCODE_SALT_KEY), let iv = try? self.keyChainStore.getData(PASSCODE_IV_KEY), salt != nil, iv != nil else {
             return nil
         }
         let decryptedData = decryptUsingAES256(encryptedPasscode,
@@ -119,11 +157,45 @@ class UserSession {
         try? self.keyChainStore?.set(enable ? "Enable" : "Disable", key: ENABLE_PASSCODE_KEY)
     }
     
+    func enableTouchID(_ enable: Bool) {
+        try? self.keyChainStore?.set(enable ? "Enable" : "Disable", key: ENABLE_TOUCHID_KEY)
+    }
+    
     func enabledPasscode() -> Bool {
-        if let enable = try? self.keyChainStore?.get(ENABLE_PASSCODE_KEY), enable == "Disable" {
-            return false
+        if let enable = try? self.keyChainStore?.get(ENABLE_PASSCODE_KEY) {
+            if enable == "Disable" {
+                return false
+            }
         }
         return true
+    }
+    
+    func enabledTouchID() -> Bool {
+        if let enable = try? self.keyChainStore?.get(ENABLE_TOUCHID_KEY) {
+            if enable == "Disable" {
+                return false
+            }
+            
+        }
+        return true
+    }
+    
+    func upgradeVersion() {
+        do {
+            try self.keyChainStore.set("Enable", key: UPGRADE_VERSION_KEY)
+        } catch let error {
+            Logger.debug("Error: \(error.localizedDescription)")
+        }
+    }
+    
+    func isUpgradedVersion() -> Bool {
+        if let enable = try? self.keyChainStore?.get(UPGRADE_VERSION_KEY) {
+            if enable == "Enable" {
+                return true
+            }
+            
+        }
+        return false
     }
     
     /// Get the username

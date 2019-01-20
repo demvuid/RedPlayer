@@ -21,11 +21,10 @@ class DefaultURLPresenter: Presenter {
     
     func configSubscriber() {
         self.urlSubject.subscribe(onNext: {[weak self] (urlString) in
-            var defaultURL: String!
-            if !urlString.hasPrefix("http") || !urlString.hasPrefix("fpt") {
-                defaultURL = "http://\(urlString)"
+            var defaultURL: String = urlString.lowercased()
+            if defaultURL.hasPrefix("http://") || defaultURL.hasPrefix("fpt://") || defaultURL.hasPrefix("https://") {
             } else {
-                defaultURL = urlString
+                defaultURL = "http://\(defaultURL)"
             }
             if defaultURL.validURLString() {
                 self?._view.defaultURLString = defaultURL

@@ -54,6 +54,13 @@ final class PasscodeView: UserInterface {
         if isChangePass {
             self.navigationItem.title = L10n.Settings.Lock.Passcode.change
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
+        } else if self.presenter.completionBlock != nil {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
+            if UserSession.shared.decryptedPasscode() != nil {
+                self.navigationItem.title = L10n.Passcode.Authenticate.passcode
+            } else {
+                self.navigationItem.title = L10n.Passcode.create
+            }
         }
     }
     
@@ -87,11 +94,12 @@ final class PasscodeView: UserInterface {
         self.enterField.backgroundColor = .clear
         
         if AuthenticationManager.shared.isDeviceSupportBiometry == nil {
-            if #available(iOS 11.0, *), AuthenticationManager.shared.biometryType == .faceID {
+            if AuthenticationManager.shared.isSupportFaceId {
                 self.forgotButton.setTitle(L10n.Passcode.Biometry.faceid, for: .normal)
             } else {
                 self.forgotButton.setTitle(L10n.Passcode.Biometry.touchid, for: .normal)
             }
+            self.forgotButton.isHidden = !UserSession.shared.enabledTouchID()
         } else {
             self.forgotButton.isHidden = true
         }
@@ -174,7 +182,7 @@ extension PasscodeView: PasscodeViewInterface, PasscodelFieldDelegate {
                 if textField.passcode == self.displayData.inputPasscode {
                     self.presenter.savePasscode(passcode: textField.passcode)
                     textField.resignFirstResponder()
-                    self.presenter.gotoDashboard()
+                    self.presenter.verifiedPasscode()
                 } else {
                     
                     self.createField.passcode = ""
@@ -187,7 +195,7 @@ extension PasscodeView: PasscodeViewInterface, PasscodelFieldDelegate {
                 let passcodeSave = self.presenter.getPasscode()
                 if textField.passcode == passcodeSave {
                     textField.resignFirstResponder()
-                    self.presenter.gotoDashboard()
+                    self.presenter.verifiedPasscode()
                 } else {
                     self.presenter.presentAlert(title: L10n.Generic.Error.Alert.title, message: L10n.Passcode.notmatch)
                     textField.passcode = ""

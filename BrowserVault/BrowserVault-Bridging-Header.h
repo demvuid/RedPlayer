@@ -11,3 +11,4 @@
 #import "LoggerMacros-ObjC.h"
 #import "NSString+GoogleDriver.h"
 #import "NSString+AES.h"
+#import "DLCBaseVideoView.h"

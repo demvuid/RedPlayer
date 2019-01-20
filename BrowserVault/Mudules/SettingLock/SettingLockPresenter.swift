@@ -12,6 +12,7 @@ import RxSwift
 
 class SettingLockPresenter: Presenter {
     var changePassSubject: PublishSubject<()> = PublishSubject<()>()
+    var authenticateSubject: PublishSubject<((Bool)->())> = PublishSubject<((Bool)->())>()
     private var bag = DisposeBag()
     
     override func viewHasLoaded() {
@@ -22,6 +23,10 @@ class SettingLockPresenter: Presenter {
     func configSubscriber() {
         self.changePassSubject.subscribe(onNext: {[weak self] _ in
             self?.router.changePass()
+        }).disposed(by: self.bag)
+        
+        self.authenticateSubject.subscribe(onNext: {[weak self] (block) in
+            self?.router.authenticatePasscodeWithCompletionBlock(block)
         }).disposed(by: self.bag)
     }
 }

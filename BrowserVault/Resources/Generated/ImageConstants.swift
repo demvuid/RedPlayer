@@ -29,6 +29,7 @@ internal enum Asset {
   internal enum Folder {
 
     internal static let folder = ImageAsset(name: "Folder/folder")
+    internal static let lockOutline = ImageAsset(name: "Folder/lock_outline")
   }
   internal enum General {
 
@@ -65,6 +66,7 @@ internal enum Asset {
   }
   internal enum Tabbar {
 
+    internal static let icFileDownload = ImageAsset(name: "Tabbar/ic_file_download")
     internal static let iconBrowser = ImageAsset(name: "Tabbar/icon_browser")
     internal static let iconFolder = ImageAsset(name: "Tabbar/icon_folder")
     internal static let iconSettings = ImageAsset(name: "Tabbar/icon_settings")

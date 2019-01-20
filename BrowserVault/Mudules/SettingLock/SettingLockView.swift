@@ -15,9 +15,10 @@ protocol SettingLockViewInterface {
 }
 
 //MARK: SettingLockView Class
-final class SettingLockView: UserInterface {
+final class SettingLockView: BaseUserInterface {
     lazy var settingForm: SettingLockFormView = {
         var form = SettingLockFormView(changePassSubject: self.presenter.changePassSubject)
+        form.authenticatePassSubject = self.presenter.authenticateSubject
         return form
     }()
     
@@ -26,6 +27,19 @@ final class SettingLockView: UserInterface {
         self.navigationItem.title = L10n.Settings.Lock.title
         self.view.addSubview(self.settingForm.view)
         self.addChild(self.settingForm)
+        self.showBanner()
+        PurchaseManager.shared.observerUpgradeVersion {[weak self] in
+            self?.settingForm.tableView.tableHeaderView = nil
+        }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func showBannerView(_ bannerView: BannerView) {
+        self.settingForm.tableView.tableHeaderView = bannerView
     }
 }
 

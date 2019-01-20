@@ -49,7 +49,7 @@ open class PlayerSlider: UISlider {
         maximumTrackTintColor = UIColor.clear
         minimumTrackTintColor = UIColor.white
         
-        let thumbImage = UIImage(named: "ic_slider_thumb")
+        let thumbImage = UIImage(named: "Player/ic_slider_thumb")
         let normalThumbImage = thumbImage?.resizeTo(newSize: CGSize(width: 15, height: 15))
         setThumbImage(normalThumbImage, for: .normal)
         let highlightedThumbImage = thumbImage?.resizeTo(newSize: CGSize(width: 20, height: 20))

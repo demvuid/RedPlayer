@@ -12,21 +12,84 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name
 internal enum L10n {
 
+  internal enum Downloads {
+    /// Downloads
+    internal static let title = L10n.tr("Localizable", "Downloads.title")
+    internal enum File {
+      /// Download File
+      internal static let download = L10n.tr("Localizable", "Downloads.file.download")
+      /// Play File
+      internal static let play = L10n.tr("Localizable", "Downloads.file.play")
+    }
+    internal enum Url {
+      /// Network URL
+      internal static let network = L10n.tr("Localizable", "Downloads.url.network")
+      /// Input the URL
+      internal static let place = L10n.tr("Localizable", "Downloads.url.place")
+    }
+  }
+
   internal enum Browser {
     /// Browser
     internal static let title = L10n.tr("Localizable", "browser.title")
   }
 
   internal enum Folder {
-    /// Folder
+    /// Media
     internal static let title = L10n.tr("Localizable", "folder.title")
+    internal enum Add {
+      /// Add Files
+      internal static let file = L10n.tr("Localizable", "folder.add.file")
+      /// Add a Folder
+      internal static let folder = L10n.tr("Localizable", "folder.add.folder")
+    }
+    internal enum Browse {
+      internal enum File {
+        /// Play File from Network
+        internal static let network = L10n.tr("Localizable", "folder.browse.file.network")
+      }
+    }
+    internal enum Confirm {
+      internal enum Delete {
+        /// Are you sure you want to delete file?
+        internal static let file = L10n.tr("Localizable", "folder.confirm.delete.file")
+        /// Are you sure you want to delete %x files?
+        internal static func files(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "folder.confirm.delete.files", p1)
+        }
+      }
+    }
     internal enum Cover {
       /// Cover Photo
       internal static let photo = L10n.tr("Localizable", "folder.cover.photo")
     }
     internal enum Create {
-      /// Create Folder
+      /// Create a Folder
       internal static let title = L10n.tr("Localizable", "folder.create.title")
+    }
+    internal enum Download {
+      internal enum File {
+        /// Browse File from Library
+        internal static let library = L10n.tr("Localizable", "folder.download.file.library")
+        /// Browse File from Network
+        internal static let network = L10n.tr("Localizable", "folder.download.file.network")
+      }
+    }
+    internal enum File {
+      /// %d File
+      internal static func number(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "folder.file.number", p1)
+      }
+    }
+    internal enum Files {
+      /// %d Files
+      internal static func number(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "folder.files.number", p1)
+      }
+      internal enum Confirm {
+        /// Are you sure you want to delete this folder?
+        internal static let delete = L10n.tr("Localizable", "folder.files..confirm.delete")
+      }
     }
     internal enum Name {
       /// Input Folder Name
@@ -37,6 +100,8 @@ internal enum L10n {
   }
 
   internal enum Generic {
+    /// Delete
+    internal static let delete = L10n.tr("Localizable", "generic.delete")
     /// New
     internal static let new = L10n.tr("Localizable", "generic.new")
     /// Next
@@ -53,6 +118,8 @@ internal enum L10n {
     internal static let unknown = L10n.tr("Localizable", "generic.unknown")
     /// View more
     internal static let viewmore = L10n.tr("Localizable", "generic.viewmore")
+    /// Warning
+    internal static let warning = L10n.tr("Localizable", "generic.warning")
     internal enum Button {
       internal enum Title {
         /// Add
@@ -94,7 +161,13 @@ internal enum L10n {
     internal static let notmatch = L10n.tr("Localizable", "passcode.notmatch")
     /// Passcode
     internal static let title = L10n.tr("Localizable", "passcode.title")
+    internal enum Authenticate {
+      /// Authenticate Passcode
+      internal static let passcode = L10n.tr("Localizable", "passcode.authenticate.passcode")
+    }
     internal enum Biometry {
+      /// Enable Touch ID or Face ID
+      internal static let enable = L10n.tr("Localizable", "passcode.biometry.enable")
       /// Authenticate with Face ID
       internal static let faceid = L10n.tr("Localizable", "passcode.biometry.faceid")
       /// Unlock access to %@ app
@@ -127,6 +200,20 @@ internal enum L10n {
     internal enum Enter {
       /// Enter Pin
       internal static let pin = L10n.tr("Localizable", "passcode.enter.pin")
+    }
+  }
+
+  internal enum Purchase {
+    internal enum Store {
+      /// Your version was upgraded successfully
+      internal static let sucesss = L10n.tr("Localizable", "purchase.store.sucesss")
+    }
+  }
+
+  internal enum Restore {
+    internal enum Purchase {
+      /// Restore your purchased successfully
+      internal static let sucesss = L10n.tr("Localizable", "restore.purchase.sucesss")
     }
   }
 

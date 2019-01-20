@@ -12,11 +12,14 @@ import AVKit
 class NavigationManager {
     static var shared = NavigationManager()
     
-    func showMediaPlayerURL(_ url: String) {
-//        let controller = self.storyboard?.instantiateViewController(withIdentifier: "MediaPlayerController") as! MediaPlayerController
-//        controller.mediaURL = url
-//        UIApplication.topNavigationController()?.present(controller, animated: true, completion: nil)
-//        controller.playMediaURL()
+    func showMediaPlayerURL(_ url: String, dismissBlock: (() -> ())? = nil) {
+        if let topViewController = UIApplication.topViewController() {
+            let module = AppModules.playerMedia.build()
+            if let dipslayData = module.displayData as? PlayerMediaDisplayData {
+                dipslayData.dismissBlock = dismissBlock
+            }
+            module.router.show(from: topViewController, embedInNavController: true, setupData: url)
+        }
     }
     
     func showVideoGoogleDriverURL(_ url: String, cookies: [HTTPCookie]?) {

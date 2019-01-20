@@ -10,7 +10,7 @@ import Foundation
 import Viperit
 
 class PasscodePresenter: Presenter {
-    
+    var completionBlock: ((Bool)->())? = nil
     override func viewHasLoaded() {
         super.viewHasLoaded()
         view.configUI()
@@ -20,11 +20,19 @@ class PasscodePresenter: Presenter {
         _view.showAlertWith(title: title, message: message)
     }
     
-    func gotoDashboard() {
-        self.router.gotoDashboard()
+    func verifiedPasscode() {
+        if completionBlock != nil {
+            completionBlock!(true)
+            self.router.cancelScreen()
+        } else {
+            self.router.gotoDashboard()
+        }
     }
     
     @objc func cancelScreen() {
+        if completionBlock != nil {
+            completionBlock!(false)
+        }
         self.router.cancelScreen()
     }
     
@@ -61,7 +69,11 @@ class PasscodePresenter: Presenter {
     }
     
     override func setupView(data: Any) {
-        self.view.updateConfigPass(data: data)
+        if let block = data as? ((Bool)->()) {
+            self.completionBlock = block
+        } else {
+            self.view.updateConfigPass(data: data)
+        }
     }
 }
 

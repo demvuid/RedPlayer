@@ -17,6 +17,8 @@ enum AppModules: String, ViperitModule {
     case settingLock
     case files
     case folder
+    case playerMedia
+    case download
     
     var viewType: ViperitViewType {
         switch self {

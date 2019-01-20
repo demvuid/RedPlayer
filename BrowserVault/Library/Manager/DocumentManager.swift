@@ -11,16 +11,27 @@ import UIKit
 class DocumentManager {
     static var shared = DocumentManager()
     
+    var fileNameNoExtension: String {
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = "yyyy-MM-dd' at 'HH:mm:ss"
+        let fileName = dateFormater.string(from: Date())
+        return fileName
+    }
+    
     var imageURL: URL {
-        let imageURL = documentPathURL.appendingPathComponent("Images")
+        let imageURL = documentURL.appendingPathComponent("Images")
         if !fileManger.fileExists(atPath: imageURL.path) {
-            try! fileManger.createDirectory(atPath: imageURL.path, withIntermediateDirectories: true, attributes: nil)
+            try? fileManger.createDirectory(atPath: imageURL.path, withIntermediateDirectories: true, attributes: nil)
         }
         return imageURL
     }
     
-    func imageURL(fileName: String) -> URL {
-        return imageURL.appendingPathComponent(fileName)
+    var videoURL: URL {
+        let videoURL = documentURL.appendingPathComponent("Videos")
+        if !fileManger.fileExists(atPath: videoURL.path) {
+            try? fileManger.createDirectory(atPath: videoURL.path, withIntermediateDirectories: true, attributes: nil)
+        }
+        return videoURL
     }
     
     func saveImage(image: UIImage, to fileURL: URL) {
@@ -28,27 +39,33 @@ class DocumentManager {
             try? data.write(to: fileURL)
         }
     }
+    
+    func copyMediaFromURL(_ url: URL, toURL: URL) {
+        try? fileManger.copyItem(at: url, to: toURL)
+    }
+    
+    func moveMediaFromURL(_ url: URL, toURL: URL) {
+        try? fileManger.moveItem(at: url, to: toURL)
+    }
 }
 
 extension DocumentManager {
     func saveCoverFolder(_ folder: FolderModel) -> URL? {
+        let pathName = "\(folder.name).jpeg"
+        let fileURL = folder.folderURL.appendingPathComponent(pathName)
         if let urlString = folder.url, let url = URL(string: urlString) {
-            var pathName = url.lastPathComponent
-            if url.pathExtension.count <= 0 {
-                pathName = "\(UUID().uuidString).png"
-            }
-            let fileURL = DocumentManager.shared.imageURL(fileName: pathName)
-            do {
-                try fileManger.copyItem(at: url, to: fileURL)
-                return fileURL
-            } catch let error {
-                Logger.debug("write file error:\(error.localizedDescription)")
-            }
+            try? fileManger.copyItem(at: url, to: fileURL)
         } else if let image = folder.image {
-            let fileURL = DocumentManager.shared.imageURL(fileName: "\(UUID().uuidString).png")
             self.saveImage(image: image, to: fileURL)
-            return fileURL
+        } else {
+            return nil
         }
-        return nil
+        return fileURL
+    }
+    
+    func deleteFolder(_ folder: FolderModel) {
+        if fileManger.fileExists(atPath: folder.folderURL.path) {
+            try? fileManger.removeItem(at: folder.folderURL)
+        }
     }
 }

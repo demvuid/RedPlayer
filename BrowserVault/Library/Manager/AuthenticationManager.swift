@@ -20,8 +20,11 @@ class AuthenticationManager {
         return nil
     }
     
-    var biometryType: LABiometryType {
-        return authenticationContext.biometryType
+    var isSupportFaceId: Bool {
+        if #available(iOS 11.0, *), authenticationContext.biometryType == .faceID {
+            return true
+        }
+        return false
     }
     
     func authenticate(completion: @escaping (Bool, Error?) -> ()) {

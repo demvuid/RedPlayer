@@ -14,7 +14,7 @@ protocol DefaultURLViewInterface {
 }
 
 //MARK: DefaultURLView Class
-final class DefaultURLView: UserInterface {
+final class DefaultURLView: BaseUserInterface {
     lazy var settingForm: DefaultURLFormView = {
         var form = DefaultURLFormView(urlSubject: self.presenter.urlSubject)
         return form
@@ -25,6 +25,19 @@ final class DefaultURLView: UserInterface {
         self.navigationItem.title = L10n.Settings.Browser.title
         self.view.addSubview(self.settingForm.view)
         self.addChild(self.settingForm)
+        self.showBanner()
+        PurchaseManager.shared.observerUpgradeVersion {[weak self] in
+            self?.settingForm.tableView.tableHeaderView = nil
+        }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func showBannerView(_ bannerView: BannerView) {
+        self.settingForm.tableView.tableHeaderView = bannerView
     }
 }
 

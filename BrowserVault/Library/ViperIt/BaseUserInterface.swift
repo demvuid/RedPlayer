@@ -11,6 +11,10 @@ import Viperit
 
 class BaseUserInterface: UserInterface {
     var bannerView: BannerView!
+    /// The interstitial ad.
+    var interstitial: AdvertisePresentView!
+    var handlerPlayerVideo: (() -> ())? = nil
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +31,10 @@ class BaseUserInterface: UserInterface {
     }
     
     func showBanner() {
-        self.bannerView = BannerView()
+        guard UserSession.shared.isUpgradedVersion() == false else {
+            return
+        }
+        self.bannerView = BannerView.instance()
         self.bannerView.showBannerFromController(self)
     }
     override func didReceiveMemoryWarning() {

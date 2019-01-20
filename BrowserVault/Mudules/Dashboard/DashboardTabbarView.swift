@@ -29,23 +29,51 @@ class DashboardTabbarView: UITabBarController {
         nv2.tabBarItem.image = Asset.Tabbar.iconFolder.image
         nv2.tabBarItem.title = L10n.Folder.title
         
-        let vc3 = AppModules.settings.build().view
-        let nv3 = UINavigationController(rootViewController: vc3)
-        nv3.tabBarItem.image = Asset.Tabbar.iconSettings.image
-        nv3.tabBarItem.title = L10n.Settings.title
         
-        self.viewControllers = [nv1, nv2, nv3]
+        let nv3 = UIViewController()
+        nv3.tabBarItem.image = Asset.Tabbar.icFileDownload.image
+        nv3.tabBarItem.title = L10n.Downloads.title
+        
+        let vc4 = AppModules.settings.build().view
+        let nv4 = UINavigationController(rootViewController: vc4)
+        nv4.tabBarItem.image = Asset.Tabbar.iconSettings.image
+        nv4.tabBarItem.title = L10n.Settings.title
+        
+        self.viewControllers = [nv1, nv2, nv3, nv4]
+        self.delegate = self
     }
-    
+}
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+extension DashboardTabbarView: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        guard !(viewController is UINavigationController) else {
+            return true
+        }
+        var items = [AlertActionItem]()
+        var item = AlertActionItem(title: L10n.Folder.Download.File.library, style: .default, handler: {[weak self] (_) in
+            CustomImagePickerController.presentPickerInTarget(self) { (result) in
+                
+            }
+        })
+        items.append(item)
+        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
+            guard let self = self else { return }
+            let module = AppModules.download.build()
+            module.router.show(from: self, embedInNavController: true)
+        })
+        items.append(item)
+        item = AlertActionItem(title: L10n.Folder.Browse.File.network, style: .default, handler: {[weak self] (_) in
+            guard let self = self else { return }
+            let module = AppModules.download.build()
+            if let displayData = module.displayData as? DownloadDisplayData {
+                displayData.browseType = .play
+            }
+            module.router.show(from: self, embedInNavController: true)
+        })
+        items.append(item)
+        item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)
+        items.append(item)
+        self.showActionSheet(items: items)
+        return false
     }
-    */
-
 }

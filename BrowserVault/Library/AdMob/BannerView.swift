@@ -9,19 +9,23 @@
 import UIKit
 import GoogleMobileAds
 
-let GOOGLE_Admob_ID = "ca-app-pub-1692212170080575~3603204569"
-let GOOGLE_AdUnitID = "ca-app-pub-1692212170080575/1417569510"
+let GOOGLE_Admob_ID = "ca-app-pub-9119259386159657~6928176134"
+let GOOGLE_AdUnitID = "ca-app-pub-9119259386159657/3047150181"
 
 protocol BannerViewDelegate {
     func bannerDidShow(_ banner: BannerView)
     func bannerLoadFailed(_ banner: BannerView)
 }
 
-class BannerView: GADBannerView {
+class BannerView: DFPBannerView {
     var bannerDelegate: BannerViewDelegate?
     
-    convenience init() {
-        self.init(adSize: (UIDevice.current.userInterfaceIdiom == .pad) ? kGADAdSizeLeaderboard : kGADAdSizeBanner)
+    class func instance() -> BannerView {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return BannerView(adSize: kGADAdSizeLeaderboard)
+        } else {
+            return BannerView(adSize: kGADAdSizeBanner)
+        }
     }
     
     func showBannerFromController(_ controller: BaseUserInterface) {
@@ -33,7 +37,7 @@ class BannerView: GADBannerView {
     }
     
     func loadRequest() {
-        let request = GADRequest()
+        let request = DFPRequest()
 //        request.testDevices = ["cd76fa8449f7e425199435f191fa6fb2"]
         self.load(request)
     }

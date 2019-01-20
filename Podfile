@@ -13,17 +13,25 @@ pod 'SnapKit'
 pod 'SwiftGen'
 pod 'KeychainAccess'
 pod 'CocoaLumberjack/Swift'
-pod 'Google-Mobile-Ads-SDK'
-pod 'Kingfisher'
+pod 'Google-Mobile-Ads-SDK', '7.29.0'
+pod 'InAppPurchase'
+pod 'MZDownloadManager'
 # UI
 pod 'MBProgressHUD'
 pod 'IQKeyboardManagerSwift'
 pod 'Reusable'
 pod 'Eureka', '4.3.0'
+pod 'UICircularProgressRing'
+pod 'DKImagePickerController', :subspecs => ['PhotoGallery', 'Camera']
+pod 'NotificationBannerSwift'
+
 # Database
 pod 'RealmSwift'
 # Rx
 pod 'RxSwift'
+# Player
+pod 'MobileVLCKit'
+pod 'Reachability'
 
   target 'BrowserVaultTests' do
     inherit! :search_paths

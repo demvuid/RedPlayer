@@ -43,19 +43,19 @@
                                     <constraint firstAttribute="height" constant="44" id="F1F-Wz-lIO"/>
                                 </constraints>
                                 <items>
-                                    <barButtonItem image="backIcon" id="Ogi-Qz-iNu">
+                                    <barButtonItem title="Item" id="Ogi-Qz-iNu">
                                         <connections>
                                             <action selector="back:" destination="AXv-Wc-D0I" id="kGk-aE-hyA"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="1h6-SF-bhM"/>
-                                    <barButtonItem image="forwardIcon" id="IAg-YP-4yN">
+                                    <barButtonItem title="Item" id="IAg-YP-4yN">
                                         <connections>
                                             <action selector="forward:" destination="AXv-Wc-D0I" id="hlg-l5-p2S"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="DKX-R7-HTY"/>
-                                    <barButtonItem image="icon_browser_favorites" id="21v-Sf-3aU">
+                                    <barButtonItem title="Item" id="21v-Sf-3aU">
                                         <connections>
                                             <action selector="addToFavorites:" destination="AXv-Wc-D0I" id="34W-Zy-e05"/>
                                         </connections>
@@ -107,9 +107,4 @@
             <point key="canvasLocation" x="520.79999999999995" y="31.934032983508249"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="backIcon" width="16" height="16"/>
-        <image name="forwardIcon" width="16" height="16"/>
-        <image name="icon_browser_favorites" width="16" height="16"/>
-    </resources>
 </document>

@@ -13,6 +13,7 @@ import RxSwift
 enum SettingsFormFields: String {
     case defaultURL
     case lock
+    case touchID
     case review
     case share
     case email
@@ -46,7 +47,16 @@ class SettingsFormView: BaseFormViewController {
                 }).onCellSelection({[weak self] (_, _) in
                     self?.observerSelected.onNext(.lock)
                 })
-            
+            <<< SwitchRow() {
+                $0.title = L10n.Passcode.Biometry.enable
+                $0.value = UserSession.shared.enabledTouchID()
+                $0.baseCell.height = { 60 }
+                }.cellUpdate({ (cell, _) in
+                    cell.switchControl?.onTintColor = ColorName.mainColor
+                    cell.switchControl?.tintColor = ColorName.mainColor
+                }).onChange({[weak self] (row) in
+                    self?.observerSelected.onNext(.touchID)
+                })
             +++ Section(L10n.Settings.Version.title)
             <<< LabelRow() {
                 $0.title = L10n.Settings.Version.upgrade

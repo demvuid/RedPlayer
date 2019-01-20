@@ -32,7 +32,7 @@
     if (range.location != NSNotFound) {
         NSString* firstString = [self substringFromIndex:range.location + range.length + 1];
         if (firstString) {
-            NSRange rangeSecond = [firstString rangeOfString:@",[\"fmt_list\"" options:NSBackwardsSearch];
+            NSRange rangeSecond = [firstString rangeOfString:@",[\"url_encoded_fmt_stream_map\"" options:NSBackwardsSearch];
             if (rangeSecond.location != NSNotFound) {
                 NSString* secondString = [firstString substringToIndex:rangeSecond.location - 1];
                 secondString = [secondString stringByReplacingOccurrencesOfString:@"\"" withString:@""];

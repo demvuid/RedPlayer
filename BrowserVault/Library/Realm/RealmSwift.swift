@@ -15,17 +15,17 @@ struct RealmConstants {
 
 var realmURL: URL {
     let lastPath = RealmConstants.realmFolder
-    let realmPath = documentPathString + "/\(lastPath)"
+    let realmPath = documentURL.path + "/\(lastPath)"
     if !fileManger.fileExists(atPath: realmPath) {
         try! fileManger.createDirectory(atPath: realmPath, withIntermediateDirectories: true, attributes: nil)
     }
-    return documentPathURL.appendingPathComponent(lastPath)
+    return documentURL.appendingPathComponent(lastPath)
 }
 
 var realm: Realm! {
     var realm: Realm!
     do {
-        let config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: [NewsHistory.self, FolderModel.self])
+        let config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: [NewsHistory.self, FolderModel.self, Media.self])
         realm = try Realm(configuration: config)
     } catch {
         var config = Realm.Configuration()

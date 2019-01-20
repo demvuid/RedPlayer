@@ -80,6 +80,7 @@ class DefaultURLFormView: BaseFormViewController {
                 })
         }
     }
+    
     func generateSections() -> [Section] {
         var section = Section()
         section <<< SwitchRow() {

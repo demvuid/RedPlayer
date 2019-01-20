@@ -42,6 +42,7 @@ final class BrowserView: BaseUserInterface {
     var googleDriverURL: String?
     var statusBarHidden: Bool = false
     private var imgURL: String = "", timer: Timer! = nil
+    private var countPresentAdv: Int = UserSession.shared.countPlayVideo
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +56,10 @@ final class BrowserView: BaseUserInterface {
         self.updateFavoritesButton()
         self.url = URL(string: self.defaultURLString!)!
         self.loadURL(url)
+        PurchaseManager.shared.observerUpgradeVersion {[weak self] in
+            self?.removeBannerFromSupperView()
+        }
+        self.createAndLoadAdvertise()
     }
     
     override func didReceiveMemoryWarning() {
@@ -116,13 +121,16 @@ final class BrowserView: BaseUserInterface {
     }
     
     public func loadURLString(_ urlString: String) {
-        guard var url = URL(string: urlString) else {
-            return
+        var urlUpdate = urlString.lowercased()
+        if urlUpdate.hasPrefix("http://") || urlUpdate.hasPrefix("fpt://") || urlUpdate.hasPrefix("https://") {
+        } else {
+            urlUpdate = "http://\(urlString)"
         }
-        if !urlString.hasPrefix("http") || !urlString.hasPrefix("fpt") {
-            url = URL(string: "http://\(urlString)")!
+        if urlUpdate.validURLString(), let url = URL(string: urlUpdate) {
+            webView.load(URLRequest(url: url))
+        } else {
+            self.showAlertWith(title: L10n.Generic.Error.Alert.title, messsage: L10n.Settings.Browser.Url.required)
         }
-        webView.load(URLRequest(url: url))
     }
     
     public func loadHTMLString(_ htmlString: String, baseURL: URL?) {
@@ -208,11 +216,17 @@ final class BrowserView: BaseUserInterface {
     }
     
     func showHistoryViewWithFavorites(_ favorites: Bool) {
-        let controller = NewsHistoryTableViewController()
-        controller.delegate = self
-        controller.showFavorites = favorites
-        let navController = UINavigationController(rootViewController: controller)
-        self.present(navController, animated: true, completion: nil)
+        self.presenter.openPasscodeWithCompletionBlock {(finished) in
+            if finished {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {[weak self] in
+                    let controller = NewsHistoryTableViewController()
+                    controller.delegate = self
+                    controller.showFavorites = favorites
+                    let navController = UINavigationController(rootViewController: controller)
+                    self?.present(navController, animated: true, completion: nil)
+                })
+            }
+        }
     }
     
     @objc func saveImage(sender: UIMenuItem) {
@@ -275,7 +289,10 @@ final class BrowserView: BaseUserInterface {
                             HTTPCookieStorage.shared.setCookie(cookie)
                         }
                         if let html = htmlString as NSString?, html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                            NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
+                            self.handlerPlayerVideo = {
+                                NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
+                            }
+                            self.presentAdverstive()
                         } else {
                             self.url = videoURL
                             self.loadURL(videoURL)
@@ -301,6 +318,21 @@ final class BrowserView: BaseUserInterface {
             task.resume()
         }
     }
+    
+//    func checkingPresentAdv() -> Bool {
+//        if self.countPresentAdv >= 2 {
+//            self.countPresentAdv = 0
+//        } else {
+//            self.countPresentAdv += 1
+//        }
+//        UserSession.shared.countPlayVideo = self.countPresentAdv
+//        if self.countPresentAdv == 0 {
+//            self.presentAdverstive()
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
     
     func startSearchWebView() {
         self.searchBar.textField?.textAlignment = .left
@@ -376,15 +408,15 @@ extension BrowserView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
             self.updateOtherViews(hidden: true, animated: true)
-            //            if self.bannerView == nil {
-            //                self.showBanner()
-            //            } else {
-            //                self.removeBannerFromSupperView()
-            //                self.showBannerView(self.bannerView)
-            //            }
+            if self.bannerView == nil {
+                self.showBanner()
+            } else {
+                self.removeBannerFromSupperView()
+                self.showBannerView(self.bannerView)
+            }
         } else {
             self.updateOtherViews(hidden: false, animated: true)
-            //            self.removeBannerFromSupperView()
+            self.removeBannerFromSupperView()
         }
     }
 }
@@ -398,7 +430,13 @@ extension BrowserView: URLSessionDelegate, URLSessionTaskDelegate {
                 if let _ = responseUrlString.range(of: "url=") {
                     self.getDirectionURLString(responseUrlString)
                 } else {
-                    NavigationManager.shared.showMediaPlayerURL(responseUrlString)
+                    self.handlerPlayerVideo = {
+                        NavigationManager.shared.showMediaPlayerURL(responseUrlString, dismissBlock: {[weak self] in
+                            self?.presentAdverstive()
+                            self?.handlerPlayerVideo = nil
+                        })
+                    }
+                    self.presentAdverstive()
                 }
             } else if let responseUrl = response.url {
                 self.loadURLString(responseUrl.absoluteString)
@@ -490,7 +528,10 @@ extension BrowserView: WKNavigationDelegate {
                                    completionHandler: { (html: Any?, error: Error?) in
                                     if error == nil, let html = html as? NSString {
                                         if html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                                            NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
+                                            self.handlerPlayerVideo = {
+                                                NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
+                                            }
+                                            self.presentAdverstive()
                                         }
                                     }
         })
@@ -603,11 +644,14 @@ extension BrowserView: WKNavigationDelegate {
     func saveImage () {
         DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {[unowned self] in
             do {
-                let data = try Data(contentsOf: URL(string: self.imgURL)!)
+                let url = URL(string: self.imgURL)!
+                let data = try Data(contentsOf: url)
                 if let originImage = UIImage(data: data), let jpgData = originImage.jpegData(compressionQuality: 0.5) {
                     let saveableImage = UIImage(data: jpgData)
                     // Save to album
-                    UIImageWriteToSavedPhotosAlbum(saveableImage!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+                    let fileName = "\(DocumentManager.shared.fileNameNoExtension).jpeg"
+                    let media = Media(image: saveableImage!, caption: fileName)
+                    self.presenter.saveMedia(media: media)
                 }
             }
             catch let error {
@@ -650,8 +694,14 @@ extension BrowserView: WKUIDelegate {
             } else if let _ = urlString.range(of: "appmoviehd.info/redirection") {
                 //                self.loadURLString(urlString)
                 self.getDirectionURLString(urlString)
-            } else {
-                NavigationManager.shared.showMediaPlayerURL(urlString)
+            }  else {
+                self.handlerPlayerVideo = {
+                    NavigationManager.shared.showMediaPlayerURL(urlString, dismissBlock: {[weak self] in
+                        self?.presentAdverstive()
+                        self?.handlerPlayerVideo = nil
+                    })
+                }
+                self.presentAdverstive()
             }
         }
         

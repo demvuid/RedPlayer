@@ -7,26 +7,27 @@
 //
 
 import UIKit
-import Kingfisher
+import SDWebImage
 
 private let nameCachedImage = "bowservault_cached_image"
 
-private var cache: ImageCache = {
-    let cache = ImageCache(name: nameCachedImage)
-    cache.diskStorage.config.sizeLimit = 100 * 1024 * 1024 // 100MB
+
+private let kmaxCacheAge = 60 * 60 * 24
+private var cache: SDImageCache = {
+    let cache = SDImageCache.shared()
+    cache.config.maxCacheAge = kmaxCacheAge
     return cache
 }()
 
 class ImageFetcher {
     
     static func clearAllCache() {
-        cache.clearDiskCache()
-        cache.clearMemoryCache()
-        cache.cleanExpiredDiskCache()
+        cache.clearMemory()
+        cache.clearDisk(onCompletion: nil)
     }
     
     static func fetchImage(from url: URL?, to imageView: UIImageView) {
-        imageView.kf.setImage(with: url)
+        imageView.sd_setImage(with: url)
     }
     
     static func resizeImage(_ image: UIImage!, to imageView: UIImageView) {
@@ -49,16 +50,17 @@ class ImageFetcher {
     }
     
     static func fetchImageURL(_ url: URL, completion:((UIImage?)->())?) {
-        ImageDownloader.default.downloadImage(with: url, options: [.targetCache(cache)]) { (result) in
-            switch result {
-            case .success(let value):
-                let image = value.image.images?.first
-                completion?(image)
-            case .failure(let error):
-                Logger.debug("failed fetch image with error:\(error.localizedDescription)")
-                completion?(nil)
-            }
+        let _ = self.downloadImageURL(url, completion: completion)
+    }
+    
+    static func downloadImageURL(_ url: URL, progressBlock:((CGFloat)->())? = nil , completion:((UIImage?)->())?) -> SDWebImageOperation? {
+        let task = SDWebImageManager.shared().loadImage(with: url, options: [], progress: { (receivedSize, expectedSize, targetURL) in
+            let progress: CGFloat = min(1.0, CGFloat(receivedSize)/CGFloat(expectedSize))
+            progressBlock?(progress)
+        }) {(image, _, error, cacheType, finish, imageUrl) in
+            completion?(image)
         }
+        return task
     }
     
     static func saveImage(_ image: UIImage, forKey key: String) {
@@ -66,15 +68,7 @@ class ImageFetcher {
     }
     
     static func fetchImage(fromKey key: String, completion:((UIImage?)->())?) {
-        cache.retrieveImageInDiskCache(forKey: key) { (result) in
-            switch result {
-            case .success(let value):
-                let image = value?.images?.first
-                completion?(image)
-            case .failure(let error):
-                Logger.debug("failed fetch image with error:\(error.localizedDescription)")
-                completion?(nil)
-            }
-        }
+        let image = cache.imageFromCache(forKey: key)
+        completion?(image)
     }
 }

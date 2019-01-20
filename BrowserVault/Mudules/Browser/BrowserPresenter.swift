@@ -10,6 +10,13 @@ import Foundation
 import Viperit
 
 class BrowserPresenter: Presenter {
+    func saveMedia(media: Media) {
+        self.router.saveMedia(media: media)
+    }
+    
+    func openPasscodeWithCompletionBlock(_ block: ((Bool)->())?) {
+        self.router.openPasscodeWithCompletionBlock(block)
+    }
 }
 
 

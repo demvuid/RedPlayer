@@ -8,12 +8,10 @@
 
 import Foundation
 
-let myDownloadString = "My Downloads"
 let fileManger = FileManager.default
-let documentPathString = (NSHomeDirectory() as NSString).appendingPathComponent("Documents") as String
-let documentPathURL = fileManger.urls(for: .documentDirectory, in: .userDomainMask).first!
-let myDownloadPathString = documentPathString + "/\(myDownloadString)"
-let myDownloadPathURL = documentPathURL.appendingPathComponent(myDownloadString)
+let documentURL = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents")
+let myDownloadString = "My Downloads"
+let myDownloadURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(myDownloadString)
 
 let BrowserDefaultURLKey = "DefaultURLKey"
 let BrowserDefaultURL = "https://google.com"

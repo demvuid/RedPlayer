@@ -34,14 +34,12 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ote-4i-ATa">
                                 <rect key="frame" x="10" y="94" width="355" height="553"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <string key="text">AMPlayer is video player for the IOS operating system which allows you to watch all popular video formats on your phone or tablet with hardware acceleration for faster and smoother HD playback with unparalleled ease and comfort.
-
-Features
-––––––––
-- AMPLayer plays most local video files, as well as network streams.
-- AMPLayer can download or play file from internet
-- Browsing web and save your favorite video sites like youtube, vimeo ….
-- All formats are supported, including MKV, MP4, AVI, MOV, FLV … All codecs are included with no separate downloads</string>
+                                <string key="text">What about Browser Vault?
+- It’s a free, fast, and smart browser.
+- Browse safely private websites with your passcode protection, fingerprint TouchID, FaceID
+- Organize and lock your library, confidentail documents.
+- Save Photos from browser into your library
+- Import photos, video from Photos App.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
