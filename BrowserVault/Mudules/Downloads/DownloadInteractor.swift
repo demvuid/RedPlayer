@@ -10,6 +10,9 @@ import Foundation
 import Viperit
 
 class DownloadInteractor: Interactor {
+    func importedMedias(_ medias: [Media], inFolder folder: FolderModel? = nil, completionBlock: @escaping ([Media]) -> ()) {
+        ModelManager.shared.subscriberAddMedias(medias, inFolder: folder, handler: completionBlock)
+    }
 }
 
 // MARK: - VIPER COMPONENTS API (Auto-generated code)

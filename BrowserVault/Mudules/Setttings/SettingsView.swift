@@ -9,6 +9,7 @@
 import UIKit
 import Viperit
 import MessageUI
+import GoogleMobileAds
 
 enum SettingsViewSections: Int
 {
@@ -51,7 +52,7 @@ final class SettingsView: BaseUserInterface {
         // Dispose of any resources that can be recreated.
     }
     
-    override func showBannerView(_ bannerView: BannerView) {
+    override func showBannerView(_ bannerView: GADBannerView) {
         self.settingForm.tableView.tableHeaderView = bannerView
     }
 }

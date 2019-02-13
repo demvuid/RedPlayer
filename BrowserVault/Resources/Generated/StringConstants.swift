@@ -21,8 +21,14 @@ internal enum L10n {
       /// Play File
       internal static let play = L10n.tr("Localizable", "Downloads.file.play")
     }
+    internal enum Name {
+      /// Input the File Name
+      internal static let place = L10n.tr("Localizable", "Downloads.name.place")
+      /// File Name
+      internal static let title = L10n.tr("Localizable", "Downloads.name.title")
+    }
     internal enum Url {
-      /// Network URL
+      /// Remote URL
       internal static let network = L10n.tr("Localizable", "Downloads.url.network")
       /// Input the URL
       internal static let place = L10n.tr("Localizable", "Downloads.url.place")
@@ -35,7 +41,9 @@ internal enum L10n {
   }
 
   internal enum Folder {
-    /// Media
+    /// Save to Folder
+    internal static let select = L10n.tr("Localizable", "folder.select")
+    /// Folder
     internal static let title = L10n.tr("Localizable", "folder.title")
     internal enum Add {
       /// Add Files
@@ -45,7 +53,7 @@ internal enum L10n {
     }
     internal enum Browse {
       internal enum File {
-        /// Play File from Network
+        /// Play File from Remote URL
         internal static let network = L10n.tr("Localizable", "folder.browse.file.network")
       }
     }
@@ -69,9 +77,9 @@ internal enum L10n {
     }
     internal enum Download {
       internal enum File {
-        /// Browse File from Library
+        /// Browse File from Photos
         internal static let library = L10n.tr("Localizable", "folder.download.file.library")
-        /// Browse File from Network
+        /// Browse File from Remote URL
         internal static let network = L10n.tr("Localizable", "folder.download.file.network")
       }
     }

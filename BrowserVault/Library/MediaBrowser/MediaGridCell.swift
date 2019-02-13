@@ -287,6 +287,7 @@ class MediaGridCell: UICollectionViewCell {
         
         hideLoadingIndicator()
         imageView.image = self.placeholderImage
+        selectedButton.isHidden = !selectionMode
     }
     
     func hideImageFailure() {

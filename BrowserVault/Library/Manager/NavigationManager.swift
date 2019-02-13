@@ -9,7 +9,7 @@
 import UIKit
 import AVKit
 
-class NavigationManager {
+class NavigationManager: NSObject {
     static var shared = NavigationManager()
     
     func showMediaPlayerURL(_ url: String, dismissBlock: (() -> ())? = nil) {

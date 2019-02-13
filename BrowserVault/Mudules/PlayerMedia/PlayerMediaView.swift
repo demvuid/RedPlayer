@@ -13,24 +13,31 @@ import Viperit
 protocol PlayerMediaViewInterface {
     func updatePlayerURL(_ url: String)
     func playMediaURL()
+    func startPlayVideo()
 }
 
 //MARK: PlayerMediaView Class
-final class PlayerMediaView: UserInterface {
+final class PlayerMediaView: BaseUserInterface {
     @IBOutlet weak var movieView: DLCBaseVideoView!
     var mediaURL: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
-        self.movieView.shouldAutoPlay = true
+        self.movieView.shouldAutoPlay = false
         self.movieView.closeButton.addTarget(self, action: #selector(closeView(_:)), for: .touchUpInside)
         // Do any additional setup after loading the view, typically from a nib.
     }
     
     @IBAction func closeView(_ sender: Any) {
-        let completion = self.movieView.showAdv == true ? self.displayData.dismissBlock : nil
-        self.dismiss(animated: true, completion: completion)
+        let showAdv = self.movieView.showAdv == true
+        let completion = self.displayData.dismissBlock
+        self.dismiss(animated: true, completion: {
+            completion?()
+            if showAdv {
+                NavigationManager.shared.presentAdverstive()
+            }
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,6 +61,10 @@ extension PlayerMediaView: PlayerMediaViewInterface {
     
     func playMediaURL() {
         self.movieView.mediaURL = mediaURL
+    }
+    
+    func startPlayVideo() {
+        self.movieView.playVideo()
     }
 }
 

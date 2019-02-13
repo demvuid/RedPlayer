@@ -8,21 +8,21 @@
 
 import DKImagePickerController
 
-typealias ImportMediasResult = [(Media, URL)]
 class CustomImagePickerController: DKImagePickerController {
 
-    class func presentPickerInTarget(_ target: UIViewController?, completion: ((ImportMediasResult) -> ())? = nil) {
+    class func presentPickerInTarget(_ target: UIViewController?, completion: (([Media]) -> ())? = nil) {
         let pickerController = CustomImagePickerController()
         pickerController.showsCancelButton = true
         pickerController.exportsWhenCompleted = true
         pickerController.didSelectAssets = { (assets: [DKAsset]) in
-            var medias = ImportMediasResult()
+            var medias = [Media]()
             for asset in assets {
                 guard asset.error == nil else { continue }
                 if let localPath = asset.localTemporaryPath {
                     let media = Media(asset: asset.originalAsset!)
                     media.caption = localPath.lastPathComponent
-                    medias.append((media, localPath))
+                    media.temporaryPath = localPath.path
+                    medias.append(media)
                 }
             }
             completion?(medias)

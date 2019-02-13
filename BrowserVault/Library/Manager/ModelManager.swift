@@ -126,14 +126,14 @@ extension ModelManager {
         return medias
     }
     
-    func subscriberAddMedias(_ medias: [Media], urls: [URL], inFolder folder: FolderModel? = nil, handler: @escaping ([Media]) -> ()) {
+    func subscriberAddMedias(_ medias: [Media], inFolder folder: FolderModel? = nil, handler: @escaping ([Media]) -> ()) {
         if let folder = folder {
             self.addObject(folder)
         }
         let folder = folder ?? self.libraryFolder
         for index in 0..<medias.count {
             let media = medias[index]
-            let url = urls[index]
+            let url = URL(fileURLWithPath: media.temporaryPath!)
             
             media.folder = folder
             if let localURL = media.photoURL {

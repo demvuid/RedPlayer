@@ -18,11 +18,13 @@ class FilesInteractor: Interactor {
         return ModelManager.shared.fetchList(Media.self).filter({$0.folder?.id == folder.id})
     }
     
-    func saveMedia(_ media: Media) {
-        if !media.isVideo, let image = media.image {
-            DocumentManager.shared.saveImage(image: image, to: media.photoURL!)
+    func saveMedias(_ medias: [Media]) {
+        for media in medias {
+            if !media.isVideo, let image = media.image {
+                DocumentManager.shared.saveImage(image: image, to: media.photoURL!)
+            }
+            ModelManager.shared.addObject(media)
         }
-        ModelManager.shared.addObject(media)
     }
     
     func deleteFolder(_ folder: FolderModel) {
@@ -32,8 +34,8 @@ class FilesInteractor: Interactor {
         ModelManager.shared.deleteObject(folder)
     }
     
-    func importedMedias(_ medias: [Media], urls: [URL], inFolder folder: FolderModel? = nil, completionBlock: @escaping ([Media]) -> ()) {
-        ModelManager.shared.subscriberAddMedias(medias, urls: urls, inFolder: folder, handler: completionBlock)
+    func importedMedias(_ medias: [Media], inFolder folder: FolderModel? = nil, completionBlock: @escaping ([Media]) -> ()) {
+        ModelManager.shared.subscriberAddMedias(medias, inFolder: folder, handler: completionBlock)
     }
 }
 

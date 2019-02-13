@@ -11,9 +11,9 @@ import Viperit
 import RxSwift
 
 class FolderPresenter: Presenter {
-    private var saveableMedia: Media!
+    private var saveableMedias = [Media]()
     var isAddFile: Bool {
-        return self.saveableMedia != nil
+        return self.saveableMedias.count > 0
     }
     
     var folderSubject = PublishSubject<FolderModel>()
@@ -26,7 +26,7 @@ class FolderPresenter: Presenter {
     
     func configSubscriber() {
         self.folderSubject.subscribe(onNext: {[weak self] (folder) in
-            self?.interactor.saveMedia(self!.saveableMedia, inFolder: folder)
+            self?.interactor.saveMedias(self!.saveableMedias, inFolder: folder)
             self?.cancelScreen()
         }).disposed(by: self.bag)
     }
@@ -36,8 +36,8 @@ class FolderPresenter: Presenter {
     }
     
     override func setupView(data: Any) {
-        if let media = data as? Media {
-            self.saveableMedia = media
+        if let medias = data as? [Media] {
+            self.saveableMedias.append(contentsOf: medias)
         }
     }
 }

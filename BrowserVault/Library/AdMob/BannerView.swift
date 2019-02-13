@@ -13,49 +13,46 @@ let GOOGLE_Admob_ID = "ca-app-pub-9119259386159657~6928176134"
 let GOOGLE_AdUnitID = "ca-app-pub-9119259386159657/3047150181"
 
 protocol BannerViewDelegate {
-    func bannerDidShow(_ banner: BannerView)
-    func bannerLoadFailed(_ banner: BannerView)
+    func bannerDidShow(_ banner: GADBannerView)
+    func bannerLoadFailed(_ banner: GADBannerView)
 }
 
-class BannerView: DFPBannerView {
-    var bannerDelegate: BannerViewDelegate?
+extension DFPBannerView {
     
-    class func instance() -> BannerView {
+    class func instance() -> DFPBannerView {
+        var banner: DFPBannerView!
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return BannerView(adSize: kGADAdSizeLeaderboard)
+            banner = DFPBannerView(adSize: kGADAdSizeLeaderboard)
         } else {
-            return BannerView(adSize: kGADAdSizeBanner)
+            banner = DFPBannerView(adSize: kGADAdSizeBanner)
         }
+        return banner
     }
     
     func showBannerFromController(_ controller: BaseUserInterface) {
         self.adUnitID = GOOGLE_AdUnitID
-        self.delegate = self
         self.rootViewController = controller
-        self.bannerDelegate = controller
+        self.delegate = controller
         self.loadRequest()
     }
     
     func loadRequest() {
         let request = DFPRequest()
-//        request.testDevices = ["cd76fa8449f7e425199435f191fa6fb2"]
         self.load(request)
     }
 
 }
 
-extension BannerView: GADBannerViewDelegate {
+extension BaseUserInterface: GADBannerViewDelegate {
     /// Tells the delegate an ad request loaded an ad.
     public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        self.bannerDelegate?.bannerDidShow(self)
+        self.bannerDidShow(bannerView)
     }
     
     /// Tells the delegate an ad request failed.
     public func adView(_ bannerView: GADBannerView,
                        didFailToReceiveAdWithError error: GADRequestError) {
-        if let banner = bannerView as? BannerView {
-            self.bannerDelegate?.bannerLoadFailed(banner)
-        }
+        self.bannerLoadFailed(bannerView)
     }
     
     /// Tells the delegate that a full-screen view will be presented in response
@@ -75,5 +72,78 @@ extension BannerView: GADBannerViewDelegate {
     /// Tells the delegate that a user click will open another app (such as
     /// the App Store), backgrounding the current app.
     public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+    }
+}
+
+extension BaseUserInterface {
+    private struct ExportKeys {
+        static fileprivate var bannerView: UInt8 = 0
+    }
+
+    var bannerView: DFPBannerView? {
+        get { return objc_getAssociatedObject(self, &ExportKeys.bannerView) as? DFPBannerView }
+        set { objc_setAssociatedObject(self, &ExportKeys.bannerView, newValue, .OBJC_ASSOCIATION_RETAIN) }
+    }
+    func showBanner() {
+        guard UserSession.shared.isUpgradedVersion() == false else {
+            return
+        }
+        self.bannerView = DFPBannerView.instance()
+        self.bannerView?.showBannerFromController(self)
+    }
+}
+
+extension BannerViewDelegate where Self: BaseUserInterface {
+    
+    func removeBannerFromSupperView() {
+        if let banner = self.bannerView {
+            banner.removeFromSuperview()
+        }
+    }
+    
+    func updateConstraintBannerView(_ bannerView: GADBannerView) {
+        if #available(iOS 11.0, *) {
+            view.addConstraints(
+                [NSLayoutConstraint(item: bannerView,
+                                    attribute: .bottom,
+                                    relatedBy: .equal,
+                                    toItem: view.safeAreaLayoutGuide,
+                                    attribute: .top,
+                                    multiplier: 1,
+                                    constant: 0),
+                 NSLayoutConstraint(item: bannerView,
+                                    attribute: .centerX,
+                                    relatedBy: .equal,
+                                    toItem: view,
+                                    attribute: .centerX,
+                                    multiplier: 1,
+                                    constant: 0)
+                ])
+        } else {
+            view.addConstraints(
+                [NSLayoutConstraint(item: bannerView,
+                                    attribute: .bottom,
+                                    relatedBy: .equal,
+                                    toItem: bottomLayoutGuide,
+                                    attribute: .top,
+                                    multiplier: 1,
+                                    constant: 0),
+                 NSLayoutConstraint(item: bannerView,
+                                    attribute: .centerX,
+                                    relatedBy: .equal,
+                                    toItem: view,
+                                    attribute: .centerX,
+                                    multiplier: 1,
+                                    constant: 0)
+                ])
+        }
+    }
+    
+    func bannerDidShow(_ banner: GADBannerView) {
+        self.showBannerView(banner)
+    }
+    
+    func bannerLoadFailed(_ banner: GADBannerView) {
+        
     }
 }

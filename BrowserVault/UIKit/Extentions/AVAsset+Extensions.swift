@@ -14,7 +14,9 @@ extension AVAsset {
         let assetImageGenerator = AVAssetImageGenerator(asset: self)
         assetImageGenerator.appliesPreferredTrackTransform = true
         var time = self.duration
-        time.value = min(time.value, 2)
+        if time.value > 0 {
+            time.value = time.value / 2
+        }
         do {
             let imageRef = try assetImageGenerator.copyCGImage(at: time, actualTime: nil)
             let thumbNail = UIImage.init(cgImage: imageRef)

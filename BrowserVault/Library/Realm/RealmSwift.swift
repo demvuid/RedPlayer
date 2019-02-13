@@ -25,10 +25,12 @@ var realmURL: URL {
 var realm: Realm! {
     var realm: Realm!
     do {
-        let config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: [NewsHistory.self, FolderModel.self, Media.self])
+        var config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: [NewsHistory.self, FolderModel.self, Media.self])
+        config.deleteRealmIfMigrationNeeded = true
         realm = try Realm(configuration: config)
     } catch {
         var config = Realm.Configuration()
+        config.deleteRealmIfMigrationNeeded = true
         // Use the default directory, but replace the filename with the username
         config.fileURL = config.fileURL!.deletingLastPathComponent().appendingPathComponent(RealmConstants.realmFolder).appendingPathComponent("\(RealmConstants.realmDB).realm")
         

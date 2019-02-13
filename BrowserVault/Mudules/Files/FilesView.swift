@@ -8,6 +8,7 @@
 
 import UIKit
 import Viperit
+import GoogleMobileAds
 
 //MARK: - Public Interface Protocol
 protocol FilesViewInterface {
@@ -28,13 +29,14 @@ final class FilesView: BaseUserInterface {
         self.navigationItem.title = L10n.Folder.title
         
         if self.presenter.isAddFile {
+            self.navigationItem.title = L10n.Folder.select
             self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
         } else {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self.presenter, action: #selector(self.presenter.addFolder))
             self.updateEditButton()
         }
         self.showBanner()
-        self.createAndLoadAdvertise()
+        NavigationManager.shared.createAndLoadAdvertise()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,7 +59,7 @@ final class FilesView: BaseUserInterface {
         self.updateEditButton()
     }
     
-    override func showBannerView(_ bannerView: BannerView) {
+    override func showBannerView(_ bannerView: GADBannerView) {
         self.filesForm.tableView.tableHeaderView = bannerView
     }
 }
@@ -70,7 +72,7 @@ extension FilesView: FilesViewInterface {
     }
     
     func showAdverstive() {
-        self.presentAdverstive()
+        NavigationManager.shared.presentAdverstive()
     }
 }
 

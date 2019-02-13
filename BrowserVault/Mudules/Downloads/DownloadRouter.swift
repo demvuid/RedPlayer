@@ -13,6 +13,11 @@ class DownloadRouter: Router {
     func cancelScreen() {
         self._view.dismiss(animated: true, completion: nil)
     }
+    
+    func saveMedia(_ media: Media) {
+        let module = AppModules.files.build()
+        module.router.show(from: self._view, setupData: [media])
+    }
 }
 
 // MARK: - VIPER COMPONENTS API (Auto-generated code)

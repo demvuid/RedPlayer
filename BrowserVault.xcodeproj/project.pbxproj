@@ -11,6 +11,9 @@
 		9B5C07268247264CDD86E55E /* Pods_BrowserVault.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD432CF27B3D2C5ED0673E02 /* Pods_BrowserVault.framework */; };
 		D377891F52FA0FD6C74BACAC /* Pods_BrowserVaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DC11F5E047653890187873B /* Pods_BrowserVaultTests.framework */; };
 		E20B1F2121FEFD8B00FA7301 /* CustomImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */; };
+		E20B68ED220FD9DA00FAD98A /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EA220FD9DA00FAD98A /* ProgressView.swift */; };
+		E20B68EE220FD9DA00FAD98A /* UIProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */; };
+		E20B68EF220FD9DA00FAD98A /* ProgressViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */; };
 		E214C61721B683890056E56C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E214C61621B683890056E56C /* AppDelegate.swift */; };
 		E214C61921B683890056E56C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E214C61821B683890056E56C /* ViewController.swift */; };
 		E214C61C21B683890056E56C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E214C61A21B683890056E56C /* Main.storyboard */; };
@@ -39,6 +42,7 @@
 		E2234D1C21C1FEF7008F6137 /* TabBrowserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2234D1621C1FEF7008F6137 /* TabBrowserRouter.swift */; };
 		E2234D1D21C1FEF7008F6137 /* TabBrowserInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2234D1721C1FEF7008F6137 /* TabBrowserInteractor.swift */; };
 		E2234D1E21C1FEF7008F6137 /* TabBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2234D1821C1FEF7008F6137 /* TabBrowserView.swift */; };
+		E225F67D2213BFC80015C8A3 /* NavigationManager+Advertisement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E225F67C2213BFC80015C8A3 /* NavigationManager+Advertisement.swift */; };
 		E2273FE921C69FC800BDA33D /* Folder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2273FE321C69FC800BDA33D /* Folder.storyboard */; };
 		E2273FEA21C69FC800BDA33D /* FolderDisplayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2273FE421C69FC800BDA33D /* FolderDisplayData.swift */; };
 		E2273FEB21C69FC800BDA33D /* FolderPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2273FE521C69FC800BDA33D /* FolderPresenter.swift */; };
@@ -96,6 +100,7 @@
 		E27EC80B21D36D4A00D643AF /* UIView+DLCAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E27EC80021D36D4A00D643AF /* UIView+DLCAnimation.m */; };
 		E27EC80C21D36D4A00D643AF /* MSWeakTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E27EC80321D36D4A00D643AF /* MSWeakTimer.m */; };
 		E27EC80E21D376B900D643AF /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E27EC80D21D376B900D643AF /* UIDevice.swift */; };
+		E2A11AFC2213FF9400138520 /* ParseVideoLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A11AFB2213FF9400138520 /* ParseVideoLink.swift */; };
 		E2AECD6821BBB1D700BCBD70 /* UserSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECD6721BBB1D700BCBD70 /* UserSession.swift */; };
 		E2AECD7321BBB26400BCBD70 /* AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AECD6C21BBB26400BCBD70 /* AES256.m */; };
 		E2AECD7421BBB26400BCBD70 /* MBCipher.m in Sources */ = {isa = PBXBuildFile; fileRef = E2AECD6E21BBB26400BCBD70 /* MBCipher.m */; };
@@ -210,6 +215,9 @@
 		A37634152921F802B4D3BA60 /* Pods-BrowserVaultUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrowserVaultUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BrowserVaultUITests/Pods-BrowserVaultUITests.release.xcconfig"; sourceTree = "<group>"; };
 		B2472FA20EF780ACA9ED5B35 /* Pods-BrowserVault.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrowserVault.release.xcconfig"; path = "Pods/Target Support Files/Pods-BrowserVault/Pods-BrowserVault.release.xcconfig"; sourceTree = "<group>"; };
 		E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImagePickerController.swift; sourceTree = "<group>"; };
+		E20B68EA220FD9DA00FAD98A /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIProgressLayer.swift; sourceTree = "<group>"; };
+		E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewDelegate.swift; sourceTree = "<group>"; };
 		E214C61321B683890056E56C /* BrowserVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrowserVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E214C61621B683890056E56C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E214C61821B683890056E56C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -244,6 +252,7 @@
 		E2234D1621C1FEF7008F6137 /* TabBrowserRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBrowserRouter.swift; sourceTree = "<group>"; };
 		E2234D1721C1FEF7008F6137 /* TabBrowserInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBrowserInteractor.swift; sourceTree = "<group>"; };
 		E2234D1821C1FEF7008F6137 /* TabBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBrowserView.swift; sourceTree = "<group>"; };
+		E225F67C2213BFC80015C8A3 /* NavigationManager+Advertisement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationManager+Advertisement.swift"; sourceTree = "<group>"; };
 		E2273FE321C69FC800BDA33D /* Folder.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Folder.storyboard; sourceTree = "<group>"; };
 		E2273FE421C69FC800BDA33D /* FolderDisplayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderDisplayData.swift; sourceTree = "<group>"; };
 		E2273FE521C69FC800BDA33D /* FolderPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPresenter.swift; sourceTree = "<group>"; };
@@ -312,6 +321,7 @@
 		E27EC80221D36D4A00D643AF /* MSWeakTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSWeakTimer.h; sourceTree = "<group>"; };
 		E27EC80321D36D4A00D643AF /* MSWeakTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSWeakTimer.m; sourceTree = "<group>"; };
 		E27EC80D21D376B900D643AF /* UIDevice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
+		E2A11AFB2213FF9400138520 /* ParseVideoLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseVideoLink.swift; sourceTree = "<group>"; };
 		E2AECD6721BBB1D700BCBD70 /* UserSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSession.swift; sourceTree = "<group>"; };
 		E2AECD6B21BBB26400BCBD70 /* AES256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AES256.h; sourceTree = "<group>"; };
 		E2AECD6C21BBB26400BCBD70 /* AES256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AES256.m; sourceTree = "<group>"; };
@@ -473,6 +483,16 @@
 				E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */,
 			);
 			path = DKImagePickerController;
+			sourceTree = "<group>";
+		};
+		E20B68E9220FD9CB00FAD98A /* ProgressView */ = {
+			isa = PBXGroup;
+			children = (
+				E20B68EA220FD9DA00FAD98A /* ProgressView.swift */,
+				E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */,
+				E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */,
+			);
+			path = ProgressView;
 			sourceTree = "<group>";
 		};
 		E214C60A21B683890056E56C = {
@@ -638,6 +658,7 @@
 		E249D29821BA7A7000737A02 /* UIView */ = {
 			isa = PBXGroup;
 			children = (
+				E20B68E9220FD9CB00FAD98A /* ProgressView */,
 				E249D29921BA7A7000737A02 /* PasscodelField.swift */,
 				E2AECDD021BCB1C800BCBD70 /* BaseCollectionReusableView.swift */,
 				E2AECDCE21BCB1C800BCBD70 /* BaseCollectionViewCell.swift */,
@@ -794,6 +815,14 @@
 			path = MSWeakTimer;
 			sourceTree = "<group>";
 		};
+		E2A11AFA2213FF7700138520 /* ParseVideoLink */ = {
+			isa = PBXGroup;
+			children = (
+				E2A11AFB2213FF9400138520 /* ParseVideoLink.swift */,
+			);
+			path = ParseVideoLink;
+			sourceTree = "<group>";
+		};
 		E2AECD6621BBB1CC00BCBD70 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -807,6 +836,7 @@
 		E2AECD6921BBB22200BCBD70 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E2A11AFA2213FF7700138520 /* ParseVideoLink */,
 				E20B1F1F21FEFD6600FA7301 /* DKImagePickerController */,
 				E27EC7EB21D36D4A00D643AF /* DLCMobilePlayer */,
 				E257400321C90902008BB4FF /* MediaBrowser */,
@@ -863,6 +893,7 @@
 				E2AECD8C21BBC71C00BCBD70 /* UIViewController+Extensions.swift */,
 				E2AECDEB21BCB31F00BCBD70 /* UIImage+Extentions.swift */,
 				E27EC80D21D376B900D643AF /* UIDevice.swift */,
+				E225F67C2213BFC80015C8A3 /* NavigationManager+Advertisement.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -1209,11 +1240,13 @@
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/Reusable/Reusable.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAtomic/RxAtomic.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/UICircularProgressRing/UICircularProgressRing.framework",
 				"${BUILT_PRODUCTS_DIR}/Viperit/Viperit.framework",
+				"${BUILT_PRODUCTS_DIR}/YoutubeDirectLinkExtractor/YoutubeDirectLinkExtractor.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -1237,11 +1270,13 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reusable.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAtomic.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UICircularProgressRing.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Viperit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YoutubeDirectLinkExtractor.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1355,6 +1390,7 @@
 				E2AECDF521BCBF2C00BCBD70 /* NSString+GoogleDriver.m in Sources */,
 				E257400221C8C6BE008BB4FF /* ImageFetcher.swift in Sources */,
 				E2273FF021C69FE500BDA33D /* FolderFormView.swift in Sources */,
+				E20B68ED220FD9DA00FAD98A /* ProgressView.swift in Sources */,
 				E257401821C90902008BB4FF /* MediaGridViewController.swift in Sources */,
 				E2F902C221BFBD3700BAC147 /* DefaultURLFormView.swift in Sources */,
 				E2AECDC621BCAD0E00BCBD70 /* String+Extentions.swift in Sources */,
@@ -1365,6 +1401,7 @@
 				E27EC80921D36D4A00D643AF /* DLCNetworkCenter.m in Sources */,
 				E2AECD8021BBB3EB00BCBD70 /* NSData+AES.m in Sources */,
 				E2AECD9721BC0DDA00BCBD70 /* DashboardDisplayData.swift in Sources */,
+				E20B68EE220FD9DA00FAD98A /* UIProgressLayer.swift in Sources */,
 				E27EC80C21D36D4A00D643AF /* MSWeakTimer.m in Sources */,
 				E2234D1A21C1FEF7008F6137 /* TabBrowserDisplayData.swift in Sources */,
 				E249D2A621BA7A7000737A02 /* ColorConstants.swift in Sources */,
@@ -1384,6 +1421,7 @@
 				E27EC80B21D36D4A00D643AF /* UIView+DLCAnimation.m in Sources */,
 				E2AECDA521BC0E2D00BCBD70 /* BrowserDisplayData.swift in Sources */,
 				E2AECD8821BBB5AC00BCBD70 /* CustomLogFormatter.swift in Sources */,
+				E225F67D2213BFC80015C8A3 /* NavigationManager+Advertisement.swift in Sources */,
 				E2AECDAC21BC0F5000BCBD70 /* BaseUserInterface.swift in Sources */,
 				E2273FEE21C69FC800BDA33D /* FolderView.swift in Sources */,
 				E2AECE0221BCFF9D00BCBD70 /* SettingsView.swift in Sources */,
@@ -1426,6 +1464,7 @@
 				E249D2B121BA7A7000737A02 /* PasscodeView.swift in Sources */,
 				E2AECDEA21BCB1C900BCBD70 /* SubTableViewCell.swift in Sources */,
 				E2234D1C21C1FEF7008F6137 /* TabBrowserRouter.swift in Sources */,
+				E20B68EF220FD9DA00FAD98A /* ProgressViewDelegate.swift in Sources */,
 				E27EC80521D36D4A00D643AF /* Aspects.m in Sources */,
 				E2DA6E3321CFD6D100C7CE98 /* ImportFilesPresenter.swift in Sources */,
 				E2AECDFE21BCFF9D00BCBD70 /* SettingsDisplayData.swift in Sources */,
@@ -1477,6 +1516,7 @@
 				E257401921C90902008BB4FF /* MediaTapDetectingImageView.swift in Sources */,
 				E2F902B321BFB37000BAC147 /* SettingsFormView.swift in Sources */,
 				E2AECDE421BCB1C900BCBD70 /* CollectionViewCellStyleTitleImage.swift in Sources */,
+				E2A11AFC2213FF9400138520 /* ParseVideoLink.swift in Sources */,
 				E2DA6E3621CFD6D100C7CE98 /* ImportFilesView.swift in Sources */,
 				E27EC7E921D36C7D00D643AF /* PlayerMediaInteractor.swift in Sources */,
 				E2AECD7421BBB26400BCBD70 /* MBCipher.m in Sources */,

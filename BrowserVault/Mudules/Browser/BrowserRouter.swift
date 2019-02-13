@@ -14,10 +14,10 @@ class BrowserRouter: Router {
         let folders = ModelManager.shared.fetchList(FolderModel.self)
         if folders.count == 0 {
             let module = AppModules.folder.build()
-            module.router.show(from: self._view, embedInNavController: true, setupData: media)
+            module.router.show(from: self._view, embedInNavController: true, setupData: [media])
         } else {
             let module = AppModules.files.build()
-            module.router.show(from: self._view, embedInNavController: true, setupData: media)
+            module.router.show(from: self._view, embedInNavController: true, setupData: [media])
         }
     }
     

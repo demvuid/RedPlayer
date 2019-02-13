@@ -8,13 +8,9 @@
 
 import UIKit
 import Viperit
+import GoogleMobileAds
 
 class BaseUserInterface: UserInterface {
-    var bannerView: BannerView!
-    /// The interstitial ad.
-    var interstitial: AdvertisePresentView!
-    var handlerPlayerVideo: (() -> ())? = nil
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +26,6 @@ class BaseUserInterface: UserInterface {
     func setupUI() {
     }
     
-    func showBanner() {
-        guard UserSession.shared.isUpgradedVersion() == false else {
-            return
-        }
-        self.bannerView = BannerView.instance()
-        self.bannerView.showBannerFromController(self)
-    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -53,64 +42,13 @@ class BaseUserInterface: UserInterface {
         return UIApplication.shared.statusBarFrame.height
     }
     
-    func showBannerView(_ bannerView: BannerView) {
+    func showBannerView(_ bannerView: GADBannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bannerView)
         self.updateConstraintBannerView(bannerView)
-    }
-    
-    func removeBannerFromSupperView() {
-        if let banner = self.bannerView {
-            banner.removeFromSuperview()
-        }
-    }
-    
-    func updateConstraintBannerView(_ bannerView: BannerView) {
-        if #available(iOS 11.0, *) {
-            view.addConstraints(
-                [NSLayoutConstraint(item: bannerView,
-                                    attribute: .bottom,
-                                    relatedBy: .equal,
-                                    toItem: view.safeAreaLayoutGuide,
-                                    attribute: .top,
-                                    multiplier: 1,
-                                    constant: 0),
-                 NSLayoutConstraint(item: bannerView,
-                                    attribute: .centerX,
-                                    relatedBy: .equal,
-                                    toItem: view,
-                                    attribute: .centerX,
-                                    multiplier: 1,
-                                    constant: 0)
-                ])
-        } else {
-            view.addConstraints(
-                [NSLayoutConstraint(item: bannerView,
-                                    attribute: .bottom,
-                                    relatedBy: .equal,
-                                    toItem: bottomLayoutGuide,
-                                    attribute: .top,
-                                    multiplier: 1,
-                                    constant: 0),
-                 NSLayoutConstraint(item: bannerView,
-                                    attribute: .centerX,
-                                    relatedBy: .equal,
-                                    toItem: view,
-                                    attribute: .centerX,
-                                    multiplier: 1,
-                                    constant: 0)
-                ])
-        }
     }
 }
 
 
 extension BaseUserInterface: BannerViewDelegate {
-    func bannerDidShow(_ banner: BannerView) {
-        self.showBannerView(banner)
-    }
-    
-    func bannerLoadFailed(_ banner: BannerView) {
-        
-    }
 }

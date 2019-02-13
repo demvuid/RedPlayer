@@ -8,6 +8,7 @@
 
 import UIKit
 import Viperit
+import GoogleMobileAds
 
 //MARK: - Public Interface Protocol
 protocol DefaultURLViewInterface {
@@ -36,7 +37,7 @@ final class DefaultURLView: BaseUserInterface {
         // Dispose of any resources that can be recreated.
     }
     
-    override func showBannerView(_ bannerView: BannerView) {
+    override func showBannerView(_ bannerView: GADBannerView) {
         self.settingForm.tableView.tableHeaderView = bannerView
     }
 }

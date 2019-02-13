@@ -51,8 +51,10 @@ extension DashboardTabbarView: UITabBarControllerDelegate {
         }
         var items = [AlertActionItem]()
         var item = AlertActionItem(title: L10n.Folder.Download.File.library, style: .default, handler: {[weak self] (_) in
-            CustomImagePickerController.presentPickerInTarget(self) { (result) in
-                
+            CustomImagePickerController.presentPickerInTarget(self) {[weak self] (result) in
+                guard let self = self else { return }
+                let module = AppModules.files.build()
+                module.router.show(from: self, embedInNavController: true, setupData: result)
             }
         })
         items.append(item)

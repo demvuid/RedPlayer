@@ -9,6 +9,7 @@
 import UIKit
 import Viperit
 import WebKit
+import GoogleMobileAds
 
 var estimatedProgressContext = 0
 let estimatedProgressKeyPath = "estimatedProgress"
@@ -59,7 +60,7 @@ final class BrowserView: BaseUserInterface {
         PurchaseManager.shared.observerUpgradeVersion {[weak self] in
             self?.removeBannerFromSupperView()
         }
-        self.createAndLoadAdvertise()
+        NavigationManager.shared.createAndLoadAdvertise()
     }
     
     override func didReceiveMemoryWarning() {
@@ -289,10 +290,10 @@ final class BrowserView: BaseUserInterface {
                             HTTPCookieStorage.shared.setCookie(cookie)
                         }
                         if let html = htmlString as NSString?, html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                            self.handlerPlayerVideo = {
+                            NavigationManager.shared.handlerDismissAdvertisement = {
                                 NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
                             }
-                            self.presentAdverstive()
+                            NavigationManager.shared.presentAdverstive()
                         } else {
                             self.url = videoURL
                             self.loadURL(videoURL)
@@ -318,21 +319,6 @@ final class BrowserView: BaseUserInterface {
             task.resume()
         }
     }
-    
-//    func checkingPresentAdv() -> Bool {
-//        if self.countPresentAdv >= 2 {
-//            self.countPresentAdv = 0
-//        } else {
-//            self.countPresentAdv += 1
-//        }
-//        UserSession.shared.countPlayVideo = self.countPresentAdv
-//        if self.countPresentAdv == 0 {
-//            self.presentAdverstive()
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
     
     func startSearchWebView() {
         self.searchBar.textField?.textAlignment = .left
@@ -381,7 +367,7 @@ final class BrowserView: BaseUserInterface {
         })
     }
     
-    override func showBannerView(_ bannerView: BannerView) {
+    override func showBannerView(_ bannerView: GADBannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         containWebView.addSubview(bannerView)
         containWebView.addConstraints(
@@ -412,7 +398,7 @@ extension BrowserView: UIScrollViewDelegate {
                 self.showBanner()
             } else {
                 self.removeBannerFromSupperView()
-                self.showBannerView(self.bannerView)
+                self.showBannerView(self.bannerView!)
             }
         } else {
             self.updateOtherViews(hidden: false, animated: true)
@@ -430,13 +416,7 @@ extension BrowserView: URLSessionDelegate, URLSessionTaskDelegate {
                 if let _ = responseUrlString.range(of: "url=") {
                     self.getDirectionURLString(responseUrlString)
                 } else {
-                    self.handlerPlayerVideo = {
-                        NavigationManager.shared.showMediaPlayerURL(responseUrlString, dismissBlock: {[weak self] in
-                            self?.presentAdverstive()
-                            self?.handlerPlayerVideo = nil
-                        })
-                    }
-                    self.presentAdverstive()
+                    NavigationManager.shared.showMediaPlayerURL(responseUrlString)
                 }
             } else if let responseUrl = response.url {
                 self.loadURLString(responseUrl.absoluteString)
@@ -528,10 +508,10 @@ extension BrowserView: WKNavigationDelegate {
                                    completionHandler: { (html: Any?, error: Error?) in
                                     if error == nil, let html = html as? NSString {
                                         if html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                                            self.handlerPlayerVideo = {
+                                            NavigationManager.shared.handlerDismissAdvertisement = {
                                                 NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
                                             }
-                                            self.presentAdverstive()
+                                            NavigationManager.shared.presentAdverstive()
                                         }
                                     }
         })
@@ -695,13 +675,7 @@ extension BrowserView: WKUIDelegate {
                 //                self.loadURLString(urlString)
                 self.getDirectionURLString(urlString)
             }  else {
-                self.handlerPlayerVideo = {
-                    NavigationManager.shared.showMediaPlayerURL(urlString, dismissBlock: {[weak self] in
-                        self?.presentAdverstive()
-                        self?.handlerPlayerVideo = nil
-                    })
-                }
-                self.presentAdverstive()
+                NavigationManager.shared.showMediaPlayerURL(urlString)
             }
         }
         

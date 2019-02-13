@@ -16,15 +16,19 @@ class FolderInteractor: Interactor {
         ModelManager.shared.addObject(folder)
     }
     
-    func saveMedia(_ media: Media!, inFolder folder: FolderModel) {
+    func saveMedias(_ medias: [Media], inFolder folder: FolderModel) {
         if let folder = ModelManager.shared.fetchObject(FolderModel.self, filter: NSPredicate(format: "id == %@", folder.id)) {
-            media?.folder = folder
+            for media in medias {
+                media.folder = folder
+            }
         } else {
             self.addFolder(folder)
-            media?.folder = ModelManager.shared.fetchObject(FolderModel.self, filter: NSPredicate(format: "id == %@", folder.id))
+            for media in medias {
+                media.folder = ModelManager.shared.fetchObject(FolderModel.self, filter: NSPredicate(format: "id == %@", folder.id))
+            }
         }
         
-        if let media = media {
+        for media in medias {
             if !media.isVideo, let image = media.image {
                 DocumentManager.shared.saveImage(image: image, to: media.photoURL!)
             }

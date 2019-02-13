@@ -54,7 +54,7 @@ open class Media: Object {
         }
         return nil
     }
-    
+    var temporaryPath: String?
     var image: UIImage?
     /// emptyImage
     public var emptyImage = true
@@ -93,6 +93,13 @@ open class Media: Object {
         self.init()
         self.asset = asset
         isVideo = asset.mediaType == PHAssetMediaType.video
+    }
+    
+    /// init with temporaryPath
+    public convenience init(temporaryPath: String, isVideo: Bool = false) {
+        self.init()
+        self.temporaryPath = temporaryPath
+        self.isVideo = isVideo
     }
 
     func getMediaURL(completion: @escaping (URL?) -> ()) {

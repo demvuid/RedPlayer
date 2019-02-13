@@ -18,6 +18,14 @@ enum RegExprPattern: String {
 }
 
 extension String {
+    func fileExtension() -> String {
+        var fileExtension = NSURL(fileURLWithPath: self).pathExtension
+        if fileExtension == nil {
+            fileExtension = ""
+        }
+        return  fileExtension!
+    }
+    
     static func isValid(value: String?, regExpr: RegExprPattern) -> Bool {
         if let value = value, !value.isEmpty {
             let predicate = NSPredicate(format: "SELF MATCHES %@", regExpr.rawValue)

@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 import QuartzCore
 import DKImagePickerController
+import GoogleMobileAds
 
 func floorcgf(x: CGFloat) -> CGFloat {
     return CGFloat(floorf(Float(x)))
@@ -49,6 +50,8 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
     private lazy var addItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addFiles))
     private lazy var deleteItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(self.emptyFiles))
     private lazy var cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.cancelSelectedFiles))
+    
+    private var isRefreshBrowser: Bool = false
     
     // Grid
     private var gridController: MediaGridViewController?
@@ -448,6 +451,7 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
         }
         
         super.viewDidLoad()
+        NavigationManager.shared.createAndLoadAdvertise()
     }
     
     /**
@@ -638,6 +642,18 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
         }
         
         self.view.setNeedsLayout()
+        if self.isRefreshBrowser {
+            self.isRefreshBrowser = false
+            self.fixedMediasArray = self.folder?.medias.compactMap({$0}) ?? self.fixedMediasArray
+            self.reloadData()
+            self.gridController?.collectionView.reloadData()
+            if self.gridController == nil {
+                self.updateNavigation()
+                self.tilePages()
+            } else {
+                self.showControls()
+            }
+        }
     }
 
     /**
@@ -1681,18 +1697,21 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
         // Get video and play
         if let p = photo {
             p.getMediaURL { (url) in
+                self.setVideoLoadingIndicatorVisible(visible: false, atPageIndex: index)
                 if let u = url {
                     DispatchQueue.main.async() {
                         self.playVideo(videoURL: u, atPhotoIndex: index)
                     }
-                } else {
-                    self.setVideoLoadingIndicatorVisible(visible: false, atPageIndex: index)
                 }
             }
         }
     }
 
     func playVideo(videoURL: URL, atPhotoIndex index: Int) {
+        NavigationManager.shared.showMediaPlayerURL(videoURL.absoluteString)
+        return
+        
+        /*
         // Setup player
         if #available(iOS 9.0, *) {
             currentVideoPlayerViewController.delegate = self
@@ -1753,7 +1772,7 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
             present(currentVideoPlayerViewController, animated: true, completion: {
                 player.play()
             })
-        }
+        }*/
     }
 
     @objc func videoFinishedCallback(notification: NSNotification) {
@@ -2146,20 +2165,40 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
 
     //MARK: - Actions
     
+    func actionItemsAddFiles() -> [AlertActionItem] {
+        var items = [AlertActionItem]()
+        var item = AlertActionItem(title: L10n.Folder.Download.File.library, style: .default, handler: {[weak self] (_) in
+            guard let self = self else { return }
+            CustomImagePickerController.presentPickerInTarget(self) { (result) in
+                ModelManager.shared.subscriberAddMedias(result, inFolder: self.folder, handler: { [weak self] (medias) in
+                    self?.fixedMediasArray = medias
+                    self?.reloadData()
+                    self?.gridController?.collectionView.reloadData()
+                    if self?.gridController == nil {
+                        self?.updateNavigation()
+                        self?.tilePages()
+                    } else {
+                        self?.showControls()
+                    }
+                })
+            }
+        })
+        items.append(item)
+        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
+            guard let self = self else { return }
+            self.isRefreshBrowser = true
+            let module = AppModules.download.build()
+            module.router.show(from: self, embedInNavController: true, setupData: self.folder)
+        })
+        items.append(item)
+        return items
+    }
+    
     @objc func addFiles() {
-        CustomImagePickerController.presentPickerInTarget(self) { (result) in
-            ModelManager.shared.subscriberAddMedias(result.map({$0.0}), urls: result.map({$0.1}), inFolder: self.folder, handler: { [weak self] (medias) in
-                self?.fixedMediasArray = medias
-                self?.reloadData()
-                self?.gridController?.collectionView.reloadData()
-                if self?.gridController == nil {
-                    self?.updateNavigation()
-                    self?.tilePages()
-                } else {
-                    self?.showControls()
-                }
-            })
-        }
+        var items = self.actionItemsAddFiles()
+        let item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)
+        items.append(item)
+        self.showActionSheet(items: items)
     }
     
     @objc func emptyFiles() {
@@ -2171,8 +2210,11 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
                     ModelManager.shared.deleteObjects(mediaSelections)
                     guard let self = self, let folder = self.folder else { return }
                     self.fixedMediasArray = ModelManager.shared.fetchMediaByFolder(folder)
-                    self.reloadData()
+                    self.mediaArray.removeAll()
+                    self.thumbMedias.removeAll()
+                    self.selections.removeAll()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                        self.reloadData()
                         self.gridController?.collectionView.reloadData()
                         if self.gridController == nil {
                             self.updateNavigation()

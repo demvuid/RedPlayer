@@ -11,11 +11,11 @@ import Viperit
 import RxSwift
 
 class FilesPresenter: Presenter {
-    private var saveableMedia: Media!
+    private var saveableMedias = [Media]()
     private var saveableFolder: FolderModel!
     private var countDetailFiles: Int = UserSession.shared.countDetailFolder
     var isAddFile: Bool {
-        return self.saveableMedia != nil
+        return self.saveableMedias.count > 0
     }
     let bag = DisposeBag()
     let folderSubject = PublishSubject<FolderModel>()
@@ -44,10 +44,19 @@ class FilesPresenter: Presenter {
                 self.view.showAdverstive()
             } else {
                 self.saveableFolder = folder
-                if let media = self.saveableMedia {
-                    media.folder = folder
-                    self.interactor.saveMedia(media)
-                    self.cancelScreen()
+                if self.saveableMedias.count > 0 {
+                    for media in self.saveableMedias {
+                        media.folder = folder
+                    }
+                    if self.saveableMedias.first?.temporaryPath != nil {
+                        self.interactor.importedMedias(self.saveableMedias, inFolder: self.saveableFolder, completionBlock: { [weak self] (_) in
+                            self?.view.reloadView()
+                            self?.cancelScreen()
+                        })
+                    } else {
+                        self.interactor.saveMedias(self.saveableMedias)
+                        self.cancelScreen()
+                    }
                 } else if folder.medias.count > 0 {
                     self.openMediasByFolder(folder)
                 } else {
@@ -65,16 +74,23 @@ class FilesPresenter: Presenter {
         var items = [AlertActionItem]()
         var item = AlertActionItem(title: L10n.Folder.Download.File.library, style: .default, handler: {[weak self] (_) in
             self?.router.importFiles(completion: {[weak self] (result) in
-                self?.interactor.importedMedias(result.map({$0.0}), urls: result.map({$0.1}), inFolder: self?.saveableFolder, completionBlock: { (_) in
-                    self?.view.reloadView()
-                })
+                if self?.saveableFolder != nil {
+                    self?.interactor.importedMedias(result, inFolder: self!.saveableFolder, completionBlock: { [weak self] (_) in
+                        self?.view.reloadView()
+                        self?.cancelScreen()
+                        self?.openMediasByFolder(self!.saveableFolder)
+                        self?.saveableFolder = nil
+                    })
+                } else {
+                    self?.router.saveMedias(result)
+                }
             })
         })
         items.append(item)
         item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
             guard let self = self else { return }
             let module = AppModules.download.build()
-            module.router.show(from: self._view, embedInNavController: true)
+            module.router.show(from: self._view, embedInNavController: true, setupData: self.saveableFolder)
         })
         items.append(item)
         return items
@@ -83,7 +99,16 @@ class FilesPresenter: Presenter {
     @objc func addFolder() {
         saveableFolder = nil
         var items = self.actionItemsAddFiles()
-        var item = AlertActionItem(title: L10n.Folder.Add.folder, style: .default, handler: {[weak self] (_) in
+        var item = AlertActionItem(title: L10n.Folder.Browse.File.network, style: .default, handler: {[weak self] (_) in
+            guard let self = self else { return }
+            let module = AppModules.download.build()
+            if let displayData = module.displayData as? DownloadDisplayData {
+                displayData.browseType = .play
+            }
+            module.router.show(from: self._view, embedInNavController: true)
+        })
+        items.append(item)
+        item = AlertActionItem(title: L10n.Folder.Add.folder, style: .default, handler: {[weak self] (_) in
             self?.router.addFolder()
         })
         items.append(item)
@@ -116,8 +141,8 @@ class FilesPresenter: Presenter {
     }
     
     override func setupView(data: Any) {
-        if let media = data as? Media {
-            self.saveableMedia = media
+        if let medias = data as? [Media] {
+            self.saveableMedias.append(contentsOf: medias)
         }
     }
 }

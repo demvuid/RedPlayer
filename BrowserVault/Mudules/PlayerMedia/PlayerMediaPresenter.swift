@@ -14,6 +14,13 @@ class PlayerMediaPresenter: Presenter {
     override func viewHasLoaded() {
         super.viewHasLoaded()
         self.view.playMediaURL()
+        NavigationManager.shared.createAndLoadAdvertise()
+        NavigationManager.shared.handlerDismissAdvertisement = {[weak self] in
+            self?.view.startPlayVideo()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            NavigationManager.shared.presentAdverstive()
+        }
     }
     
     override func setupView(data: Any) {

@@ -16,10 +16,15 @@ class FilesRouter: Router {
         module.router.show(from: self._view, embedInNavController: true)
     }
     
-    func importFiles(completion: @escaping (ImportMediasResult)->()) {
+    func importFiles(completion: @escaping ([Media])->()) {
         CustomImagePickerController.presentPickerInTarget(self._view) { (result) in
             completion(result)
         }
+    }
+    
+    func saveMedias(_ medias: [Media]) {
+        let module = AppModules.files.build()
+        module.router.show(from: self._view, embedInNavController: true, setupData: medias)
     }
     
     func openPasscodeWithCompletionBlock(_ block: ((Bool)->())?) {
