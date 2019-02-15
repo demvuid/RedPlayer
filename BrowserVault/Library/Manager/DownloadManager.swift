@@ -31,24 +31,22 @@ class DownloadManager {
     
     func downloadURL(_ fileURL: URL, name: String? = nil, inFolder folder: FolderModel? = nil, handler: (() ->())? = nil) {
         var fileName = fileURL.lastPathComponent
-        if fileURL.pathExtension.replacingOccurrences(of: " ", with: "") == "" {
-            fileName = "\(fileName).mp4"
-        }
         if let name = name {
-            if name.fileExtension() == "" {
-                fileName = "\(name).mp4"
-            } else {
-                fileName = name
-            }
+            fileName = name
         }
+        fileName = fileName.replacingOccurrences(of: " ", with: "")
         fileName = MZUtility.getUniqueFileNameWithPath(myDownloadURL.appendingPathComponent(fileName).path as NSString) as String
         
         self.downloadManager.addDownloadTask(fileName, fileURL: fileURL.absoluteString, destinationPath: myDownloadURL.path)
         
         self.addHandlerDownloadedMedia {media in
-            ModelManager.shared.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
-                handler?()
-            })
+            if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
+                ModelManager.shared.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
+                    handler?()
+                })
+            } else {
+                UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check your file has an extension is media.")
+            }
         }
     }
     
@@ -122,7 +120,8 @@ extension DownloadFormViewProtocol where Self: BaseFormViewController {
             } else {
                 row.title = title
             }
-            
+            row.cell.textLabel?.text = row.title
+            row.cell.detailTextLabel?.text = row.value
             var progress = CGFloat(downloadModel.progress) * 100.0
             if progress > 100 {
                 progress = 100
@@ -153,6 +152,11 @@ extension DownloadFormViewProtocol where Self: BaseFormViewController {
         items.append(item)
         item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
             DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+            if index < DownloadManager.shared.downloadManager.downloadingArray.count {
+                let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
+                DownloadManager.shared.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
+                DownloadManager.shared.downloadManager.downloadingArray.remove(at: index)
+            }
         })
         items.append(item)
         
@@ -169,6 +173,11 @@ extension DownloadFormViewProtocol where Self: BaseFormViewController {
         items.append(item)
         item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
             DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+            if index < DownloadManager.shared.downloadManager.downloadingArray.count {
+                let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
+                DownloadManager.shared.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
+                DownloadManager.shared.downloadManager.downloadingArray.remove(at: index)
+            }
         })
         items.append(item)
         
@@ -185,6 +194,11 @@ extension DownloadFormViewProtocol where Self: BaseFormViewController {
         items.append(item)
         item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
             DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+            if index < DownloadManager.shared.downloadManager.downloadingArray.count {
+                let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
+                DownloadManager.shared.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
+                DownloadManager.shared.downloadManager.downloadingArray.remove(at: index)
+            }
         })
         items.append(item)
         
@@ -242,16 +256,26 @@ extension DownloadManager: MZDownloadManagerDelegate {
     
     func downloadRequestFinished(_ downloadModel: MZDownloadModel, index: Int) {
         self.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
-        
         let fileName = downloadModel.fileName
         var basePath = downloadModel.destinationPath == "" ? MZUtility.baseFilePath : downloadModel.destinationPath
         basePath = basePath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? basePath
+        
         if let destinationPath = URL(string: basePath)?.appendingPathComponent(fileName!) {
             let media = Media(temporaryPath: destinationPath.path, isVideo: true)
             media.caption = fileName ?? destinationPath.lastPathComponent
+            if let mimeType = downloadModel.task?.response?.mimeType, let ext = MimeType(mimeType: mimeType).ext {
+                let fileExtension = media.caption.fileExtension()
+                if fileExtension == "" {
+                    media.caption = "\(media.caption).\(ext)"
+                } else {
+                    media.caption = media.caption.replacingOccurrences(of: fileExtension, with: ext)
+                }
+                if media.caption.isImageFileExtension {
+                    media.isVideo = false
+                }
+            }
             self.mediaSubject.onNext(media)
         }
-        
         NavigationManager.shared.updateStatusBanner()
     }
     

@@ -40,9 +40,10 @@ class FilesPresenter: Presenter {
                 self.countDetailFiles += 1
             }
             UserSession.shared.countDetailFolder = self.countDetailFiles
-            if !UserSession.shared.isUpgradedVersion() && self.countDetailFiles == 0 {
-                self.view.showAdverstive()
-            } else {
+            let handlerSelectFolder = {[weak self] in
+                guard let self = self else {
+                    return
+                }
                 self.saveableFolder = folder
                 if self.saveableMedias.count > 0 {
                     for media in self.saveableMedias {
@@ -65,6 +66,12 @@ class FilesPresenter: Presenter {
                     items.append(item)
                     self._view.showActionSheet(items: items)
                 }
+            }
+            if !UserSession.shared.isUpgradedVersion() && self.countDetailFiles == 0 {
+                NavigationManager.shared.handlerDismissAdvertisement = handlerSelectFolder
+                self.view.showAdverstive()
+            } else {
+                handlerSelectFolder()
             }
         }).disposed(by: self.bag)
     }

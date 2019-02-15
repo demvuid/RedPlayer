@@ -174,6 +174,7 @@
 		E2EBD9C322004C3E007E5E1F /* DownloadRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EBD9BD22004C3E007E5E1F /* DownloadRouter.swift */; };
 		E2EBD9C422004C3E007E5E1F /* DownloadInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EBD9BE22004C3E007E5E1F /* DownloadInteractor.swift */; };
 		E2EBD9C522004C3E007E5E1F /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EBD9BF22004C3E007E5E1F /* DownloadView.swift */; };
+		E2F8BC4E2216AB3F00D4A85F /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F8BC4D2216AB3F00D4A85F /* MimeType.swift */; };
 		E2F902AB21BF977600BAC147 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F902AA21BF977600BAC147 /* AuthenticationManager.swift */; };
 		E2F902AD21BF9BE000BAC147 /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F902AC21BF9BE000BAC147 /* CustomError.swift */; };
 		E2F902AF21BF9F1200BAC147 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F902AE21BF9F1200BAC147 /* Bundle.swift */; };
@@ -405,6 +406,7 @@
 		E2EBD9BD22004C3E007E5E1F /* DownloadRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadRouter.swift; sourceTree = "<group>"; };
 		E2EBD9BE22004C3E007E5E1F /* DownloadInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadInteractor.swift; sourceTree = "<group>"; };
 		E2EBD9BF22004C3E007E5E1F /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
+		E2F8BC4D2216AB3F00D4A85F /* MimeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		E2F902AA21BF977600BAC147 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		E2F902AC21BF9BE000BAC147 /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		E2F902AE21BF9F1200BAC147 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
@@ -977,6 +979,7 @@
 				E2AECDC521BCAD0E00BCBD70 /* String+Extentions.swift */,
 				E2AECDF321BCBF2B00BCBD70 /* NSString+GoogleDriver.h */,
 				E2AECDF421BCBF2C00BCBD70 /* NSString+GoogleDriver.m */,
+				E2F8BC4D2216AB3F00D4A85F /* MimeType.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -1458,6 +1461,7 @@
 				E2273FEA21C69FC800BDA33D /* FolderDisplayData.swift in Sources */,
 				E249D2B321BA7A7000737A02 /* AppModules.swift in Sources */,
 				E249D2A921BA7A7000737A02 /* StringConstants.swift in Sources */,
+				E2F8BC4E2216AB3F00D4A85F /* MimeType.swift in Sources */,
 				E27EC80E21D376B900D643AF /* UIDevice.swift in Sources */,
 				E2AECDB821BC125D00BCBD70 /* RealmSwift.swift in Sources */,
 				E2AECDB421BC119F00BCBD70 /* NavigationManager.swift in Sources */,

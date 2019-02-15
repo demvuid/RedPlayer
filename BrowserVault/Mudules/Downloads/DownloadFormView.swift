@@ -103,7 +103,6 @@ class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
             $0.cellStyle = .subtitle
             $0.title = L10n.Downloads.Url.network
             $0.placeholder = L10n.Downloads.Url.place
-            $0.value = URL(string: "https://www.youtube.com/watch?v=o_XVt5rdpFY")
             $0.baseCell.height = { 70 }
             }.cellUpdate({ (cell, row) in
                 cell.titleLabel?.textColor = ColorName.mainColor

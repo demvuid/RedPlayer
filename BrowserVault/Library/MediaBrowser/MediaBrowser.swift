@@ -1586,9 +1586,9 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
                 let photosText: String
                 
                 if 1 == medias {
-                    photosText = NSLocalizedString("photo", comment: "Used in the context: '1 photo'")
+                    photosText = NSLocalizedString("Media", comment: "Used in the context: '1 photo'")
                 } else {
-                    photosText = NSLocalizedString("photos", comment: "Used in the context: '3 photos'")
+                    photosText = NSLocalizedString("Medias", comment: "Used in the context: '3 photos'")
                 }
                 
                 title = "\(medias) \(photosText)"
