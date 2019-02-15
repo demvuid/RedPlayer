@@ -9,6 +9,7 @@
 import UIKit
 import Eureka
 import RxSwift
+import RxCocoa
 
 private enum DownloadFormFields: String {
     case fileName
@@ -17,10 +18,12 @@ private enum DownloadFormFields: String {
 private enum DownloadSectionEnum: String {
     case inputURLSection
     case downloadSection
+    case folderSection
 }
 
 class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
     var observableURL: AnyObserver<(URL?, String?)>!
+    var behaviourFolder: BehaviorRelay<FolderModel?>?
     private var browseType: BrowseFileType = .download
     convenience init(displayData: DownloadDisplayData) {
         self.init(nibName: nil, bundle: nil)
@@ -29,27 +32,45 @@ class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
     
     override func setupFormView() {
         form = Form()
-        +++ self.inputURLSection()
-        +++ self.downloadSection()
-        self.handlerSubscriberDownloadModel { [weak self] (tag, isAdd, isUpdate, isFinish) in
-            guard let self = self, let section = self.form.sectionBy(tag: DownloadSectionEnum.downloadSection.rawValue) else { return}
-            if isAdd {
-                if section.endIndex < DownloadManager.shared.numberItemsDownload() {
-                    if section.endIndex > 0 {
-                        section.replaceSubrange(section.startIndex..<section.endIndex, with: self.downloadRows())
-                    } else {
-                        section.append(contentsOf: self.downloadRows())
+        if browseType == .download {
+            form += [self.folderSection()]
+        }
+        if browseType != .currentDownload {
+            form += [self.inputURLSection()]
+        }
+        if browseType != .play {
+            self.form += [self.downloadSection()]
+            self.handlerSubscriberDownloadModel {(index, isAdd, isUpdate, isFinish) in
+                DispatchQueue.main.async {[weak self] in
+                    guard let self = self else {
+                        return
+                    }
+                    if var section = self.form.sectionBy(tag: DownloadSectionEnum.downloadSection.rawValue) {
+                        if isAdd {
+                            section += [self.downloadRowAtIndex(index)]
+                        } else if isUpdate {
+                            if index < section.endIndex {
+                                section[index].reload()
+                            }
+                        } else if isFinish {
+                            if index < section.endIndex {
+                                section.remove(at: index)
+                            }
+                        }
                     }
                 }
-            } else if isUpdate, let tag = tag {
-                if let row: TextRow = self.form.rowBy(tag: tag) {
-                    row.reload()
-                }
-            } else if isFinish, let tag = tag {
-                if let row: TextRow = self.form.rowBy(tag: tag), let indexPath = row.indexPath {
-                    section.remove(at: indexPath.row)
-                }
             }
+        }
+    }
+    
+    func reloadFolderSection() {
+        guard let section = self.form.sectionBy(tag: DownloadSectionEnum.folderSection.rawValue) else {
+            return
+        }
+        if section.endIndex > 0 {
+            section.replaceSubrange(section.startIndex..<section.endIndex, with: self.folderRows())
+        } else {
+            section.append(contentsOf: self.folderRows())
         }
     }
     
@@ -110,11 +131,9 @@ class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
     }
     
     func downloadSection() -> Section {
-        var section = Section() {
-            $0.tag = DownloadSectionEnum.downloadSection.rawValue
-            $0.header?.title = "Downloads"
+        var section = Section("Downloading") { (section) in
+            section.tag = DownloadSectionEnum.downloadSection.rawValue
         }
-        
         section += self.downloadRows()
         return section
     }
@@ -122,21 +141,76 @@ class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
     func downloadRows() -> [BaseRow] {
         var rows = [BaseRow]()
         for index in 0..<DownloadManager.shared.numberItemsDownload() {
-            rows.append(TextRow() {
-                $0.cellStyle = .subtitle
-                }.cellSetup({ (_, row) in
-                    row.cellStyle = .subtitle
-                }).cellUpdate({ [weak self] (cell, row) in
-                    cell.height = { 70 }
-                    row.cellStyle = .subtitle
-                    cell.titleLabel?.font = AppBranding.UITableViewCellFont.titleLabelBold.font
-                    cell.titleLabel?.textColor = ColorName.mainColor
-                    cell.textField.font = AppBranding.UITableViewCellFont.contentLabel.font
-                    self?.configRow(row, atIndex: index)
-                    cell.isUserInteractionEnabled = false
-                }))
+            rows.append(self.downloadRowAtIndex(index))
         }
         return rows
     }
-
+    
+    func downloadRowAtIndex(_ index: Int) -> BaseRow {
+        return LabelRow() {[weak self] in
+            $0.cellStyle = .subtitle
+            $0.baseCell.height = { 70 }
+            self?.configRow($0, atIndex: index)
+            }.cellUpdate({ [weak self] (cell, row) in
+                cell.textLabel?.font = AppBranding.UITableViewCellFont.titleLabelBold.font
+                cell.textLabel?.textColor = ColorName.mainColor
+                cell.detailTextLabel?.font = AppBranding.UITableViewCellFont.contentLabel.font
+                self?.configRow(row, atIndex: index)
+            }).onCellSelection({ [weak self] (_, row) in
+                if let index = row.indexPath?.row {
+                    self?.showAppropriateActionController(atIndex: index)
+                }
+            })
+    }
+    
+    func folderSection() -> Section {
+        var section = Section("Save to Folder") { (section) in
+            section.tag = DownloadSectionEnum.folderSection.rawValue
+        }
+        section += self.folderRows()
+        return section
+    }
+    
+    private func folderRows() -> [BaseRow] {
+        let folders = ModelManager.shared.fetchList(FolderModel.self)
+        if self.behaviourFolder?.value == nil {
+           self.behaviourFolder?.accept(folders.first)
+        }
+        return folders.map { (folder) -> LabelRow in
+            let row = LabelRow() {
+                $0.tag = folder.id
+                $0.title = "\(folder.name)"
+                $0.cellStyle = .subtitle
+                if let imageURL = folder.imageURL, let image = UIImage(contentsOfFile: imageURL.path)?.resizeTo(newSize: CGSize(width: 60, height: 50)) {
+                    $0.baseCell.imageView?.image = image
+                } else {
+                    $0.baseCell.imageView?.image = Asset.Folder.folder.image.resizeTo(newSize: CGSize(width: 60, height: 50))
+                }
+                $0.baseCell.height = { 70 }
+                }.cellUpdate({ [weak self] (cell, row) in
+                    if self?.behaviourFolder?.value?.id == folder.id {
+                        cell.accessoryType = .checkmark
+                    } else {
+                        cell.accessoryType = .none
+                    }
+                    let font = AppBranding.baseFont
+                    let color = ColorName.subTitleColor
+                    let subTitle: String = folder.medias.count <= 1 ? L10n.Folder.File.number(folder.medias.count) : L10n.Folder.Files.number(folder.medias.count)
+                    let attributeString = NSAttributedString(string: subTitle, attributes: [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: color])
+                    if folder.enablePasscode {
+                        let imageAttribute = NSTextAttachment.attributedString(image: Asset.Folder.lockOutline.image, font: font, width: 20, color: color)
+                        let mutableAttributeString = NSMutableAttributedString(attributedString: attributeString)
+                        mutableAttributeString.append(NSAttributedString(string: " "))
+                        mutableAttributeString.append(imageAttribute)
+                        cell.detailTextLabel?.attributedText = mutableAttributeString
+                    } else {
+                        cell.detailTextLabel?.attributedText = attributeString
+                    }
+                }).onCellSelection({[weak self] (_, _) in
+                    self?.behaviourFolder?.accept(folder)
+                    self?.form.sectionBy(tag: DownloadSectionEnum.folderSection.rawValue)?.reload()
+                })
+            return row
+        }
+    }
 }

@@ -12,7 +12,7 @@ import Viperit
 class PasscodeRouter: Router {
     func gotoDashboard() {
         let module = AppModules.dashboard.build()
-        module.router.show(inWindow: UIApplication.shared.keyWindow)
+        module.router.show(inWindow: (UIApplication.shared.delegate as? AppDelegate)?.window)
     }
     
     func cancelScreen() {

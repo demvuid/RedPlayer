@@ -35,6 +35,8 @@ internal enum Asset {
 
     internal static let iconClose = ImageAsset(name: "General/icon_close")
     internal static let iconTick = ImageAsset(name: "General/icon_tick")
+    internal static let info = ImageAsset(name: "General/info")
+    internal static let rightChevron = ImageAsset(name: "General/right_chevron")
   }
   internal enum Player {
 

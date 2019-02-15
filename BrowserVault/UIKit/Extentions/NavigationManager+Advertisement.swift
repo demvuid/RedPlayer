@@ -11,9 +11,10 @@ import GoogleMobileAds
 
 extension NavigationManager {
     
-    private struct ExportKeys {
+    struct ExportKeys {
         static fileprivate var presentView: UInt8 = 0
         static fileprivate var handlerDismissAdvertisement: UInt8 = 0
+        static var banner: UInt8 = 0
     }
     
     var presentView: GADInterstitial? {

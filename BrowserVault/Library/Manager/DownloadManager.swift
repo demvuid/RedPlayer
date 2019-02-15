@@ -11,6 +11,7 @@ import MZDownloadManager
 import Eureka
 import RxSwift
 import RxCocoa
+import UICircularProgressRing
 
 class DownloadManager {
     lazy var downloadManager: MZDownloadManager = {
@@ -28,7 +29,7 @@ class DownloadManager {
     
     static let shared = DownloadManager()
     
-    func downloadURL(_ fileURL: URL, name: String? = nil) {
+    func downloadURL(_ fileURL: URL, name: String? = nil, inFolder folder: FolderModel? = nil, handler: (() ->())? = nil) {
         var fileName = fileURL.lastPathComponent
         if fileURL.pathExtension.replacingOccurrences(of: " ", with: "") == "" {
             fileName = "\(fileName).mp4"
@@ -43,6 +44,12 @@ class DownloadManager {
         fileName = MZUtility.getUniqueFileNameWithPath(myDownloadURL.appendingPathComponent(fileName).path as NSString) as String
         
         self.downloadManager.addDownloadTask(fileName, fileURL: fileURL.absoluteString, destinationPath: myDownloadURL.path)
+        
+        self.addHandlerDownloadedMedia {media in
+            ModelManager.shared.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
+                handler?()
+            })
+        }
     }
     
     func numberItemsDownload() -> Int {
@@ -67,59 +74,142 @@ class DownloadManager {
 }
 
 protocol DownloadFormViewProtocol {
-    func configRow(_ row: TextRow, atIndex index: Int)
-    func handlerSubscriberDownloadModel(_ handler: @escaping (String?, Bool, Bool, Bool) -> ())
+    func configRow(_ row: LabelRow, atIndex index: Int)
+    func showAppropriateActionController(atIndex index: Int)
+    func handlerSubscriberDownloadModel(_ handler: @escaping (Int, Bool, Bool, Bool) -> ())
 }
 
 extension DownloadFormViewProtocol where Self: BaseFormViewController {
-    func configRow(_ row: TextRow, atIndex index: Int) {
-        row.cellStyle = .subtitle
-        let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
-        let tag = "index_\(index)"
-        row.tag = tag
-        row.title = "Downloading \(downloadModel.fileName ?? "") ..."
-        let updateDetailDescription = { (model: MZDownloadModel) in
-            var remainingTime: String = ""
-            if model.progress == 1.0 {
-                remainingTime = "Please wait..."
-            } else if let _ = model.remainingTime {
-                if (model.remainingTime?.hours)! > 0 {
-                    remainingTime = "\(model.remainingTime!.hours) Hours "
-                }
-                if (model.remainingTime?.minutes)! > 0 {
-                    remainingTime = remainingTime + "\(model.remainingTime!.minutes) Min "
-                }
-                if (model.remainingTime?.seconds)! > 0 {
-                    remainingTime = remainingTime + "\(model.remainingTime!.seconds) sec"
-                }
-                if remainingTime == "" {
+    func configRow(_ row: LabelRow, atIndex index: Int) {
+        if index < DownloadManager.shared.downloadManager.downloadingArray.count {
+            let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
+            let title = "Downloading \(downloadModel.fileName ?? "") ..."
+            let updateDetailDescription = { (model: MZDownloadModel) in
+                var remainingTime: String = ""
+                if model.progress == 1.0 {
                     remainingTime = "Please wait..."
+                } else if let _ = model.remainingTime {
+                    if (model.remainingTime?.hours)! > 0 {
+                        remainingTime = "\(model.remainingTime!.hours) Hours "
+                    }
+                    if (model.remainingTime?.minutes)! > 0 {
+                        remainingTime = remainingTime + "\(model.remainingTime!.minutes) Min "
+                    }
+                    if (model.remainingTime?.seconds)! > 0 {
+                        remainingTime = remainingTime + "\(model.remainingTime!.seconds) sec"
+                    }
+                    if remainingTime == "" {
+                        remainingTime = "Please wait..."
+                    } else {
+                        remainingTime = "Time Left: \(remainingTime)"
+                    }
                 } else {
-                    remainingTime = "Time Left: \(remainingTime)"
+                    remainingTime = "Calculating..."
                 }
-            } else {
-                remainingTime = "Calculating..."
+                if let size = downloadModel.downloadedFile?.size {
+                    let downloadedFileSize = String(format: "%.2f %@", size, (downloadModel.downloadedFile?.unit)!)
+                    row.value = "\(remainingTime) - Downloaded: \(downloadedFileSize)"
+                } else {
+                    row.value = remainingTime
+                }
             }
-            row.value = remainingTime
-            row.reload()
+            updateDetailDescription(downloadModel)
+            
+            if downloadModel.status == TaskStatus.gettingInfo.description() {
+                row.title = "Prepare \(title)"
+            } else if downloadModel.status == TaskStatus.paused.description() || downloadModel.status == TaskStatus.failed.description() {
+                row.title = "\(downloadModel.status) \(title)"
+            } else {
+                row.title = title
+            }
+            
+            var progress = CGFloat(downloadModel.progress) * 100.0
+            if progress > 100 {
+                progress = 100
+            }
+            if let progressRing = row.baseCell.accessoryView as? UICircularProgressRing {
+                progressRing.startProgress(to: progress, duration: 0)
+            } else {
+                let progressRing = UICircularProgressRing(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+                progressRing.backgroundColor = .white
+                progressRing.outerRingColor = ColorName.mainColor
+                progressRing.innerRingColor = .white
+                progressRing.outerRingWidth = 10
+                progressRing.innerRingWidth = 8
+                progressRing.ringStyle = .ontop
+                progressRing.font = AppBranding.boldFont
+                progressRing.startProgress(to: progress, duration: 0)
+                row.baseCell.accessoryView = progressRing
+                row.baseCell.accessoryType = .none
+            }
         }
-        updateDetailDescription(downloadModel)
-        let progressView: ProgressView = ProgressView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
-        progressView.animationStyle = CAMediaTimingFunctionName.linear.rawValue
-        progressView.font = UIFont.boldSystemFont(ofSize: 13)
-        var progress = CGFloat(downloadModel.progress) * 100.0
-        if progress > 100 {
-            progress = 100
-        }
-        progressView.setProgress(value: progress, animationDuration: 0)
-        row.baseCell.accessoryView = progressView
-        row.baseCell.accessoryType = .none
     }
     
-    func handlerSubscriberDownloadModel(_ handler: @escaping (String?, Bool, Bool, Bool) -> ()) {
+    func showAlertControllerForPause(atIndex index: Int) {
+        var items = [AlertActionItem]()
+        var item = AlertActionItem(title: "Pause", style: .default, handler: { _ in
+            DownloadManager.shared.downloadManager.pauseDownloadTaskAtIndex(index)
+        })
+        items.append(item)
+        item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
+            DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+        })
+        items.append(item)
+        
+        item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)
+        items.append(item)
+        self.showActionSheet(items: items)
+    }
+    
+    func showAlertControllerForRetry(atIndex index: Int) {
+        var items = [AlertActionItem]()
+        var item = AlertActionItem(title: "Retry", style: .default, handler: { _ in
+            DownloadManager.shared.downloadManager.retryDownloadTaskAtIndex(index)
+        })
+        items.append(item)
+        item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
+            DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+        })
+        items.append(item)
+        
+        item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)
+        items.append(item)
+        self.showActionSheet(items: items)
+    }
+    
+    func showAlertControllerForStart(atIndex index: Int) {
+        var items = [AlertActionItem]()
+        var item = AlertActionItem(title: "Start", style: .default, handler: { _ in
+            DownloadManager.shared.downloadManager.resumeDownloadTaskAtIndex(index)
+        })
+        items.append(item)
+        item = AlertActionItem(title: "Remove", style: .destructive, handler: { _ in
+            DownloadManager.shared.downloadManager.cancelTaskAtIndex(index)
+        })
+        items.append(item)
+        
+        item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)
+        items.append(item)
+        self.showActionSheet(items: items)
+    }
+    
+    func showAppropriateActionController(atIndex index: Int) {
+        if index < DownloadManager.shared.downloadManager.downloadingArray.count {
+            let downloadModel = DownloadManager.shared.downloadManager.downloadingArray[index]
+            let requestStatus = downloadModel.status
+            if requestStatus == TaskStatus.downloading.description() {
+                self.showAlertControllerForPause(atIndex: index)
+            } else if requestStatus == TaskStatus.failed.description() {
+                self.showAlertControllerForRetry(atIndex: index)
+            } else if requestStatus == TaskStatus.paused.description() {
+                self.showAlertControllerForStart(atIndex: index)
+            }
+        }
+    }
+    
+    func handlerSubscriberDownloadModel(_ handler: @escaping (Int, Bool, Bool, Bool) -> ()) {
         DownloadManager.shared.addHandlerSubscriberDownloadModel { (model, isAdd, isUpdate, isFinish, index) in
-            let tag = "index_\(index)"
-            handler(tag, isAdd, isUpdate, isFinish)
+            handler(index, isAdd, isUpdate, isFinish)
         }
     }
 }
@@ -147,6 +237,7 @@ extension DownloadManager: MZDownloadManagerDelegate {
     
     func downloadRequestCanceled(_ downloadModel: MZDownloadModel, index: Int) {
         self.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
+        NavigationManager.shared.updateStatusBanner()
     }
     
     func downloadRequestFinished(_ downloadModel: MZDownloadModel, index: Int) {
@@ -160,10 +251,12 @@ extension DownloadManager: MZDownloadManagerDelegate {
             media.caption = fileName ?? destinationPath.lastPathComponent
             self.mediaSubject.onNext(media)
         }
+        
+        NavigationManager.shared.updateStatusBanner()
     }
     
     func downloadRequestDidFailedWithError(_ error: NSError, downloadModel: MZDownloadModel, index: Int) {
-        
+        self.addSubscriberDownloadModel(downloadModel, isUpdate: true, index: index)
     }
     
     //Oppotunity to handle destination does not exists error

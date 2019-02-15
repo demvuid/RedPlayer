@@ -127,18 +127,22 @@ extension ModelManager {
     }
     
     func subscriberAddMedias(_ medias: [Media], inFolder folder: FolderModel? = nil, handler: @escaping ([Media]) -> ()) {
-        if let folder = folder {
-            self.addObject(folder)
+        DispatchQueue.main.async {[unowned self] in
+            if let folder = folder {
+                self.addObject(folder)
+            }
         }
         let folder = folder ?? self.libraryFolder
         for index in 0..<medias.count {
             let media = medias[index]
             let url = URL(fileURLWithPath: media.temporaryPath!)
             
-            media.folder = folder
-            if let localURL = media.photoURL {
-                DocumentManager.shared.moveMediaFromURL(url, toURL: localURL)
-                self.addObject(media)
+            DispatchQueue.main.async {[unowned self] in
+                media.folder = folder
+                if let localURL = media.photoURL {
+                    DocumentManager.shared.moveMediaFromURL(url, toURL: localURL)
+                    self.addObject(media)
+                }
             }
         }
         let localMedias = self.fetchMediaByFolder(folder!)

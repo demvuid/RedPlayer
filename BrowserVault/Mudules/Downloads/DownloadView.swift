@@ -9,12 +9,15 @@
 import UIKit
 import Viperit
 import GoogleMobileAds
+import RxSwift
+import RxCocoa
 
 //MARK: - Public Interface Protocol
 protocol DownloadViewInterface {
     func browseType() -> BrowseFileType
     func handlerPlayerURL(_ url: String)
     func handlerDownloadURL(_ url: URL, fileName: String?)
+    func updateSaveableFolder(_ folder: FolderModel)
     
 }
 
@@ -23,8 +26,11 @@ final class DownloadView: BaseUserInterface {
     lazy var formView: DownloadFormView = {
         var form = DownloadFormView(displayData: self.displayData)
         form.observableURL = self.presenter.observableURL
+        form.behaviourFolder = self.behaviourFolder
         return form
     }()
+    
+    var behaviourFolder = BehaviorRelay<FolderModel?>(value: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,12 +70,26 @@ extension DownloadView: DownloadViewInterface {
         UserSession.shared.countPlayVideo = countPresentAdv
         if countPresentAdv == 0 {
             NavigationManager.shared.handlerDismissAdvertisement = {
-                DownloadManager.shared.downloadURL(url, name: fileName)
+                DownloadManager.shared.downloadURL(url,
+                                                   name: fileName,
+                                                   inFolder: self.behaviourFolder.value,
+                                                   handler: {[weak self] in
+                                                    self?.formView.reloadFolderSection()
+                })
             }
             NavigationManager.shared.presentAdverstive()
         } else {
-            DownloadManager.shared.downloadURL(url, name: fileName)
+            DownloadManager.shared.downloadURL(url,
+                                               name: fileName,
+                                               inFolder: self.behaviourFolder.value,
+                                               handler: {[weak self] in
+                                                self?.formView.reloadFolderSection()
+            })
         }
+    }
+    
+    func updateSaveableFolder(_ folder: FolderModel) {
+        self.behaviourFolder.accept(folder)
     }
 }
 

@@ -42,6 +42,11 @@ class DashboardTabbarView: UITabBarController {
         self.viewControllers = [nv1, nv2, nv3, nv4]
         self.delegate = self
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NavigationManager.shared.showBannerDownload(onController: self, padding: self.tabBar.frame.height)
+    }
 }
 
 extension DashboardTabbarView: UITabBarControllerDelegate {

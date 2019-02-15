@@ -12,6 +12,7 @@ import Viperit
 enum BrowseFileType {
     case download
     case play
+    case currentDownload
 }
 
 class DownloadDisplayData: DisplayData {

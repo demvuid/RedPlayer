@@ -11,7 +11,9 @@ import Viperit
 
 class DownloadRouter: Router {
     func cancelScreen() {
-        self._view.dismiss(animated: true, completion: nil)
+        self._view.dismiss(animated: true, completion: {
+            NavigationManager.shared.showBannerDownload()
+        })
     }
     
     func saveMedia(_ media: Media) {

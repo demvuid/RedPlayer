@@ -16,7 +16,11 @@ class DownloadPresenter: Presenter {
             switch event {
             case .next((let url, let fileName)):
                 if var url = url, url.absoluteString.isValidURL {
-                    ParseVideoManager.shared.parseVideoLinkURL(url.absoluteString, handler: { (urlString, error) in
+                    self?._view.startActivityLoading()
+                    ParseVideoManager.shared.parseVideoLinkURL(url.absoluteString, handler: { [weak self] (urlString, error) in
+                        DispatchQueue.main.async {[weak self] in
+                            self?._view.stopActivityLoading()
+                        }
                         if let urlString = urlString, let linkURL = URL(string: urlString) {
                             url = linkURL
                         }
@@ -35,7 +39,6 @@ class DownloadPresenter: Presenter {
             }
         })
     }
-    private var saveableFolder: FolderModel!
     
     @objc func cancelScreen() {
         self.router.cancelScreen()
@@ -43,21 +46,11 @@ class DownloadPresenter: Presenter {
     
     override func viewHasLoaded() {
         super.viewHasLoaded()
-        DownloadManager.shared.addHandlerDownloadedMedia { [weak self] media in
-            if let folder = self?.saveableFolder {
-                self?.interactor.importedMedias([media], inFolder: folder, completionBlock: { (medias) in
-                    self?.saveableFolder = nil
-                    self?.cancelScreen()
-                })
-            } else {
-                self?.router.saveMedia(media)
-            }
-        }
     }
     
     override func setupView(data: Any) {
         if let folder = data as? FolderModel {
-            self.saveableFolder = folder
+            self.view.updateSaveableFolder(folder)
         }
     }
 }

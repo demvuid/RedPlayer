@@ -11,9 +11,6 @@
 		9B5C07268247264CDD86E55E /* Pods_BrowserVault.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD432CF27B3D2C5ED0673E02 /* Pods_BrowserVault.framework */; };
 		D377891F52FA0FD6C74BACAC /* Pods_BrowserVaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DC11F5E047653890187873B /* Pods_BrowserVaultTests.framework */; };
 		E20B1F2121FEFD8B00FA7301 /* CustomImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */; };
-		E20B68ED220FD9DA00FAD98A /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EA220FD9DA00FAD98A /* ProgressView.swift */; };
-		E20B68EE220FD9DA00FAD98A /* UIProgressLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */; };
-		E20B68EF220FD9DA00FAD98A /* ProgressViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */; };
 		E214C61721B683890056E56C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E214C61621B683890056E56C /* AppDelegate.swift */; };
 		E214C61921B683890056E56C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E214C61821B683890056E56C /* ViewController.swift */; };
 		E214C61C21B683890056E56C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E214C61A21B683890056E56C /* Main.storyboard */; };
@@ -163,6 +160,7 @@
 		E2AECE0221BCFF9D00BCBD70 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECDFC21BCFF9D00BCBD70 /* SettingsView.swift */; };
 		E2AECE0521BD003000BCBD70 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECE0321BD002F00BCBD70 /* AboutViewController.swift */; };
 		E2AECE0921BD052D00BCBD70 /* BasePushSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECE0821BD052D00BCBD70 /* BasePushSegue.swift */; };
+		E2B676ED221476B90059509B /* NavigationManager+NotificationBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B676EC221476B80059509B /* NavigationManager+NotificationBanner.swift */; };
 		E2C4251122018A8E001C774E /* DownloadFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C4251022018A8E001C774E /* DownloadFormView.swift */; };
 		E2DA6E3121CFD6D100C7CE98 /* ImportFiles.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2DA6E2B21CFD6D100C7CE98 /* ImportFiles.storyboard */; };
 		E2DA6E3221CFD6D100C7CE98 /* ImportFilesDisplayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DA6E2C21CFD6D100C7CE98 /* ImportFilesDisplayData.swift */; };
@@ -215,9 +213,6 @@
 		A37634152921F802B4D3BA60 /* Pods-BrowserVaultUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrowserVaultUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BrowserVaultUITests/Pods-BrowserVaultUITests.release.xcconfig"; sourceTree = "<group>"; };
 		B2472FA20EF780ACA9ED5B35 /* Pods-BrowserVault.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrowserVault.release.xcconfig"; path = "Pods/Target Support Files/Pods-BrowserVault/Pods-BrowserVault.release.xcconfig"; sourceTree = "<group>"; };
 		E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImagePickerController.swift; sourceTree = "<group>"; };
-		E20B68EA220FD9DA00FAD98A /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
-		E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIProgressLayer.swift; sourceTree = "<group>"; };
-		E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewDelegate.swift; sourceTree = "<group>"; };
 		E214C61321B683890056E56C /* BrowserVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrowserVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E214C61621B683890056E56C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E214C61821B683890056E56C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -396,6 +391,7 @@
 		E2AECDFC21BCFF9D00BCBD70 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E2AECE0321BD002F00BCBD70 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		E2AECE0821BD052D00BCBD70 /* BasePushSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePushSegue.swift; sourceTree = "<group>"; };
+		E2B676EC221476B80059509B /* NavigationManager+NotificationBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationManager+NotificationBanner.swift"; sourceTree = "<group>"; };
 		E2C4251022018A8E001C774E /* DownloadFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFormView.swift; sourceTree = "<group>"; };
 		E2DA6E2B21CFD6D100C7CE98 /* ImportFiles.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ImportFiles.storyboard; sourceTree = "<group>"; };
 		E2DA6E2C21CFD6D100C7CE98 /* ImportFilesDisplayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportFilesDisplayData.swift; sourceTree = "<group>"; };
@@ -483,16 +479,6 @@
 				E20B1F2021FEFD8B00FA7301 /* CustomImagePickerController.swift */,
 			);
 			path = DKImagePickerController;
-			sourceTree = "<group>";
-		};
-		E20B68E9220FD9CB00FAD98A /* ProgressView */ = {
-			isa = PBXGroup;
-			children = (
-				E20B68EA220FD9DA00FAD98A /* ProgressView.swift */,
-				E20B68EC220FD9DA00FAD98A /* ProgressViewDelegate.swift */,
-				E20B68EB220FD9DA00FAD98A /* UIProgressLayer.swift */,
-			);
-			path = ProgressView;
 			sourceTree = "<group>";
 		};
 		E214C60A21B683890056E56C = {
@@ -658,7 +644,6 @@
 		E249D29821BA7A7000737A02 /* UIView */ = {
 			isa = PBXGroup;
 			children = (
-				E20B68E9220FD9CB00FAD98A /* ProgressView */,
 				E249D29921BA7A7000737A02 /* PasscodelField.swift */,
 				E2AECDD021BCB1C800BCBD70 /* BaseCollectionReusableView.swift */,
 				E2AECDCE21BCB1C800BCBD70 /* BaseCollectionViewCell.swift */,
@@ -894,6 +879,7 @@
 				E2AECDEB21BCB31F00BCBD70 /* UIImage+Extentions.swift */,
 				E27EC80D21D376B900D643AF /* UIDevice.swift */,
 				E225F67C2213BFC80015C8A3 /* NavigationManager+Advertisement.swift */,
+				E2B676EC221476B80059509B /* NavigationManager+NotificationBanner.swift */,
 			);
 			path = Extentions;
 			sourceTree = "<group>";
@@ -1390,7 +1376,6 @@
 				E2AECDF521BCBF2C00BCBD70 /* NSString+GoogleDriver.m in Sources */,
 				E257400221C8C6BE008BB4FF /* ImageFetcher.swift in Sources */,
 				E2273FF021C69FE500BDA33D /* FolderFormView.swift in Sources */,
-				E20B68ED220FD9DA00FAD98A /* ProgressView.swift in Sources */,
 				E257401821C90902008BB4FF /* MediaGridViewController.swift in Sources */,
 				E2F902C221BFBD3700BAC147 /* DefaultURLFormView.swift in Sources */,
 				E2AECDC621BCAD0E00BCBD70 /* String+Extentions.swift in Sources */,
@@ -1401,7 +1386,6 @@
 				E27EC80921D36D4A00D643AF /* DLCNetworkCenter.m in Sources */,
 				E2AECD8021BBB3EB00BCBD70 /* NSData+AES.m in Sources */,
 				E2AECD9721BC0DDA00BCBD70 /* DashboardDisplayData.swift in Sources */,
-				E20B68EE220FD9DA00FAD98A /* UIProgressLayer.swift in Sources */,
 				E27EC80C21D36D4A00D643AF /* MSWeakTimer.m in Sources */,
 				E2234D1A21C1FEF7008F6137 /* TabBrowserDisplayData.swift in Sources */,
 				E249D2A621BA7A7000737A02 /* ColorConstants.swift in Sources */,
@@ -1464,7 +1448,6 @@
 				E249D2B121BA7A7000737A02 /* PasscodeView.swift in Sources */,
 				E2AECDEA21BCB1C900BCBD70 /* SubTableViewCell.swift in Sources */,
 				E2234D1C21C1FEF7008F6137 /* TabBrowserRouter.swift in Sources */,
-				E20B68EF220FD9DA00FAD98A /* ProgressViewDelegate.swift in Sources */,
 				E27EC80521D36D4A00D643AF /* Aspects.m in Sources */,
 				E2DA6E3321CFD6D100C7CE98 /* ImportFilesPresenter.swift in Sources */,
 				E2AECDFE21BCFF9D00BCBD70 /* SettingsDisplayData.swift in Sources */,
@@ -1485,6 +1468,7 @@
 				E27EC7E721D36C7D00D643AF /* PlayerMediaPresenter.swift in Sources */,
 				E27EC80821D36D4A00D643AF /* DLCLiveVideoView.m in Sources */,
 				E2F902B121BFB2FB00BAC147 /* BaseFormViewController.swift in Sources */,
+				E2B676ED221476B90059509B /* NavigationManager+NotificationBanner.swift in Sources */,
 				E27EC80621D36D4A00D643AF /* DLCBaseVideoView+Snapshot.m in Sources */,
 				E27EC80721D36D4A00D643AF /* DLCBaseVideoView.m in Sources */,
 				E2AECDEE21BCB44F00BCBD70 /* ConfigApp.swift in Sources */,
