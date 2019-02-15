@@ -452,6 +452,26 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
         
         super.viewDidLoad()
         NavigationManager.shared.createAndLoadAdvertise()
+        DownloadManager.shared.addHandlerRefreshFolder { [weak self] (folder) in
+            if folder?.folderURL.path == self?.folder?.folderURL.path {
+                self?.folder = folder
+                guard let self = self, let folder = self.folder else { return }
+                self.fixedMediasArray = ModelManager.shared.fetchMediaByFolder(folder)
+                self.mediaArray.removeAll()
+                self.thumbMedias.removeAll()
+                self.selections.removeAll()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+                    self.reloadData()
+                    self.gridController?.collectionView.reloadData()
+                    if self.gridController == nil {
+                        self.updateNavigation()
+                        self.tilePages()
+                    } else {
+                        self.showControls()
+                    }
+                })
+            }
+        }
     }
     
     /**

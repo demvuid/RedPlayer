@@ -37,6 +37,9 @@ final class FilesView: BaseUserInterface {
         }
         self.showBanner()
         NavigationManager.shared.createAndLoadAdvertise()
+        DownloadManager.shared.addHandlerRefreshFolder { (_) in
+            self.filesForm.reloadFolders(self.presenter.getListFolders())
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

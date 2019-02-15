@@ -24,29 +24,34 @@ class DownloadManager {
     }()
     
     var downloadsSubject = PublishSubject<(MZDownloadModel, Bool, Bool, Bool, Int)>()
-    var mediaSubject = PublishSubject<Media>()
+    var mediaSubject = PublishSubject<(Media, String)>()
+    var refreshFolderSubject = PublishSubject<FolderModel?>()
     let bag = DisposeBag()
     
     static let shared = DownloadManager()
-    
-    func downloadURL(_ fileURL: URL, name: String? = nil, inFolder folder: FolderModel? = nil, handler: (() ->())? = nil) {
+    init() {
+        self.addHandlerDownloadedMedia { (media, path) in
+            let modelMg = ModelManager.shared
+            if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
+                let folder = modelMg.fetchList(FolderModel.self).filter({$0.folderURL.path == path}).first ?? modelMg.libraryFolder
+                modelMg.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
+                    self.refreshFolderSubject.onNext(folder)
+                })
+            } else {
+                UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check this file is a media (image/video).")
+            }
+        }
+    }
+    func downloadURL(_ fileURL: URL, name: String? = nil, inFolder folder: FolderModel? = ModelManager.shared.libraryFolder, handler: (() ->())? = nil) {
         var fileName = fileURL.lastPathComponent
         if let name = name {
             fileName = name
         }
         fileName = fileName.replacingOccurrences(of: " ", with: "")
-        fileName = MZUtility.getUniqueFileNameWithPath(myDownloadURL.appendingPathComponent(fileName).path as NSString) as String
-        
-        self.downloadManager.addDownloadTask(fileName, fileURL: fileURL.absoluteString, destinationPath: myDownloadURL.path)
-        
-        self.addHandlerDownloadedMedia {media in
-            if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
-                ModelManager.shared.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
-                    handler?()
-                })
-            } else {
-                UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check your file has an extension is media.")
-            }
+        DispatchQueue.main.async {
+            let folderURL = folder?.folderURL ?? DefaultFolderURL
+            fileName = MZUtility.getUniqueFileNameWithPath(folderURL.appendingPathComponent(fileName).path as NSString) as String
+            self.downloadManager.addDownloadTask(fileName, fileURL: fileURL.absoluteString, destinationPath: folderURL.path)
         }
     }
     
@@ -64,9 +69,16 @@ class DownloadManager {
         }).disposed(by: self.bag)
     }
     
-    func addHandlerDownloadedMedia(_ handler: @escaping (Media) -> ()) {
-        self.mediaSubject.asObservable().subscribe(onNext: { media in
-            handler(media)
+    func addHandlerDownloadedMedia(_ handler: @escaping (Media, String) -> ()) {
+        self.mediaSubject.asObservable().subscribe(onNext: { item in
+            handler(item.0, item.1)
+        }).disposed(by: self.bag)
+    }
+    
+    func addHandlerRefreshFolder(_ handler: @escaping (FolderModel?) -> ()) {
+        self.refreshFolderSubject.asObservable().subscribe(onNext: { folder in
+            let folder = ModelManager.shared.fetchList(FolderModel.self).filter({$0.folderURL.path == folder?.folderURL.path}).first ?? folder
+            handler(folder)
         }).disposed(by: self.bag)
     }
 }
@@ -257,10 +269,10 @@ extension DownloadManager: MZDownloadManagerDelegate {
     func downloadRequestFinished(_ downloadModel: MZDownloadModel, index: Int) {
         self.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
         let fileName = downloadModel.fileName
-        var basePath = downloadModel.destinationPath == "" ? MZUtility.baseFilePath : downloadModel.destinationPath
-        basePath = basePath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? basePath
+        let basePath = downloadModel.destinationPath == "" ? DefaultFolderURL.path : downloadModel.destinationPath
+        let basePathEncode = basePath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? basePath
         
-        if let destinationPath = URL(string: basePath)?.appendingPathComponent(fileName!) {
+        if let destinationPath = URL(string: basePathEncode)?.appendingPathComponent(fileName!) {
             let media = Media(temporaryPath: destinationPath.path, isVideo: true)
             media.caption = fileName ?? destinationPath.lastPathComponent
             if let mimeType = downloadModel.task?.response?.mimeType, let ext = MimeType(mimeType: mimeType).ext {
@@ -274,7 +286,7 @@ extension DownloadManager: MZDownloadManagerDelegate {
                     media.isVideo = false
                 }
             }
-            self.mediaSubject.onNext(media)
+            self.mediaSubject.onNext((media, basePath))
         }
         NavigationManager.shared.updateStatusBanner()
     }
@@ -286,10 +298,29 @@ extension DownloadManager: MZDownloadManagerDelegate {
     //Oppotunity to handle destination does not exists error
     //This delegate will be called on the session queue so handle it appropriately
     func downloadRequestDestinationDoestNotExists(_ downloadModel: MZDownloadModel, index: Int, location: URL) {
-        if !fileManger.fileExists(atPath: myDownloadURL.path) {
-            try? fileManger.createDirectory(atPath: myDownloadURL.path, withIntermediateDirectories: true, attributes: nil)
+        if !fileManger.fileExists(atPath: DefaultFolderURL.path) {
+            try? fileManger.createDirectory(atPath: DefaultFolderURL.path, withIntermediateDirectories: true, attributes: nil)
         }
-        let fileName = MZUtility.getUniqueFileNameWithPath(myDownloadURL.appendingPathComponent(downloadModel.fileName).path as NSString) as String
-        try? fileManger.moveItem(at: location, to: myDownloadURL.appendingPathComponent(fileName))
+        let fileName = MZUtility.getUniqueFileNameWithPath(DefaultFolderURL.appendingPathComponent(downloadModel.fileName).path as NSString) as String
+        try? fileManger.moveItem(at: location, to: DefaultFolderURL.appendingPathComponent(fileName))
+        let basePath = DefaultFolderURL.path
+        let basePathEncode = basePath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? basePath
+        if let destinationPath = URL(string: basePathEncode)?.appendingPathComponent(fileName) {
+            let media = Media(temporaryPath: destinationPath.path, isVideo: true)
+            media.caption = fileName
+            if let mimeType = downloadModel.task?.response?.mimeType, let ext = MimeType(mimeType: mimeType).ext {
+                let fileExtension = media.caption.fileExtension()
+                if fileExtension == "" {
+                    media.caption = "\(media.caption).\(ext)"
+                } else {
+                    media.caption = media.caption.replacingOccurrences(of: fileExtension, with: ext)
+                }
+                if media.caption.isImageFileExtension {
+                    media.isVideo = false
+                }
+            }
+            self.mediaSubject.onNext((media, basePath))
+        }
+        NavigationManager.shared.updateStatusBanner()
     }
 }

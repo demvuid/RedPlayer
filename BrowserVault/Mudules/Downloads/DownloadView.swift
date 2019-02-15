@@ -69,13 +69,15 @@ extension DownloadView: DownloadViewInterface {
         }
         UserSession.shared.countPlayVideo = countPresentAdv
         if countPresentAdv == 0 {
-            NavigationManager.shared.handlerDismissAdvertisement = {
+            NavigationManager.shared.handlerDismissAdvertisement = {[weak self] in
+                guard let self = self else { return }
                 DownloadManager.shared.downloadURL(url,
                                                    name: fileName,
                                                    inFolder: self.behaviourFolder.value,
                                                    handler: {[weak self] in
                                                     self?.formView.reloadFolderSection()
                 })
+                self.presenter.cancelScreen()
             }
             NavigationManager.shared.presentAdverstive()
         } else {
@@ -85,6 +87,7 @@ extension DownloadView: DownloadViewInterface {
                                                handler: {[weak self] in
                                                 self?.formView.reloadFolderSection()
             })
+            self.presenter.cancelScreen()
         }
     }
     
