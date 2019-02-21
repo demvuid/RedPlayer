@@ -19,27 +19,32 @@ class DashboardTabbarView: UITabBarController {
         self.tabBar.barTintColor = ColorName.tabBarTintColor
         self.tabBar.tintColor = ColorName.tabBarIconColor
         
-        let vc1 = AppModules.browser.build().view
+        let vc1 = AppModules.files.build().view
         let nv1 = UINavigationController(rootViewController: vc1)
-        nv1.tabBarItem.image = Asset.Tabbar.iconBrowser.image
-        nv1.tabBarItem.title = L10n.Browser.title
+        nv1.tabBarItem.image = Asset.Tabbar.iconFolder.image
+        nv1.tabBarItem.title = L10n.Folder.title
         
-        let vc2 = AppModules.files.build().view
+        let vc2 = AppModules.browser.build().view
         let nv2 = UINavigationController(rootViewController: vc2)
-        nv2.tabBarItem.image = Asset.Tabbar.iconFolder.image
-        nv2.tabBarItem.title = L10n.Folder.title
+        nv2.tabBarItem.image = Asset.Tabbar.iconBrowser.image
+        nv2.tabBarItem.title = L10n.Browser.title
         
         
         let nv3 = UIViewController()
-        nv3.tabBarItem.image = Asset.Tabbar.icFileDownload.image
-        nv3.tabBarItem.title = L10n.Downloads.title
+        nv3.tabBarItem.image = Asset.Tabbar.icPlus.image
+        nv3.tabBarItem.title = L10n.Options.title
         
-        let vc4 = AppModules.settings.build().view
+        let vc4 = AppModules.youtube.build().view
         let nv4 = UINavigationController(rootViewController: vc4)
-        nv4.tabBarItem.image = Asset.Tabbar.iconSettings.image
-        nv4.tabBarItem.title = L10n.Settings.title
+        nv4.tabBarItem.image = Asset.Tabbar.realityTvShow.image
+        nv4.tabBarItem.title = L10n.Youtube.Tvshows.title
         
-        self.viewControllers = [nv1, nv2, nv3, nv4]
+        let vc5 = AppModules.settings.build().view
+        let nv5 = UINavigationController(rootViewController: vc5)
+        nv5.tabBarItem.image = Asset.Tabbar.iconSettings.image
+        nv5.tabBarItem.title = L10n.Settings.title
+        
+        self.viewControllers = [nv1, nv2, nv3, nv4, nv5]
         self.delegate = self
     }
     

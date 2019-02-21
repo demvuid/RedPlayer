@@ -250,6 +250,16 @@ extension DownloadManager: MZDownloadManagerDelegate {
     }
     
     func downloadRequestDidUpdateProgress(_ downloadModel: MZDownloadModel, index: Int) {
+        if let mimeType = downloadModel.task?.response?.mimeType {
+            guard mimeType.contains("audio") || mimeType.contains("video") || mimeType.contains("image") else {
+                DispatchQueue.main.async {[weak self] in
+                    UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check this file is a media (image/video).")
+                    self?.addSubscriberDownloadModel(downloadModel, isFinish: true, index: index)
+                    NavigationManager.shared.updateStatusBanner()
+                }
+                return
+            }
+        }
         self.addSubscriberDownloadModel(downloadModel, isUpdate: true, index: index)
     }
     
@@ -275,16 +285,25 @@ extension DownloadManager: MZDownloadManagerDelegate {
         if let destinationPath = URL(string: basePathEncode)?.appendingPathComponent(fileName!) {
             let media = Media(temporaryPath: destinationPath.path, isVideo: true)
             media.caption = fileName ?? destinationPath.lastPathComponent
-            if let mimeType = downloadModel.task?.response?.mimeType, let ext = MimeType(mimeType: mimeType).ext {
-                let fileExtension = media.caption.fileExtension()
-                if fileExtension == "" {
-                    media.caption = "\(media.caption).\(ext)"
-                } else {
-                    media.caption = media.caption.replacingOccurrences(of: fileExtension, with: ext)
+            var extention: String = media.caption.fileExtension()
+            if let mimeType = downloadModel.task?.response?.mimeType {
+                if let ext = MimeType(mimeType: mimeType).ext {
+                    extention = ext
+                } else if mimeType.contains("audio") {
+                    extention = "mp3"
+                } else if mimeType.contains("video") {
+                    extention = "mp4"
+                } else if mimeType.contains("image") {
+                    extention = "jpg"
                 }
-                if media.caption.isImageFileExtension {
-                    media.isVideo = false
-                }
+            }
+            if media.caption.fileExtension() != "" {
+                media.caption = media.caption.replacingOccurrences(of: media.caption.fileExtension(), with: extention)
+            } else if media.caption.fileExtension() == "" && extention != "" {
+                media.caption = "\(media.caption).\(extention)"
+            }
+            if media.caption.isImageFileExtension {
+                media.isVideo = false
             }
             self.mediaSubject.onNext((media, basePath))
         }
@@ -308,16 +327,25 @@ extension DownloadManager: MZDownloadManagerDelegate {
         if let destinationPath = URL(string: basePathEncode)?.appendingPathComponent(fileName) {
             let media = Media(temporaryPath: destinationPath.path, isVideo: true)
             media.caption = fileName
-            if let mimeType = downloadModel.task?.response?.mimeType, let ext = MimeType(mimeType: mimeType).ext {
-                let fileExtension = media.caption.fileExtension()
-                if fileExtension == "" {
-                    media.caption = "\(media.caption).\(ext)"
-                } else {
-                    media.caption = media.caption.replacingOccurrences(of: fileExtension, with: ext)
+            var extention: String = media.caption.fileExtension()
+            if let mimeType = downloadModel.task?.response?.mimeType {
+                if let ext = MimeType(mimeType: mimeType).ext {
+                    extention = ext
+                } else if mimeType.contains("audio") {
+                    extention = "mp3"
+                } else if mimeType.contains("video") {
+                    extention = "mp4"
+                } else if mimeType.contains("image") {
+                    extention = "jpg"
                 }
-                if media.caption.isImageFileExtension {
-                    media.isVideo = false
-                }
+            }
+            if media.caption.fileExtension() != "" {
+                media.caption = media.caption.replacingOccurrences(of: media.caption.fileExtension(), with: extention)
+            } else if media.caption.fileExtension() == "" && extention != "" {
+                media.caption = "\(media.caption).\(extention)"
+            }
+            if media.caption.isImageFileExtension {
+                media.isVideo = false
             }
             self.mediaSubject.onNext((media, basePath))
         }

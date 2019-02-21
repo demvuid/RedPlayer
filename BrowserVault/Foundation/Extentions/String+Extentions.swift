@@ -135,3 +135,161 @@ extension String {
         return self.range(of: linkURLSupportedFileImageExtensions, options: [.regularExpression, .caseInsensitive]) != nil
     }
 }
+
+extension String {
+    func widthOfString(usingFont font: UIFont = AppBranding.baseFont) -> CGFloat {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        let size = self.size(withAttributes: fontAttributes)
+        return size.width
+    }
+    
+    func heightOfString(usingFont font: UIFont = AppBranding.baseFont) -> CGFloat {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        let size = self.size(withAttributes: fontAttributes)
+        return size.height
+    }
+    
+    func sizeOfString(usingFont font: UIFont = AppBranding.baseFont) -> CGSize {
+        let fontAttributes = [NSAttributedString.Key.font: font]
+        return self.size(withAttributes: fontAttributes)
+    }
+}
+
+extension String {
+    public func parseISO8601Time() -> Duration {
+        let nsISO8601 = NSString(string: self)
+        var days = 0, hours = 0, minutes = 0, seconds: Float = 0, weeks = 0, months = 0, years = 0
+        var i = 0
+        var beforeT:Bool = true
+        
+        while i < nsISO8601.length  {
+            var str = nsISO8601.substring(with: NSRange(location: i, length: nsISO8601.length - i))
+            
+            i += 1
+            
+            if str.hasPrefix("P") || str.hasPrefix("T") {
+                beforeT = !str.hasPrefix("T")
+                continue
+            }
+            
+            let scanner = Scanner(string: str)
+            var value: Float = 0
+            
+            if scanner.scanFloat(&value) {
+                i += scanner.scanLocation - 1
+                
+                str = nsISO8601.substring(with: NSRange(location: i, length: nsISO8601.length - i))
+                
+                i += 1
+                
+                if str.hasPrefix("Y") {
+                    years = Int(value)
+                } else if str.hasPrefix("M") {
+                    if beforeT{
+                        months = Int(value)
+                    }else{
+                        minutes = Int(value)
+                    }
+                } else if str.hasPrefix("W") {
+                    weeks = Int(value)
+                } else if str.hasPrefix("D") {
+                    days = Int(value)
+                } else if str.hasPrefix("H") {
+                    hours = Int(value)
+                } else if str.hasPrefix("S") {
+                    seconds = value
+                }
+            }
+        }
+        return Duration(years: years, months: months, weeks: weeks, days: days, hours: hours, minutes: minutes, seconds: seconds)
+    }
+}
+
+public struct Duration {
+    
+    let daysInMonth: Int = 30
+    let daysInYear: Int = 365
+    
+    var years: Int
+    var months: Int
+    var weeks: Int
+    var days: Int
+    var hours: Int
+    var minutes: Int
+    var seconds: Float
+    
+    public func getMilliseconds() -> Int{
+        return Int(round(seconds*1000)) + minutes*60*1000 + hours*60*60*1000 + days*24*60*60*1000 + weeks*7*24*60*60*1000 + months*daysInMonth*24*60*60*1000 + years*daysInYear*24*60*60*1000
+    }
+    
+    public func getFormattedString() -> String{
+        
+        var formattedString = ""
+        
+        if years != 0 {
+            formattedString.append("\(years)")
+            formattedString.append(" ")
+            formattedString.append(years == 1 ? "year" : "years")
+            formattedString.append(" ")
+        }
+        
+        if months != 0{
+            formattedString.append("\(months)")
+            formattedString.append(" ")
+            formattedString.append(months == 1 ? "month" : "months")
+            formattedString.append(" ")
+        }
+        
+        if weeks != 0 {
+            formattedString.append("\(weeks)")
+            formattedString.append(" ")
+            formattedString.append(weeks == 1 ? "week" : "weeks")
+            formattedString.append(" ")
+        }
+        
+        if days != 0 {
+            formattedString.append("\(days)")
+            formattedString.append(" ")
+            formattedString.append(days == 1 ? "day" : "days")
+            formattedString.append(" ")
+        }
+        
+        if seconds != 0 {
+            formattedString.append(String(format: "%02d:%02d:%.02f", hours, minutes, seconds))
+        }else{
+            formattedString.append(String(format: "%02d:%02d", hours, minutes))
+        }
+        
+        return formattedString
+    }
+}
+
+extension String {
+    public func trimWhitespace() -> String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    public func length() -> Int {
+        return count
+    }
+    
+    public func matches(pattern: String) -> Bool {
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else {
+            return false
+        }
+        let matches = regex.matches(in: self, options: .anchored, range: NSRange(location: 0, length: count))
+        return matches.count == 1
+    }
+    
+    /// Useful if loaded from UserText, for example
+    public func format(arguments: CVarArg...) -> String {
+        return String(format: self, arguments: arguments)
+    }
+    
+    public func dropPrefix(prefix: String) -> String {
+        if hasPrefix(prefix) {
+            return String(dropFirst(prefix.count))
+        }
+        return self
+    }
+}

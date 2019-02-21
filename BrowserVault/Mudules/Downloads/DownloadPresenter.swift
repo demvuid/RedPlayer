@@ -25,10 +25,6 @@ class DownloadPresenter: Presenter {
                             url = linkURL
                         }
                         if self?.view.browseType() == .download {
-                            guard fileName?.fileExtension() != "" &&  (fileName?.isMediaFileExtension == true || fileName?.isImageFileExtension == true) else {
-                                self?._view.showAlertWith(title: "Invalid File Extention", messsage: "Sorry, File name is not contained a media extention.\nPlease check the correct name.")
-                                return
-                            }
                             self?.view.handlerDownloadURL(url, fileName: fileName)
                         } else {
                             DispatchQueue.main.async {[weak self] in

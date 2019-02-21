@@ -35,7 +35,11 @@ final class DownloadView: BaseUserInterface {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
-        self.navigationItem.title = L10n.Downloads.title
+        if self.browseType() == .play {
+            self.navigationItem.title = L10n.Options.Play.title
+        } else {
+            self.navigationItem.title = L10n.Downloads.title
+        }
         self.view.addSubview(self.formView.view)
         self.addChild(self.formView)
         self.showBanner()

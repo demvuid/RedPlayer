@@ -8,5 +8,7 @@
 
 import RealmSwift
 
+typealias BlockParseJsonModel = ([String: Any]) -> (BaseModel?, Error?)
+typealias BlockParseJsonArrayModel = ([[String: Any]]) -> ([BaseModel]?, Error?)
 public class BaseModel: Object {
 }

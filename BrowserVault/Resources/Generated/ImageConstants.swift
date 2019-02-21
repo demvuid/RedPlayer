@@ -33,6 +33,7 @@ internal enum Asset {
   }
   internal enum General {
 
+    internal static let icSearchWeb = ImageAsset(name: "General/ic_search_web")
     internal static let iconClose = ImageAsset(name: "General/icon_close")
     internal static let iconTick = ImageAsset(name: "General/icon_tick")
     internal static let info = ImageAsset(name: "General/info")
@@ -69,9 +70,15 @@ internal enum Asset {
   internal enum Tabbar {
 
     internal static let icFileDownload = ImageAsset(name: "Tabbar/ic_file_download")
+    internal static let icPlus = ImageAsset(name: "Tabbar/ic_plus")
     internal static let iconBrowser = ImageAsset(name: "Tabbar/icon_browser")
     internal static let iconFolder = ImageAsset(name: "Tabbar/icon_folder")
     internal static let iconSettings = ImageAsset(name: "Tabbar/icon_settings")
+    internal static let realityTvShow = ImageAsset(name: "Tabbar/reality_tv_show")
+  }
+  internal enum Youtube {
+
+    internal static let icFilterVariant = ImageAsset(name: "Youtube/ic_filter_variant")
   }
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

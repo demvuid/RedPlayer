@@ -22,10 +22,7 @@ class NavigationManager: NSObject {
         }
     }
     
-    func showVideoGoogleDriverURL(_ url: String, cookies: [HTTPCookie]?) {
-        guard url.validURLString() else {
-            return
-        }
+    func showVideoGoogleDriverURL(_ url: String, cookies: [HTTPCookie]? = nil) {
         var cookiesArray = [HTTPCookie]()
         if let cookies = cookies {
             for cookie in cookies {
@@ -41,14 +38,18 @@ class NavigationManager: NSObject {
         let item = AVPlayerItem(asset: assets)
         let videoPlayer = AVPlayer(playerItem: item)
         
+        NavigationManager.shared.createAndLoadAdvertise()
+        
         let playerViewController = PlayerViewController()
         playerViewController.player = videoPlayer
         UIApplication.topViewController()?.present(playerViewController, animated: true) {
-            playerViewController.player?.play()
+            NavigationManager.shared.presentAdverstive(topViewController: playerViewController)
         }
-        
-        // play with vlc if fix the issues play with cookies
-//        HTTPCookieStorage.shared.setCookies(cookiesArray, for: URL(string: url)!, mainDocumentURL: nil)
-//        self.showMediaPlayerURL(url)
+        NavigationManager.shared.handlerDismissAdvertisement = {[weak playerViewController] in
+            playerViewController?.player?.play()
+        }
+        playerViewController.dismissBlock = {
+            NavigationManager.shared.presentAdverstive(topViewController: UIApplication.shared.keyWindow?.rootViewController)
+        }
     }
 }

@@ -51,11 +51,10 @@ final class PasscodeView: UserInterface {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
         if isChangePass {
             self.navigationItem.title = L10n.Settings.Lock.Passcode.change
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
         } else if self.presenter.completionBlock != nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
             if UserSession.shared.decryptedPasscode() != nil {
                 self.navigationItem.title = L10n.Passcode.Authenticate.passcode
             } else {

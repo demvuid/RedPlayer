@@ -49,6 +49,6 @@ class BaseUserInterface: UserInterface {
     }
 }
 
-
 extension BaseUserInterface: BannerViewDelegate {
+    
 }

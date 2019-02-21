@@ -57,7 +57,7 @@ class SettingsFormView: BaseFormViewController {
                 }).onChange({[weak self] (row) in
                     self?.observerSelected.onNext(.touchID)
                 })
-            +++ Section(L10n.Settings.Version.title)
+            /*+++ Section(L10n.Settings.Version.title)
             <<< LabelRow() {
                 $0.title = L10n.Settings.Version.upgrade
                 }.cellUpdate({ (cell, _) in
@@ -71,7 +71,7 @@ class SettingsFormView: BaseFormViewController {
                     cell.accessoryType = .none
                 }).onCellSelection({[weak self] (_, _) in
                     self?.observerSelected.onNext(.restore)
-                })
+                })*/
             
             +++ Section(L10n.Settings.Help.title)
             <<< LabelRow() {

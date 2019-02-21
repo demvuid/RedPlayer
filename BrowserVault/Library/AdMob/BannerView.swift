@@ -43,37 +43,6 @@ extension DFPBannerView {
 
 }
 
-extension BaseUserInterface: GADBannerViewDelegate {
-    /// Tells the delegate an ad request loaded an ad.
-    public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        self.bannerDidShow(bannerView)
-    }
-    
-    /// Tells the delegate an ad request failed.
-    public func adView(_ bannerView: GADBannerView,
-                       didFailToReceiveAdWithError error: GADRequestError) {
-        self.bannerLoadFailed(bannerView)
-    }
-    
-    /// Tells the delegate that a full-screen view will be presented in response
-    /// to the user clicking on an ad.
-    public func adViewWillPresentScreen(_ bannerView: GADBannerView) {
-    }
-    
-    /// Tells the delegate that the full-screen view will be dismissed.
-    public func adViewWillDismissScreen(_ bannerView: GADBannerView) {
-    }
-    
-    /// Tells the delegate that the full-screen view has been dismissed.
-    public func adViewDidDismissScreen(_ bannerView: GADBannerView) {
-        
-    }
-    
-    /// Tells the delegate that a user click will open another app (such as
-    /// the App Store), backgrounding the current app.
-    public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-    }
-}
 
 extension BaseUserInterface {
     private struct ExportKeys {
@@ -84,6 +53,7 @@ extension BaseUserInterface {
         get { return objc_getAssociatedObject(self, &ExportKeys.bannerView) as? DFPBannerView }
         set { objc_setAssociatedObject(self, &ExportKeys.bannerView, newValue, .OBJC_ASSOCIATION_RETAIN) }
     }
+    
     func showBanner() {
         guard UserSession.shared.isUpgradedVersion() == false else {
             return
@@ -94,6 +64,14 @@ extension BaseUserInterface {
 }
 
 extension BannerViewDelegate where Self: BaseUserInterface {
+    
+    func bannerDidShow(_ banner: GADBannerView) {
+        self.showBannerView(banner)
+    }
+    
+    func bannerLoadFailed(_ banner: GADBannerView) {
+        
+    }
     
     func removeBannerFromSupperView() {
         if let banner = self.bannerView {
@@ -138,12 +116,36 @@ extension BannerViewDelegate where Self: BaseUserInterface {
                 ])
         }
     }
-    
-    func bannerDidShow(_ banner: GADBannerView) {
-        self.showBannerView(banner)
+}
+
+extension BaseUserInterface: GADBannerViewDelegate {
+    /// Tells the delegate an ad request loaded an ad.
+    public func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        self.bannerDidShow(bannerView)
     }
     
-    func bannerLoadFailed(_ banner: GADBannerView) {
+    /// Tells the delegate an ad request failed.
+    public func adView(_ bannerView: GADBannerView,
+                       didFailToReceiveAdWithError error: GADRequestError) {
+        self.bannerLoadFailed(bannerView)
+    }
+    
+    /// Tells the delegate that a full-screen view will be presented in response
+    /// to the user clicking on an ad.
+    public func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+    }
+    
+    /// Tells the delegate that the full-screen view will be dismissed.
+    public func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+    }
+    
+    /// Tells the delegate that the full-screen view has been dismissed.
+    public func adViewDidDismissScreen(_ bannerView: GADBannerView) {
         
+    }
+    
+    /// Tells the delegate that a user click will open another app (such as
+    /// the App Store), backgrounding the current app.
+    public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
     }
 }

@@ -34,7 +34,7 @@ class FilesPresenter: Presenter {
     func configSubscriber() {
         folderSubject.subscribe(onNext: {[weak self] (folder) in
             guard let self = self else { return }
-            if self.countDetailFiles >= 3 {
+            if self.countDetailFiles >= 4 {
                 self.countDetailFiles = 0
             } else {
                 self.countDetailFiles += 1

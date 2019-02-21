@@ -38,8 +38,9 @@ extension NavigationManager {
         self.presentView?.delegate = self
     }
     
-    func presentAdverstive() {
-        if let topViewController = UIApplication.topViewController(), !UserSession.shared.isUpgradedVersion() && presentView?.isReady == true {
+    func presentAdverstive(topViewController: UIViewController? = nil) {
+        let topViewController = topViewController ?? UIApplication.topViewController()
+        if let topViewController = topViewController, !UserSession.shared.isUpgradedVersion() && presentView?.isReady == true {
             presentView?.present(fromRootViewController: topViewController)
         } else {
             Logger.debug("Ad wasn't ready")

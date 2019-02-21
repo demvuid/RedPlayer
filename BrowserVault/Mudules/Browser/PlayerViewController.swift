@@ -9,7 +9,11 @@
 import AVKit
 
 class PlayerViewController: AVPlayerViewController {
-
+    var dismissBlock: (() -> Void)? = nil
+    /**
+     Indicate whether the current played over 10 min and will show adv.
+     */
+    var showAdv: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: [])
@@ -21,6 +25,41 @@ class PlayerViewController: AVPlayerViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.removeObserver(
+            self,
+            name:NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+            object: player?.currentItem
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(videoFinishedCallback),
+            name:NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+            object: player?.currentItem
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(
+            self,
+            name:NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+            object: player?.currentItem
+        )
+        if self.showAdv == true {
+            self.dismissBlock?()
+            self.dismissBlock = nil
+        }
+    }
+    
+    @objc func videoFinishedCallback(notification: NSNotification) {
+        if !self.showAdv, let duration = player?.currentItem?.duration.value, duration >= 10 * 60 * 1000 {
+            self.showAdv = true
+        }
     }
     
 

@@ -22,5 +22,5 @@ extension GADInterstitial {
 
 protocol AdvertisePresentProtocol {
     func createAndLoadAdvertise()
-    func presentAdverstive()
+    func presentAdverstive(topViewController: UIViewController?)
 }

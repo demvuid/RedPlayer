@@ -23,7 +23,7 @@ final class FolderView: UserInterface {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = L10n.Folder.Create.title
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self.presenter, action: #selector(self.presenter.cancelScreen))
         self.view.addSubview(self.settingForm.view)
         self.addChild(self.settingForm)
     }

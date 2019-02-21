@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let entryModule = AppModules.dashboard.build()
             entryModule.router.show(inWindow: self.window)
         }
+        NavigationManager.shared.createAndLoadAdvertise()
         return true
     }
 

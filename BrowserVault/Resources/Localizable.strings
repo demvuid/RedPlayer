@@ -81,14 +81,16 @@
 "folder.files..confirm.delete" = "Are you sure you want to delete this folder?";
 "folder.add.file" = "Add Files";
 "folder.add.folder" = "Add a Folder";
-"folder.download.file.library" = "Browse File from Photos";
-"folder.download.file.network" = "Browse File from Remote URL";
-"folder.browse.file.network" = "Play File from Remote URL";
+"folder.download.file.library" = "Import Files From Photos";
+"folder.download.file.network" = "Download Files From Remote URL";
+"folder.browse.file.network" = "Play File From Remote URL";
 "folder.confirm.delete.file" = "Are you sure you want to delete file?";
 "folder.confirm.delete.files" = "Are you sure you want to delete %x files?";
 "purchase.store.sucesss" = "Your version was upgraded successfully";
 "restore.purchase.sucesss" = "Restore your purchased successfully";
 
+"Options.title" = "Plus";
+"Options.play.title" = "Play";
 "Downloads.title" = "Downloads";
 "Downloads.name.title" = "File Name";
 "Downloads.name.place" = "Input the File Name";
@@ -96,3 +98,5 @@
 "Downloads.url.place" = "Input the URL";
 "Downloads.file.download" = "Download File";
 "Downloads.file.play" = "Play File";
+
+"Youtube.tvshows.title" = "TV Shows";

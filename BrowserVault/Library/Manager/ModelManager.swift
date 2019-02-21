@@ -8,6 +8,8 @@
 import RealmSwift
 import RxSwift
 
+let ModelMgr: ModelManager = ModelManager.shared
+
 class ModelManager {
     static var shared = ModelManager()
     lazy var bag = DisposeBag()

@@ -6,6 +6,8 @@ target 'BrowserVault' do
   use_frameworks!
 
   # Pods for BrowserVault
+# Networking
+pod 'Alamofire', '4.8.1'
 # Architecture
 pod 'Viperit', :git => 'https://github.com/ferranabello/Viperit.git'
 # Utilities
@@ -18,6 +20,7 @@ pod 'InAppPurchase'
 pod 'MZDownloadManager'
 pod 'YoutubeDirectLinkExtractor'
 # UI
+pod 'SVPullToRefresh'
 pod 'MBProgressHUD'
 pod 'IQKeyboardManagerSwift'
 pod 'Reusable'
@@ -25,6 +28,7 @@ pod 'Eureka', '4.3.0'
 pod 'UICircularProgressRing'
 pod 'DKImagePickerController', :subspecs => ['PhotoGallery', 'Camera']
 pod 'NotificationBannerSwift'
+pod 'PageMenu', :git => 'https://github.com/orazz/PageMenu.git'
 
 # Database
 pod 'RealmSwift'
@@ -44,5 +48,22 @@ pod 'Reachability'
     inherit! :search_paths
     # Pods for testing
   end
-
 end
+
+#post_install do |installer|
+#    swift4Targets = ['PageMenu']
+#    installer.pods_project.targets.each do |target|
+#        target.build_configurations.each do |config|
+#            config.build_settings['SWIFT_VERSION'] = '4.2'
+#            if config.name == 'Debug'
+#                config.build_settings['OTHER_SWIFT_FLAGS'] = ['$(inherited)', '-Onone']
+#                config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Owholemodule'
+#            end
+#        end
+#        if swift4Targets.include? target.name
+#            target.build_configurations.each do |config|
+#                config.build_settings['SWIFT_VERSION'] = '4.0'
+#            end
+#        end
+#    end
+#end

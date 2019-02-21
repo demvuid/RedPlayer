@@ -44,6 +44,7 @@ final class BrowserView: BaseUserInterface {
     var statusBarHidden: Bool = false
     private var imgURL: String = "", timer: Timer! = nil
     private var countPresentAdv: Int = UserSession.shared.countPlayVideo
+    var autocompleteController: AutocompleteViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,17 +122,27 @@ final class BrowserView: BaseUserInterface {
         webView.load(URLRequest(url: url))
     }
     
+    public func searchUrl(text: String) -> URL {
+        let query = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? text.replacingOccurrences(of: " ", with: "%20")
+        if self.defaultURLString?.contains("yahoo.com") == true {
+            return URL(string: "https://search.yahoo.com/search?q=\(query)")!
+        } else if self.defaultURLString?.contains("bing.com") == true {
+            return URL(string: "https://www.bing.com/search?q=\(query)")!
+        } else {
+            return URL(string: "https://www.google.com/search?q=\(query)")!
+        }
+    }
+    
+    public func urlForQuery(_ query: String) -> URL {
+        if let url = URL.webUrl(fromText: query) {
+            return url
+        }
+        return searchUrl(text: query)
+    }
     public func loadURLString(_ urlString: String) {
-        var urlUpdate = urlString.lowercased()
-        if urlUpdate.hasPrefix("http://") || urlUpdate.hasPrefix("fpt://") || urlUpdate.hasPrefix("https://") {
-        } else {
-            urlUpdate = "http://\(urlString)"
-        }
-        if urlUpdate.validURLString(), let url = URL(string: urlUpdate) {
-            webView.load(URLRequest(url: url))
-        } else {
-            self.showAlertWith(title: L10n.Generic.Error.Alert.title, messsage: L10n.Settings.Browser.Url.required)
-        }
+        let urlUpdate = urlString.lowercased()
+        let url = self.urlForQuery(urlUpdate)
+        webView.load(URLRequest(url: url))
     }
     
     public func loadHTMLString(_ htmlString: String, baseURL: URL?) {
@@ -142,6 +153,34 @@ final class BrowserView: BaseUserInterface {
         if !url.absoluteString.isEmpty {
             loadURL(url)
         }
+    }
+    
+    func displayAutocompleteSuggestions(forQuery query: String) {
+//        if autocompleteController == nil {
+//            let controller = AutocompleteViewController.loadFromStoryboard()
+//            controller.delegate = self
+//            addChild(controller)
+//            self.view.addSubview(controller.view)
+//            controller.view.snp.makeConstraints { (make) in
+//                make.top.equalTo(self.containSearchBar.snp.bottom)
+//                make.left.equalTo(self.view.snp.left)
+//                make.right.equalTo(self.view.snp.right)
+//                make.bottom.equalTo(self.view.snp.bottom)
+//            }
+//            controller.didMove(toParent: self)
+//            autocompleteController = controller
+//        }
+        guard let autocompleteController = autocompleteController else { return }
+        autocompleteController.updateQuery(query: query)
+    }
+    
+    func dismissAutcompleteSuggestions() {
+//        guard let controller = autocompleteController else { return }
+//        autocompleteController = nil
+//        controller.willMove(toParent: nil)
+//        controller.view.removeFromSuperview()
+//        controller.removeFromParent()
+        self.searchController.isActive = false
     }
     
     func updateToolBar() {
@@ -171,7 +210,10 @@ final class BrowserView: BaseUserInterface {
     }
     
     func setupSearchController() {
-        self.searchController = UISearchController(searchResultsController: nil)
+        let controller = AutocompleteViewController.loadFromStoryboard()
+        controller.delegate = self
+        autocompleteController = controller
+        self.searchController = UISearchController(searchResultsController: controller)
         self.searchController.hidesNavigationBarDuringPresentation = false
         self.searchBar = self.searchController.searchBar
         self.searchBar.frame.size.width = self.containSearchBar.frame.size.width
@@ -290,10 +332,7 @@ final class BrowserView: BaseUserInterface {
                             HTTPCookieStorage.shared.setCookie(cookie)
                         }
                         if let html = htmlString as NSString?, html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                            NavigationManager.shared.handlerDismissAdvertisement = {
-                                NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
-                            }
-                            NavigationManager.shared.presentAdverstive()
+                            NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
                         } else {
                             self.url = videoURL
                             self.loadURL(videoURL)
@@ -390,6 +429,22 @@ final class BrowserView: BaseUserInterface {
     
 }
 
+extension BrowserView: AutocompleteViewControllerDelegate {
+    
+    func autocomplete(selectedSuggestion suggestion: String) {
+        self.dismissAutcompleteSuggestions()
+        self.loadURLString(suggestion)
+    }
+    
+    func autocomplete(pressedPlusButtonForSuggestion suggestion: String) {
+        self.searchBar.text = suggestion
+    }
+    
+    func autocompleteWasDismissed() {
+        self.dismissAutcompleteSuggestions()
+    }
+}
+
 extension BrowserView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
@@ -462,11 +517,20 @@ extension BrowserView: UISearchBarDelegate, UITableViewDataSource, UITableViewDe
         return true
     }
     
+    func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        guard let oldQuery = searchBar.text else { return true }
+        let newQuery = (oldQuery as NSString).replacingCharacters(in: range, with: text)
+        self.displayAutocompleteSuggestions(forQuery: newQuery)
+        return true
+    }
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.loadURLString(self.searchBar.text!)
-        self.searchController.isActive = false
-        if let urlString = webView.url?.absoluteString {
-            self.searchBar.text = urlString
+        self.dismissAutcompleteSuggestions()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {[weak self] in
+            if let urlString = self?.webView.url?.absoluteString {
+                self?.searchBar.text = urlString
+            }
         }
     }
     
@@ -508,10 +572,7 @@ extension BrowserView: WKNavigationDelegate {
                                    completionHandler: { (html: Any?, error: Error?) in
                                     if error == nil, let html = html as? NSString {
                                         if html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                                            NavigationManager.shared.handlerDismissAdvertisement = {
-                                                NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
-                                            }
-                                            NavigationManager.shared.presentAdverstive()
+                                            NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
                                         }
                                     }
         })

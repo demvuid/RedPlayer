@@ -35,6 +35,22 @@ internal enum L10n {
     }
   }
 
+  internal enum Options {
+    /// Plus
+    internal static let title = L10n.tr("Localizable", "Options.title")
+    internal enum Play {
+      /// Play
+      internal static let title = L10n.tr("Localizable", "Options.play.title")
+    }
+  }
+
+  internal enum Youtube {
+    internal enum Tvshows {
+      /// TV Shows
+      internal static let title = L10n.tr("Localizable", "Youtube.tvshows.title")
+    }
+  }
+
   internal enum Browser {
     /// Browser
     internal static let title = L10n.tr("Localizable", "browser.title")
@@ -53,7 +69,7 @@ internal enum L10n {
     }
     internal enum Browse {
       internal enum File {
-        /// Play File from Remote URL
+        /// Play File From Remote URL
         internal static let network = L10n.tr("Localizable", "folder.browse.file.network")
       }
     }
@@ -77,9 +93,9 @@ internal enum L10n {
     }
     internal enum Download {
       internal enum File {
-        /// Browse File from Photos
+        /// Import Files From Photos
         internal static let library = L10n.tr("Localizable", "folder.download.file.library")
-        /// Browse File from Remote URL
+        /// Download Files From Remote URL
         internal static let network = L10n.tr("Localizable", "folder.download.file.network")
       }
     }

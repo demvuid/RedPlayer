@@ -19,4 +19,30 @@ class ParseVideoManager {
             handler(nil, error)
         }
     }
+    
+    func parseVideoById(_ videoId: String, duration: String = "", handler: @escaping (String?, Error?) -> ()) {
+        provider.extractInfo(for: .id(videoId), success: { (info) in
+            var urlString: String? = nil
+            if duration != "" {
+                let durationTime = duration.parseISO8601Time()
+                if durationTime.years > 0 || durationTime.months > 0 || durationTime.weeks > 0 || durationTime.days > 0 || durationTime.hours > 2 {
+                    let urls = info.rawInfo.compactMap { $0["url"] }
+                    if urls.count > 1 {
+                        urlString = urls[1]
+                    } else {
+                        urlString = urls.last
+                    }
+                } else {
+                    let urls = info.rawInfo.compactMap { $0["url"] }
+                    urlString = urls.first
+                }
+            } else {
+                let urls = info.rawInfo.compactMap { $0["url"] }
+                urlString = urls.first
+            }
+            handler(urlString, nil)
+        }) { (error) in
+            handler(nil, error)
+        }
+    }
 }

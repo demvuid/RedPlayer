@@ -25,7 +25,11 @@ var realmURL: URL {
 var realm: Realm! {
     var realm: Realm!
     do {
-        var config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: [NewsHistory.self, FolderModel.self, Media.self])
+        let objectTypes = [NewsHistory.self, FolderModel.self, Media.self,
+                           MenuCategories.self, MenuCategory.self, GroupYoutube.self,
+                           MenuGroup.self, YoutubeChannel.self, YoutubeChannels.self,
+                           YoutubeItem.self, PageInfo.self, YouTubeResult.self]
+        var config = Realm.Configuration(fileURL: realmURL.appendingPathComponent("\(RealmConstants.realmDB).realm"), objectTypes: objectTypes)
         config.deleteRealmIfMigrationNeeded = true
         realm = try Realm(configuration: config)
     } catch {
