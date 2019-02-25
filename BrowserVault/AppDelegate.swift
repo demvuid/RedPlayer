@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var backgroundSessionCompletionHandler : (() -> Void)?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.        
+        // Override point for customization after application launch.
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: [])
         UIApplication.configGoogleAdmob()
         AppBranding.customizeOnAppLoad()
         if UserSession.shared.enabledPasscode() {

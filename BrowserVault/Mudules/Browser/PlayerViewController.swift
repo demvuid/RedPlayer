@@ -16,7 +16,6 @@ class PlayerViewController: AVPlayerViewController {
     var showAdv: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: [])
         try? AVAudioSession.sharedInstance().setActive(true)
 
         // Do any additional setup after loading the view.

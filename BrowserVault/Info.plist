@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -28,11 +28,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Our application needs permission to take a photo.</string>
+	<string>Our application needs permission to take a photo and import it into a folder.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Our application needs permission to write photos.</string>
+	<string>Our application needs permission to write photos and import it into a folder.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Our application needs permission to get photos.</string>
+	<string>Your photos will be imported into a folder to preview.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

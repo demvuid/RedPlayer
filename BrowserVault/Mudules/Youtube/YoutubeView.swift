@@ -132,6 +132,13 @@ extension YoutubeView: BasePageViewControllerDelegate {
 extension YoutubeView: YoutubeViewControllerDelegate {
     func playYoutubeItem(_ item: YoutubeItem) {
         self.presenter.playVideoById(item.itemId, duration: item.duration)
+        /*ParseVideoManager.shared.parseVideoById(item.itemId, duration: item.duration) { (urlString, error) in
+            if let urlString = urlString, let url = URL(string: urlString) {
+                DispatchQueue.main.async {
+                    DownloadManager.shared.downloadURL(url, name: item.title)
+                }
+            }
+        }*/
     }
 }
 //MARK: - Public interface

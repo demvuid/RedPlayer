@@ -29,8 +29,8 @@ extension DFPBannerView {
         return banner
     }
     
-    func showBannerFromController(_ controller: BaseUserInterface) {
-        self.adUnitID = GOOGLE_AdUnitID
+    func showBannerFromController(_ controller: BaseUserInterface, adUnitID: String = GOOGLE_AdUnitID) {
+        self.adUnitID = adUnitID
         self.rootViewController = controller
         self.delegate = controller
         self.loadRequest()
@@ -54,12 +54,12 @@ extension BaseUserInterface {
         set { objc_setAssociatedObject(self, &ExportKeys.bannerView, newValue, .OBJC_ASSOCIATION_RETAIN) }
     }
     
-    func showBanner() {
+    func showBanner(adUnitID: String = GOOGLE_AdUnitID) {
         guard UserSession.shared.isUpgradedVersion() == false else {
             return
         }
         self.bannerView = DFPBannerView.instance()
-        self.bannerView?.showBannerFromController(self)
+        self.bannerView?.showBannerFromController(self, adUnitID: adUnitID)
     }
 }
 

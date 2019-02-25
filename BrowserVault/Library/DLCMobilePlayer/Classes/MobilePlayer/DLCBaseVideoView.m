@@ -143,6 +143,7 @@ IB_DESIGNABLE
     _videoActionDelegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:VLCMediaPlayerTimeChanged object:nil];
+    [[AVAudioSession sharedInstance] removeObserver:self forKeyPath:@"outputVolume"];
     [_mediaPlayer.media clearStoredCookies];
     if (_mediaPlayer.media) {
         [_mediaPlayer pause];
@@ -255,8 +256,10 @@ IB_DESIGNABLE
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if ([keyPath isEqual:@"outputVolume"]) {
-        float newVolume = [[AVAudioSession sharedInstance] outputVolume];
-        self.volumnSlider.value = newVolume;
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            float newVolume = [[AVAudioSession sharedInstance] outputVolume];
+            self.volumnSlider.value = newVolume;
+        });
     }
 }
 
@@ -699,12 +702,12 @@ IB_DESIGNABLE
 - (void) updateMinimizeView {
     self.mediaPlayer.videoAspectRatio = NULL;
     self.mediaPlayer.videoCropGeometry = NULL;
-    [self.minimizeButton setBackgroundImage:[DLCBaseVideoView DLCImageName:@"icon_player_maximize"] forState:UIControlStateNormal];
+    [self.minimizeButton setImage:[DLCBaseVideoView DLCImageName:@"icon_player_maximize"] forState:UIControlStateNormal];
 }
 
 - (void) updateMaximizeView {
     self.mediaPlayer.videoCropGeometry = (char *)[[self screenAspectRatio] UTF8String];
-    [self.minimizeButton setBackgroundImage:[DLCBaseVideoView DLCImageName:@"icon_player_minimize"] forState:UIControlStateNormal];
+    [self.minimizeButton setImage:[DLCBaseVideoView DLCImageName:@"icon_player_minimize"] forState:UIControlStateNormal];
 }
 
 - (NSString *)screenAspectRatio
@@ -811,6 +814,7 @@ IB_DESIGNABLE
 
 - (void) showVolumnView
 {
+    self.volumnSlider.value = [AVAudioSession sharedInstance].outputVolume;
     if (!self.mediaPlayer.audio.muted) {
         for (NSLayoutConstraint* constraint in self.optionsRightControl.constraints) {
             if (constraint.firstItem == self.optionsRightControl && constraint.firstAttribute == NSLayoutAttributeWidth) {

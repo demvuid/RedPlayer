@@ -30,6 +30,7 @@ class DownloadManager {
     
     static let shared = DownloadManager()
     init() {
+        Logger.debug("path download:\(DefaultFolderURL.path)")
         self.addHandlerDownloadedMedia { (media, path) in
             let modelMg = ModelManager.shared
             if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
@@ -47,7 +48,7 @@ class DownloadManager {
         if let name = name {
             fileName = name
         }
-        fileName = fileName.replacingOccurrences(of: " ", with: "")
+//        fileName = fileName.replacingOccurrences(of: " ", with: "")
         DispatchQueue.main.async {
             let folderURL = folder?.folderURL ?? DefaultFolderURL
             fileName = MZUtility.getUniqueFileNameWithPath(folderURL.appendingPathComponent(fileName).path as NSString) as String
@@ -296,6 +297,9 @@ extension DownloadManager: MZDownloadManagerDelegate {
                 } else if mimeType.contains("image") {
                     extention = "jpg"
                 }
+            }
+            if extention == "" {
+                extention = "mp4"
             }
             if media.caption.fileExtension() != "" {
                 media.caption = media.caption.replacingOccurrences(of: media.caption.fileExtension(), with: extention)

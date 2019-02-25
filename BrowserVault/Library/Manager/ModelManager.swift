@@ -15,9 +15,7 @@ class ModelManager {
     lazy var bag = DisposeBag()
     
     init() {
-        DispatchQueue.main.async {[weak self] in
-            self?.setupData()
-        }
+        self.setupData()
     }
     
     func setupData() {

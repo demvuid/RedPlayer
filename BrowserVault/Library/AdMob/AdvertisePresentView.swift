@@ -12,8 +12,8 @@ import GoogleMobileAds
 let GOOGLE_AdPresentUnitID = "ca-app-pub-9119259386159657/3994234495"
 
 extension GADInterstitial {
-    class func createAndLoadInterstitial() -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: GOOGLE_AdPresentUnitID)
+    class func createAndLoadInterstitial(adPresentUnitID: String = GOOGLE_AdPresentUnitID) -> GADInterstitial {
+        let interstitial = GADInterstitial(adUnitID: adPresentUnitID)
         let request = GADRequest()
         interstitial.load(request)
         return interstitial

@@ -14,7 +14,7 @@ let APIYoutubeChannels = "channels"
 let APIYoutubeTVShows = "search"
 let APIYoutubeEntertainment = "playlistItems"
 let APIYoutubeVideos = "videos"
-let GOOGLE_YOUTUBE_API_KEY = "AIzaSyAjgmuPtlP5fo4lxqX0jIkUyRHbUP_-Huw"
+let GOOGLE_YOUTUBE_API_KEY = "AIzaSyCorqsUlnR3CAmdTnGrtaLxV3W8M9aP-Qo"
 
 let MaxItemsRequest = 30
 

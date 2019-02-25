@@ -208,32 +208,32 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2dB-vU-B3W">
-                    <rect key="frame" x="0.0" y="10" width="375" height="40"/>
+                    <rect key="frame" x="0.0" y="10" width="375" height="50"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bsk-tA-Cix">
-                            <rect key="frame" x="15" y="0.0" width="90" height="40"/>
+                            <rect key="frame" x="15" y="0.0" width="110" height="50"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c0X-on-NqI">
-                                    <rect key="frame" x="10" y="7.5" width="25" height="25"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="48" height="50"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="25" id="NOI-oI-r8i"/>
-                                        <constraint firstAttribute="height" constant="25" id="xSm-rx-VpD"/>
+                                        <constraint firstAttribute="width" constant="48" id="NOI-oI-r8i"/>
+                                        <constraint firstAttribute="height" constant="50" id="xSm-rx-VpD"/>
                                     </constraints>
-                                    <state key="normal" backgroundImage="General/icon_close"/>
+                                    <state key="normal" image="General/icon_close"/>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I0U-MK-a1J">
-                                    <rect key="frame" x="55" y="7.5" width="25" height="25"/>
+                                    <rect key="frame" x="62" y="0.0" width="48" height="50"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="25" id="3fb-bg-BvQ"/>
-                                        <constraint firstAttribute="height" constant="25" id="rlI-20-cl8"/>
+                                        <constraint firstAttribute="width" constant="48" id="3fb-bg-BvQ"/>
+                                        <constraint firstAttribute="height" constant="50" id="rlI-20-cl8"/>
                                     </constraints>
-                                    <state key="normal" backgroundImage="Player/icon_player_maximize"/>
+                                    <state key="normal" image="Player/icon_player_maximize"/>
                                     <connections>
                                         <action selector="playerMinimizeAction:" destination="-1" eventType="touchUpInside" id="aDC-Ww-Snn"/>
                                     </connections>
                                 </button>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="duL-FU-6jT">
-                                    <rect key="frame" x="44.5" y="0.0" width="1" height="40"/>
+                                    <rect key="frame" x="54.5" y="0.0" width="1" height="50"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="1" id="CI6-tY-Uet"/>
@@ -243,20 +243,20 @@
                             <color key="backgroundColor" red="0.10588235294117647" green="0.10588235294117647" blue="0.10588235294117647" alpha="0.69999999999999996" colorSpace="calibratedRGB"/>
                             <constraints>
                                 <constraint firstItem="I0U-MK-a1J" firstAttribute="centerY" secondItem="bsk-tA-Cix" secondAttribute="centerY" id="621-R7-J5w"/>
-                                <constraint firstItem="c0X-on-NqI" firstAttribute="leading" secondItem="bsk-tA-Cix" secondAttribute="leading" constant="10" id="FbR-uN-f06"/>
-                                <constraint firstAttribute="width" constant="90" id="L2h-XA-Csd"/>
+                                <constraint firstItem="c0X-on-NqI" firstAttribute="leading" secondItem="bsk-tA-Cix" secondAttribute="leading" id="FbR-uN-f06"/>
+                                <constraint firstAttribute="width" constant="110" id="L2h-XA-Csd"/>
                                 <constraint firstItem="c0X-on-NqI" firstAttribute="centerY" secondItem="bsk-tA-Cix" secondAttribute="centerY" id="L4e-op-14n"/>
                                 <constraint firstItem="duL-FU-6jT" firstAttribute="centerX" secondItem="bsk-tA-Cix" secondAttribute="centerX" id="MfH-dC-3Em"/>
-                                <constraint firstAttribute="trailing" secondItem="I0U-MK-a1J" secondAttribute="trailing" constant="10" id="axn-GT-Bw1"/>
+                                <constraint firstAttribute="trailing" secondItem="I0U-MK-a1J" secondAttribute="trailing" id="axn-GT-Bw1"/>
                                 <constraint firstItem="duL-FU-6jT" firstAttribute="top" secondItem="bsk-tA-Cix" secondAttribute="top" id="eqJ-9h-38V"/>
                                 <constraint firstAttribute="bottom" secondItem="duL-FU-6jT" secondAttribute="bottom" id="gru-XE-IYD"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tPa-IM-G5k">
-                            <rect key="frame" x="310" y="0.0" width="50" height="40"/>
+                            <rect key="frame" x="310" y="0.0" width="50" height="50"/>
                             <subviews>
                                 <slider hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="n9V-zD-M2X" customClass="PlayerSlider" customModule="BrowserVault" customModuleProvider="target">
-                                    <rect key="frame" x="8" y="4" width="94" height="31"/>
+                                    <rect key="frame" x="8" y="9" width="94" height="31"/>
                                     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="90" id="GTY-GB-VKW"/>
@@ -267,7 +267,7 @@
                                     </connections>
                                 </slider>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t2m-dF-ndS">
-                                    <rect key="frame" x="16" y="10.5" width="24" height="19"/>
+                                    <rect key="frame" x="16" y="15.5" width="24" height="19"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="24" id="XtS-eA-mXz"/>
                                         <constraint firstAttribute="height" constant="19" id="kL9-6U-7Qa"/>
@@ -291,7 +291,7 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="bottom" secondItem="tPa-IM-G5k" secondAttribute="bottom" id="364-RV-KxH"/>
-                        <constraint firstAttribute="height" constant="40" id="8rm-ws-hbJ"/>
+                        <constraint firstAttribute="height" constant="50" id="8rm-ws-hbJ"/>
                         <constraint firstAttribute="bottom" secondItem="bsk-tA-Cix" secondAttribute="bottom" id="Mer-1y-hJR"/>
                         <constraint firstItem="bsk-tA-Cix" firstAttribute="top" secondItem="2dB-vU-B3W" secondAttribute="top" id="Oe1-hv-McL"/>
                         <constraint firstAttribute="trailing" secondItem="tPa-IM-G5k" secondAttribute="trailing" constant="15" id="bTI-n4-0rd"/>
