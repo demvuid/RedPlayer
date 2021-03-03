@@ -23,7 +23,7 @@ class AboutView: UIViewController {
         let appVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         self.lblNameApplication.text = appName
         self.lblVersion.text = "Version: \(appVersion!)"
-
+        self.tvDescription.isEditable = false
         // Do any additional setup after loading the view.
     }
 

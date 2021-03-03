@@ -98,9 +98,10 @@ class DownloadFormView: BaseFormViewController, DownloadFormViewProtocol {
         }
         rows.append(URLRow() {
             $0.add(rule: RuleRequired())
-            $0.add(rule: RuleURL())
+//            $0.add(rule: RuleURL())
             $0.tag = DownloadFormFields.urlRowTag.rawValue
             $0.cellStyle = .subtitle
+            $0.value = URL(string: "")
             $0.title = L10n.Downloads.Url.network
             $0.placeholder = L10n.Downloads.Url.place
             $0.baseCell.height = { 70 }

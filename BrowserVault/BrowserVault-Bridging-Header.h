@@ -12,3 +12,6 @@
 #import "NSString+GoogleDriver.h"
 #import "NSString+AES.h"
 #import "DLCBaseVideoView.h"
+#import <MobileVLCKit/VLCMedia.h>
+#import <MobileVLCKit/VLCMediaThumbnailer.h>
+

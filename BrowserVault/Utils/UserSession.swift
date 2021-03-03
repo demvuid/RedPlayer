@@ -189,13 +189,14 @@ class UserSession {
     }
     
     func isUpgradedVersion() -> Bool {
-        if let enable = try? self.keyChainStore?.get(UPGRADE_VERSION_KEY) {
-            if enable == "Enable" {
-                return true
-            }
-            
-        }
-        return false
+        return true
+//        if let enable = try? self.keyChainStore?.get(UPGRADE_VERSION_KEY) {
+//            if enable == "Enable" {
+//                return true
+//            }
+//
+//        }
+//        return false
     }
     
     /// Get the username

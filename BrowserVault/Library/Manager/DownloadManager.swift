@@ -33,14 +33,15 @@ class DownloadManager {
         Logger.debug("path download:\(DefaultFolderURL.path)")
         self.addHandlerDownloadedMedia { (media, path) in
             let modelMg = ModelManager.shared
-            if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
-                let folder = modelMg.fetchList(FolderModel.self).filter({$0.folderURL.path == path}).first ?? modelMg.libraryFolder
-                modelMg.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
-                    self.refreshFolderSubject.onNext(folder)
-                })
-            } else {
-                UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check this file is a media (image/video).")
-            }
+            let folder = modelMg.fetchList(FolderModel.self).filter({$0.folderURL.path == path}).first ?? modelMg.libraryFolder
+            modelMg.subscriberAddMedias([media], inFolder: folder, handler: { (_) in
+                self.refreshFolderSubject.onNext(folder)
+            })
+//            if media.caption.isMediaFileExtension || media.caption.isImageFileExtension {
+//
+//            } else {
+//                UIApplication.topViewController()?.showAlertWith(title: "Invalid File", messsage: "Sorry, this is not a media file to support.\nPlease check this file is a media (image/video).")
+//            }
         }
     }
     func downloadURL(_ fileURL: URL, name: String? = nil, inFolder folder: FolderModel? = ModelManager.shared.libraryFolder, handler: (() ->())? = nil) {
@@ -287,17 +288,17 @@ extension DownloadManager: MZDownloadManagerDelegate {
             let media = Media(temporaryPath: destinationPath.path, isVideo: true)
             media.caption = fileName ?? destinationPath.lastPathComponent
             var extention: String = media.caption.fileExtension()
-            if let mimeType = downloadModel.task?.response?.mimeType {
-                if let ext = MimeType(mimeType: mimeType).ext {
-                    extention = ext
-                } else if mimeType.contains("audio") {
-                    extention = "mp3"
-                } else if mimeType.contains("video") {
-                    extention = "mp4"
-                } else if mimeType.contains("image") {
-                    extention = "jpg"
-                }
-            }
+//            if let mimeType = downloadModel.task?.response?.mimeType {
+//                if let ext = MimeType(mimeType: mimeType).ext {
+//                    extention = ext
+//                } else if mimeType.contains("audio") {
+//                    extention = "mp3"
+//                } else if mimeType.contains("video") {
+//                    extention = "mp4"
+//                } else if mimeType.contains("image") {
+//                    extention = "jpg"
+//                }
+//            }
             if extention == "" {
                 extention = "mp4"
             }

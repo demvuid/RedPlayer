@@ -7,18 +7,20 @@
 //
 
 import UIKit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 let GOOGLE_AdPresentUnitID = "ca-app-pub-9119259386159657/3994234495"
 
-extension GADInterstitial {
-    class func createAndLoadInterstitial(adPresentUnitID: String = GOOGLE_AdPresentUnitID) -> GADInterstitial {
-        let interstitial = GADInterstitial(adUnitID: adPresentUnitID)
+#if canImport(GoogleMobileAds)
+extension GADInterstitialAd {
+    class func createAndLoadInterstitial(adPresentUnitID: String = GOOGLE_AdPresentUnitID, completionHandler: @escaping (GADInterstitialAd?, Error?) -> Void) {
         let request = GADRequest()
-        interstitial.load(request)
-        return interstitial
+        GADInterstitialAd.load(withAdUnitID: adPresentUnitID, request: request, completionHandler: completionHandler)
     }
 }
+#endif
 
 protocol AdvertisePresentProtocol {
     func createAndLoadAdvertise()

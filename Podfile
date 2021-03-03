@@ -7,24 +7,24 @@ target 'BrowserVault' do
 
   # Pods for BrowserVault
 # Networking
-pod 'Alamofire', '4.8.1'
+pod 'Alamofire'
 # Architecture
-pod 'Viperit', :git => 'https://github.com/ferranabello/Viperit.git'
+pod 'Viperit'
 # Utilities
 pod 'SnapKit'
 pod 'SwiftGen'
 pod 'KeychainAccess'
 pod 'CocoaLumberjack/Swift'
-pod 'Google-Mobile-Ads-SDK', '7.39.0'
+#pod 'Google-Mobile-Ads-SDK'
 pod 'InAppPurchase'
 pod 'MZDownloadManager'
-pod 'YoutubeDirectLinkExtractor'
+pod 'YoutubeDirectLinkExtractor', :git => 'https://github.com/OscarVernis/YoutubeDirectLinkExtractor.git' 
 # UI
 pod 'SVPullToRefresh'
 pod 'MBProgressHUD'
 pod 'IQKeyboardManagerSwift'
 pod 'Reusable'
-pod 'Eureka', '4.3.0'
+pod 'Eureka'
 pod 'UICircularProgressRing'
 pod 'DKImagePickerController', :subspecs => ['PhotoGallery', 'Camera']
 pod 'NotificationBannerSwift'

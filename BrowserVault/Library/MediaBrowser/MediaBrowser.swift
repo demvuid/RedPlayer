@@ -10,7 +10,9 @@ import UIKit
 import AVKit
 import QuartzCore
 import DKImagePickerController
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 func floorcgf(x: CGFloat) -> CGFloat {
     return CGFloat(floorf(Float(x)))
@@ -221,7 +223,7 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
     public var mediaSelectedGridOffIcon: UIImage?
     
     /// Caching image count both side (e.g. when index 1, caching 0 and 2)
-    public var cachingImageCount = 1
+    public var cachingImageCount = 0
     
     /// Caching before MediaBrowser comes up, set
     public var preCachingEnabled = false {
@@ -1728,7 +1730,12 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
     }
 
     func playVideo(videoURL: URL, atPhotoIndex index: Int) {
-        NavigationManager.shared.showMediaPlayerURL(videoURL.absoluteString)
+        let avAsset = AVURLAsset(url: videoURL)
+        if avAsset.isPlayable == true {
+            NavigationManager.shared.showMediaPlayerURL(videoURL.absoluteString)
+        } else {
+            NavigationManager.shared.playRichFormatMovie(videoURL.absoluteString)
+        }
         return
         
         /*
@@ -2204,13 +2211,13 @@ open class MediaBrowser: UIViewController, UIScrollViewDelegate, UIActionSheetDe
             }
         })
         items.append(item)
-        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
+        /*item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
             guard let self = self else { return }
             self.isRefreshBrowser = true
             let module = AppModules.download.build()
             module.router.show(from: self, embedInNavController: true, setupData: self.folder)
         })
-        items.append(item)
+        items.append(item)*/
         return items
     }
     

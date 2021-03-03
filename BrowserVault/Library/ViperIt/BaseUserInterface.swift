@@ -8,7 +8,9 @@
 
 import UIKit
 import Viperit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 class BaseUserInterface: UserInterface {
     
@@ -42,13 +44,17 @@ class BaseUserInterface: UserInterface {
         return UIApplication.shared.statusBarFrame.height
     }
     
+    #if canImport(GoogleMobileAds)
     func showBannerView(_ bannerView: GADBannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bannerView)
         self.updateConstraintBannerView(bannerView)
     }
+    #endif
 }
 
+#if canImport(GoogleMobileAds)
 extension BaseUserInterface: BannerViewDelegate {
     
 }
+#endif

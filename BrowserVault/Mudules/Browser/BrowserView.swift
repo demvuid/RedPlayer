@@ -9,7 +9,9 @@
 import UIKit
 import Viperit
 import WebKit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 var estimatedProgressContext = 0
 let estimatedProgressKeyPath = "estimatedProgress"
@@ -20,7 +22,7 @@ private let unSelectedColor = UIColor.darkGray
 protocol BrowserViewInterface {
 }
 
-private let kTouchJavaScriptString: String = "document.ontouchstart=function(event){x=event.targetTouches[0].clientX;y=event.targetTouches[0].clientY;document.location=\"myweb:touch:start:\"+x+\":\"+y;};document.ontouchmove=function(event){x=event.targetTouches[0].clientX;y=event.targetTouches[0].clientY;document.location=\"myweb:touch:move:\"+x+\":\"+y;};document.ontouchcancel=function(event){document.location=\"myweb:touch:cancel\";};document.ontouchend=function(event){document.location=\"myweb:touch:end\";};"
+//private let kTouchJavaScriptString: String = "document.ontouchstart=function(event){x=event.targetTouches[0].clientX;y=event.targetTouches[0].clientY;document.location=\"myweb:touch:start:\"+x+\":\"+y;};document.ontouchmove=function(event){x=event.targetTouches[0].clientX;y=event.targetTouches[0].clientY;document.location=\"myweb:touch:move:\"+x+\":\"+y;};document.ontouchcancel=function(event){document.location=\"myweb:touch:cancel\";};document.ontouchend=function(event){document.location=\"myweb:touch:end\";};"
 //MARK: BrowserView Class
 final class BrowserView: BaseUserInterface {
     @IBOutlet weak var containSearchBar: UIView!
@@ -56,11 +58,13 @@ final class BrowserView: BaseUserInterface {
         self.favoritesButton.image = Asset.Browser.iconBrowserFavorites.image
         self.updateNavigationItem()
         self.updateFavoritesButton()
-        self.url = URL(string: self.defaultURLString!)!
+        self.url = URL(string: self.defaultURLString ?? BrowserDefaultURL)!
         self.loadURL(url)
+        #if canImport(GoogleMobileAds)
         PurchaseManager.shared.observerUpgradeVersion {[weak self] in
             self?.removeBannerFromSupperView()
         }
+        #endif
         NavigationManager.shared.createAndLoadAdvertise()
     }
     
@@ -222,7 +226,10 @@ final class BrowserView: BaseUserInterface {
         self.searchBar.delegate = self
         self.searchBar.keyboardType = .URL
         self.searchBar.returnKeyType = .go
-        self.searchBar.textField?.backgroundColor = .lightGray
+        self.searchBar.barStyle = .default
+        self.searchBar.searchBarStyle = .minimal
+        self.searchBar.sizeToFit()
+        self.searchBar.textField?.backgroundColor = .white
         self.searchBar.textField?.textAlignment = .center
         self.searchBar.barTintColor = UIColor.white
         self.searchBar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -253,7 +260,7 @@ final class BrowserView: BaseUserInterface {
     }
     func currentHistory() -> NewsHistory? {
         if let urlString = webView.url?.absoluteString {
-            return ModelManager.shared.fetchObject(NewsHistory.self, filter: NSPredicate(format: "papeURL == %@", urlString))
+            return ModelManager.shared.fetchObject(NewsHistory.self, filter: NSPredicate(format: "pageURL == %@", urlString))
         }
         return nil
     }
@@ -318,29 +325,20 @@ final class BrowserView: BaseUserInterface {
         guard url.validURLString() else {
             return
         }
-        if let videoURL = URL(string: url) {
-            self.startActivityLoading()
-            let task = URLSession.shared.dataTask(with: videoURL) {[unowned self] (data, reponse, error) in
-                DispatchQueue.main.async {
-                    self.stopActivityLoading()
-                    if let response = reponse as? HTTPURLResponse,
-                        let allHttpHeaders = response.allHeaderFields as? [String: String],
-                        let responseUrl = response.url, let reponseData = data {
-                        let htmlString = String(data: reponseData, encoding: .utf8)
-                        let cookies = HTTPCookie.cookies(withResponseHeaderFields: allHttpHeaders, for: responseUrl)
-                        for cookie in cookies {
-                            HTTPCookieStorage.shared.setCookie(cookie)
-                        }
-                        if let html = htmlString as NSString?, html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
-                            NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
-                        } else {
-                            self.url = videoURL
-                            self.loadURL(videoURL)
-                        }
-                    }
-                }
+        if let range = url.range(of: "HEADER_") {
+            let header = url[range.upperBound..<url.endIndex]
+            let index = header.index(of: "=")
+            if let index = index {
+                let nameHeader = String(header[header.startIndex...header.index(before: index)])
+                let afterIndex = header.index(after: index)
+                let valueHeader = String(header[afterIndex..<header.endIndex])
+                let headerJson: [String: String] = [nameHeader: valueHeader]
+                NavigationManager.shared.showVideoGoogleDriverURL(url, header: headerJson)
             }
-            task.resume()
+        } else if url.contains("googleapis.com") {
+            NavigationManager.shared.playRichFormatMovie(url)
+        } else {
+            NavigationManager.shared.showVideoGoogleDriverURL(url)
         }
     }
     
@@ -388,7 +386,7 @@ final class BrowserView: BaseUserInterface {
         
         if hidden {
             tabBarFrame.origin.y = UIScreen.main.bounds.maxY
-            bottomConstraintValue = tabBarFrame.height + self.toolBar.frame.height
+            bottomConstraintValue = tabBarFrame.height
             topConstraintValue = -(self.containSearchBar.frame.height + self.statusBarHeight())
         } else {
             tabBarFrame.origin.y = UIScreen.main.bounds.maxY - tabBar.frame.height
@@ -406,6 +404,7 @@ final class BrowserView: BaseUserInterface {
         })
     }
     
+    #if canImport(GoogleMobileAds)
     override func showBannerView(_ bannerView: GADBannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         containWebView.addSubview(bannerView)
@@ -427,6 +426,8 @@ final class BrowserView: BaseUserInterface {
             ])
     }
     
+    #endif
+    
 }
 
 extension BrowserView: AutocompleteViewControllerDelegate {
@@ -447,6 +448,7 @@ extension BrowserView: AutocompleteViewControllerDelegate {
 
 extension BrowserView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        #if canImport(GoogleMobileAds)
         if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
             self.updateOtherViews(hidden: true, animated: true)
             if self.bannerView == nil {
@@ -459,6 +461,13 @@ extension BrowserView: UIScrollViewDelegate {
             self.updateOtherViews(hidden: false, animated: true)
             self.removeBannerFromSupperView()
         }
+        #else
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0{
+            self.updateOtherViews(hidden: true, animated: true)
+        } else {
+            self.updateOtherViews(hidden: false, animated: true)
+        }
+        #endif
     }
 }
 
@@ -482,7 +491,7 @@ extension BrowserView: URLSessionDelegate, URLSessionTaskDelegate {
 }
 extension BrowserView: NewsHistoryTableViewControllerDelegate {
     func didSelectHistory(_ history: NewsHistory) {
-        self.url = URL(string: history.papeURL)!
+        self.url = URL(string: history.pageURL)!
         self.loadURL(url)
     }
 }
@@ -571,12 +580,13 @@ extension BrowserView: WKNavigationDelegate {
         webView.evaluateJavaScript("document.documentElement.outerHTML.toString()",
                                    completionHandler: { (html: Any?, error: Error?) in
                                     if error == nil, let html = html as? NSString {
+                                        Logger.debug("\(html)")
                                         if html.driverHasVideoStreamming(), let urlPlayer = html.htmlGoogleDriverLink() {
                                             NavigationManager.shared.showVideoGoogleDriverURL(urlPlayer, cookies: HTTPCookieStorage.shared.cookies)
                                         }
                                     }
         })
-        webView.evaluateJavaScript(kTouchJavaScriptString, completionHandler: nil)
+//        webView.evaluateJavaScript(kTouchJavaScriptString, completionHandler: nil)
         self.updateToolBar()
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         if let urlString = webView.url?.absoluteString {
@@ -589,7 +599,7 @@ extension BrowserView: WKNavigationDelegate {
             } else {
                 let currentHistory = NewsHistory()
                 currentHistory.name = self.navigationItem.title ?? ""
-                currentHistory.papeURL = urlString
+                currentHistory.pageURL = urlString
                 self.addHistory(currentHistory)
             }
         }
@@ -608,54 +618,55 @@ extension BrowserView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let requestString: String = navigationAction.request.url?.absoluteString
         {
+            Logger.debug("\(requestString)")
             if (requestString == "about:blank") {
                 decisionHandler(.cancel)
                 return
             }
-            var components: [String] = requestString.components(separatedBy: ":")
-            if (components.count > 1 && components[0] == "myweb") {
-                if (components[1] == "touch") {
-                    for subView in self.webView.scrollView.subviews {
-                        for recogniser in subView.gestureRecognizers ?? [] {
-                            if recogniser is UILongPressGestureRecognizer {
-                                subView.removeGestureRecognizer(recogniser)
-                            }
-                        }
-                    }
-                    if (components[2] == "start") {
-                        let ptX: Float = Float(components[3])!
-                        let ptY: Float = Float(components[4])!
-                        let js: String = "document.elementFromPoint(\(ptX), \(ptY)).tagName"
-                        webView.evaluateJavaScript(js,
-                                                   completionHandler: {[weak self] (tagName: Any?, error: Error?) in
-                                                    if error == nil, let tagName = tagName as? String {
-                                                        self?.imgURL = ""
-                                                        if (tagName == "IMG") {
-                                                            webView.evaluateJavaScript("document.elementFromPoint(\(ptX), \(ptY)).src",
-                                                                                       completionHandler: {(imgURL: Any?, error: Error?) in
-                                                                                        guard let self = self else { return }
-                                                                                        if error == nil, let imgURL = imgURL as? String {
-                                                                                            self.imgURL = imgURL
-                                                                                            self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.handleLongTouch), userInfo: nil, repeats: false)
-                                                                                        }
-                                                                }
-                                                            )
-                                                        }
-                                                    }
-                        })
-                    } else {
-                        if (components[2] == "move") {
-                        } else {
-                            if (components[2] == "end") {
-                                self.timer?.invalidate()
-                                self.timer = nil
-                            }
-                        }
-                    }
-                }
-                decisionHandler(.cancel)
-                return
-            }
+//            var components: [String] = requestString.components(separatedBy: ":")
+//            if (components.count > 1 && components[0] == "myweb") {
+//                if (components[1] == "touch") {
+//                    for subView in self.webView.scrollView.subviews {
+//                        for recogniser in subView.gestureRecognizers ?? [] {
+//                            if recogniser is UILongPressGestureRecognizer {
+//                                subView.removeGestureRecognizer(recogniser)
+//                            }
+//                        }
+//                    }
+//                    if (components[2] == "start") {
+//                        let ptX: Float = Float(components[3])!
+//                        let ptY: Float = Float(components[4])!
+//                        let js: String = "document.elementFromPoint(\(ptX), \(ptY)).tagName"
+//                        webView.evaluateJavaScript(js,
+//                                                   completionHandler: {[weak self] (tagName: Any?, error: Error?) in
+//                                                    if error == nil, let tagName = tagName as? String {
+//                                                        self?.imgURL = ""
+//                                                        if (tagName == "IMG") {
+//                                                            webView.evaluateJavaScript("document.elementFromPoint(\(ptX), \(ptY)).src",
+//                                                                                       completionHandler: {(imgURL: Any?, error: Error?) in
+//                                                                                        guard let self = self else { return }
+//                                                                                        if error == nil, let imgURL = imgURL as? String {
+//                                                                                            self.imgURL = imgURL
+//                                                                                            self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.handleLongTouch), userInfo: nil, repeats: false)
+//                                                                                        }
+//                                                                }
+//                                                            )
+//                                                        }
+//                                                    }
+//                        })
+//                    } else {
+//                        if (components[2] == "move") {
+//                        } else {
+//                            if (components[2] == "end") {
+//                                self.timer?.invalidate()
+//                                self.timer = nil
+//                            }
+//                        }
+//                    }
+//                }
+//                decisionHandler(.cancel)
+//                return
+//            }
         }
         decisionHandler(.allow)
     }
@@ -668,6 +679,7 @@ extension BrowserView: WKNavigationDelegate {
             for cookie in cookies {
                 HTTPCookieStorage.shared.setCookie(cookie)
             }
+            Logger.debug("\(responseUrl)")
         }
         decisionHandler(.allow)
     }
@@ -718,25 +730,65 @@ extension BrowserView: WKUIDelegate {
         if let url = navigationAction.request.url {
             debugPrint(url.absoluteString)
             var urlString = url.absoluteString
-            if let _ = urlString.range(of: "appmoviehd.info/link", options: .caseInsensitive), let index = urlString.index(of: "=") {
+            var shouldPlayDefault = false
+            if let _ = urlString.range(of: "/shared#", options: .caseInsensitive), let index = urlString.index(of: "#") {
+                
                 let cipherString = urlString[urlString.index(after: index)..<urlString.endIndex]
                 if let decryptedString = (cipherString as NSString).decryptAES() {
                     urlString = decryptedString
+                    shouldPlayDefault = true
                 }
             }
             if let escapedString = urlString.addingPercentEncoding(withAllowedCharacters:.urlQueryAllowed) {
-                //do something with escaped string
                 urlString = escapedString
             }
-            
-            if let _ = urlString.range(of: "drive.google.com") {
-                self.googleDriverURL = urlString
-                self.playGoogleDriverURLString(urlString)
-            } else if let _ = urlString.range(of: "appmoviehd.info/redirection") {
-                //                self.loadURLString(urlString)
-                self.getDirectionURLString(urlString)
-            }  else {
-                NavigationManager.shared.showMediaPlayerURL(urlString)
+            self.startActivityLoading()
+            ParseVideoManager.shared.getVideoIDFromDriveGoogleURL(urlString) { (videoId, cookies) in
+                if let videoId = videoId {
+                    var cookies: [HTTPCookie] = cookies
+                    ParseVideoManager.shared.getVideoURLFromVideoId(videoId) { (videoURL, cookiesDrive) in
+                        cookies.append(contentsOf: cookiesDrive)
+                        if let cachedCookies = HTTPCookieStorage.shared.cookies {
+                            for cookie in cachedCookies {
+                                if cookie.domain.contains("drive.google.com") {
+                                    cookies.append(cookie)
+                                }
+                            }
+                        }
+                        DispatchQueue.main.async {[weak self] in
+                            self?.stopActivityLoading()
+                            if let videoURL = videoURL {
+                                var header: [String: String] = HTTPCookie.requestHeaderFields(with: cookies)
+                                let urlComponents = URLComponents(string: urlString)
+                                if let cookie = urlComponents?.queryItems?.first(where: {$0.name.uppercased() == "COOKIE"})?.value {
+                                    if var valueCookie = header["Cookie"] {
+                                        if valueCookie.contains(cookie) == false {
+                                            valueCookie += "; \(cookie)"
+                                            header["Cookie"] = valueCookie
+                                        }
+                                    } else {
+                                        header["Cookie"] = cookie
+                                    }
+                                }
+                                NavigationManager.shared.showVideoGoogleDriverURL(videoURL, header: header)
+                            } else {
+                                NavigationManager.shared.showMediaPlayerURL(urlString)
+                            }
+                        }
+                    }
+                } else {
+                    DispatchQueue.main.async {[weak self] in
+                        self?.stopActivityLoading()
+                        if shouldPlayDefault {
+                            self?.googleDriverURL = urlString
+                            self?.playGoogleDriverURLString(urlString)
+                        } else if let _ = urlString.range(of: "/redirection") {
+                            self?.getDirectionURLString(urlString)
+                        }  else {
+                            NavigationManager.shared.showMediaPlayerURL(urlString)
+                        }
+                    }
+                }
             }
         }
         

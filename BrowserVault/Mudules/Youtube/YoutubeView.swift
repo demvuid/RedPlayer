@@ -9,7 +9,9 @@
 import UIKit
 import Viperit
 import SnapKit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 //MARK: - Public Interface Protocol
 protocol YoutubeViewInterface: class {
@@ -34,7 +36,8 @@ final class YoutubeView: BaseUserInterface {
     }
     
     override func setupUI() {
-        self.showBanner()
+        
+        self.showBanner(adUnitID: "ca-app-pub-9119259386159657/4516390318")
         self.currentPage = 0
         self.categories.categoryDelegate = self
         self.setupPageView()
@@ -89,7 +92,7 @@ final class YoutubeView: BaseUserInterface {
             }
         }
     }
-    
+    #if canImport(GoogleMobileAds)
     override func showBannerView(_ bannerView: GADBannerView) {
         self.view.addSubview(bannerView)
         bannerView.snp.makeConstraints { (make) in
@@ -99,6 +102,7 @@ final class YoutubeView: BaseUserInterface {
             make.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
     }
+    #endif
 }
 
 extension YoutubeView: BaseMenuCategoriesViewDelegate {

@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -45,6 +45,10 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -58,5 +62,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+<!--    <key>GADApplicationIdentifier</key>-->
+<!--    <string>ca-app-pub-9119259386159657~6928176134</string>-->
+<!--    <key>SKAdNetworkItems</key>-->
+<!--      <array>-->
+<!--        <dict>-->
+<!--          <key>SKAdNetworkIdentifier</key>-->
+<!--          <string>cstr6suwn9.skadnetwork</string>-->
+<!--        </dict>-->
+<!--      </array>-->
+<!--    <key>NSUserTrackingUsageDescription</key>-->
+<!--    <string>This identifier will be used to deliver personalized ads to you.</string>-->
 </dict>
 </plist>

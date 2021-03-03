@@ -11,6 +11,7 @@ import UIKit
 
 class SystemService {
     static var sharedInstance = SystemService()
+    var timeIntervalAdv: Double = 5.0
     func categoriesMenuWithCompletionBlock(_ handler: @escaping (MenuCategories?, Error?) -> ()) {
         let serviceParams = ServiceParams(baseURL: URL(string: "https://dl.dropboxusercontent.com")!, pathURL: "s/7yu1cr7d00ndupw/category.json")
         serviceParams.requestMethod = .get

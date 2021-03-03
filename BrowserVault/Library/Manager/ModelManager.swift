@@ -88,7 +88,7 @@ class ModelManager {
     
     func addObject<T: Object>(_ object: T) {
         realm.beginWrite()
-        realm.add(object, update: true)
+        realm.add(object, update: .modified)
         realm.commitWriting()
     }
     

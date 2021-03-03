@@ -69,6 +69,18 @@ open class Media: Object {
     private var assetRequestID = PHInvalidImageRequestID
 
     /// init with image
+    public required init() {
+        super.init()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePhotoLoadingComplete),
+            name: NSNotification.Name(rawValue: "thumbnailIComplete"),
+            object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     public convenience init(image: UIImage) {
         self.init()
         self.image = image
@@ -178,6 +190,20 @@ open class Media: Object {
             imageLoadingComplete()
         }
     }
+    
+    @objc func handlePhotoLoadingComplete(notification: NSNotification) {
+        if let mediaThumbnail = notification.object as? VLCMediaThumbnailer {
+            let mediaUrl = mediaThumbnail.media.url
+            if mediaUrl.absoluteString == self.photoURL?.absoluteString {
+                if let thumbnailURL = VLCMediaThumbnailerCache.shared.getThumbnailURL(mediaUrl.path as NSString) {
+                    DispatchQueue.main.async() {[weak self] in
+                        self?.underlyingImage = UIImage(contentsOfFile: thumbnailURL.path)
+                        self?.imageLoadingComplete()
+                    }
+                }
+            }
+        }
+    }
 
     // Load from local file
     private func performLoadUnderlyingImageAndNotifyWithWebURL(url: URL) {
@@ -209,7 +235,17 @@ open class Media: Object {
         if self.isVideo {
             DispatchQueue.global(qos: .default).async {
                 let asset = AVAsset(url: url)
-                let image: UIImage? = asset.videoThumbnail
+                let image: UIImage?
+                if asset.isPlayable {
+                    image = asset.videoThumbnail
+                } else {
+                    if let url = VLCMediaThumbnailerCache.shared.getThumbnailURL(url.absoluteString as NSString) {
+                        image = UIImage(contentsOfFile: url.path)
+                    } else {
+                        image = nil
+                        VLCMediaThumbnailerCache.shared.getVideoThumbnail(url.absoluteString as NSString)
+                    }
+                }
                 DispatchQueue.main.async() {[weak self] in
                     guard let self = self else {return }
                     self.underlyingImage = image

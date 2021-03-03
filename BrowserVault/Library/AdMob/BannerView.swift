@@ -7,24 +7,29 @@
 //
 
 import UIKit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 let GOOGLE_Admob_ID = "ca-app-pub-9119259386159657~6928176134"
 let GOOGLE_AdUnitID = "ca-app-pub-9119259386159657/3047150181"
 
+#if canImport(GoogleMobileAds)
 protocol BannerViewDelegate {
     func bannerDidShow(_ banner: GADBannerView)
     func bannerLoadFailed(_ banner: GADBannerView)
 }
 
-extension DFPBannerView {
+
+
+extension GADBannerView {
     
-    class func instance() -> DFPBannerView {
-        var banner: DFPBannerView!
+    class func instance() -> GADBannerView {
+        var banner: GADBannerView!
         if UIDevice.current.userInterfaceIdiom == .pad {
-            banner = DFPBannerView(adSize: kGADAdSizeLeaderboard)
+            banner = GADBannerView(adSize: kGADAdSizeLeaderboard)
         } else {
-            banner = DFPBannerView(adSize: kGADAdSizeBanner)
+            banner = GADBannerView(adSize: kGADAdSizeBanner)
         }
         return banner
     }
@@ -37,32 +42,37 @@ extension DFPBannerView {
     }
     
     func loadRequest() {
-        let request = DFPRequest()
+        let request = GADRequest()
         self.load(request)
     }
 
 }
 
-
+#endif
 extension BaseUserInterface {
     private struct ExportKeys {
         static fileprivate var bannerView: UInt8 = 0
     }
 
-    var bannerView: DFPBannerView? {
-        get { return objc_getAssociatedObject(self, &ExportKeys.bannerView) as? DFPBannerView }
+    #if canImport(GoogleMobileAds)
+    var bannerView: GADBannerView? {
+        get { return objc_getAssociatedObject(self, &ExportKeys.bannerView) as? GADBannerView }
         set { objc_setAssociatedObject(self, &ExportKeys.bannerView, newValue, .OBJC_ASSOCIATION_RETAIN) }
     }
+    #endif
     
     func showBanner(adUnitID: String = GOOGLE_AdUnitID) {
         guard UserSession.shared.isUpgradedVersion() == false else {
             return
         }
-        self.bannerView = DFPBannerView.instance()
+        #if canImport(GoogleMobileAds)
+        self.bannerView = GADBannerView.instance()
         self.bannerView?.showBannerFromController(self, adUnitID: adUnitID)
+        #endif
     }
 }
 
+#if canImport(GoogleMobileAds)
 extension BannerViewDelegate where Self: BaseUserInterface {
     
     func bannerDidShow(_ banner: GADBannerView) {
@@ -125,22 +135,22 @@ extension BaseUserInterface: GADBannerViewDelegate {
     }
     
     /// Tells the delegate an ad request failed.
-    public func adView(_ bannerView: GADBannerView,
-                       didFailToReceiveAdWithError error: GADRequestError) {
+    func bannerView(_ bannerView: GADBannerView,
+                didFailToReceiveAdWithError error: Error) {
         self.bannerLoadFailed(bannerView)
     }
     
     /// Tells the delegate that a full-screen view will be presented in response
     /// to the user clicking on an ad.
-    public func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+    public func bannerViewWillPresentScreen(_ bannerView: GADBannerView) {
     }
     
     /// Tells the delegate that the full-screen view will be dismissed.
-    public func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+    public func bannerViewWillDismissScreen(_ bannerView: GADBannerView) {
     }
     
     /// Tells the delegate that the full-screen view has been dismissed.
-    public func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+    public func bannerViewDidDismissScreen(_ bannerView: GADBannerView) {
         
     }
     
@@ -149,3 +159,5 @@ extension BaseUserInterface: GADBannerViewDelegate {
     public func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
     }
 }
+
+#endif

@@ -63,7 +63,7 @@ class NewsHistoryTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SubTableViewCell.self)
         let newHistory = self.newsHistories[indexPath.row]
         cell.textLabel?.text = newHistory.name
-        cell.detailTextLabel?.text = newHistory.papeURL
+        cell.detailTextLabel?.text = newHistory.pageURL
         return cell
     }
     

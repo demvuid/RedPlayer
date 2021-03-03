@@ -7,13 +7,28 @@
 //
 
 import Foundation
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
+import AppTrackingTransparency
+import AdSupport
 
 @objc extension UIApplication {
     
     class func configGoogleAdmob() {
-        
-        GADMobileAds.configure(withApplicationID: GOOGLE_Admob_ID)
+        #if canImport(GoogleMobileAds)
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        self.requestIDFA()
+        #endif
+    }
+    
+    class func requestIDFA() {
+        if #available(iOS 14, *) {
+            ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+                // Tracking authorization completed. Start loading ads here.
+                // loadAd()
+            })
+        }
     }
     
     class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {

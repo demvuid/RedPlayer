@@ -8,7 +8,9 @@
 
 import UIKit
 import Viperit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 //MARK: - Public Interface Protocol
 protocol FilesViewInterface {
@@ -62,9 +64,13 @@ final class FilesView: BaseUserInterface {
         self.updateEditButton()
     }
     
+    #if canImport(GoogleMobileAds)
+    
     override func showBannerView(_ bannerView: GADBannerView) {
         self.filesForm.tableView.tableHeaderView = bannerView
     }
+    
+    #endif
 }
 
 

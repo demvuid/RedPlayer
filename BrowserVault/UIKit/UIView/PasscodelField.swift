@@ -294,6 +294,14 @@ public class PasscodelField: UIControl, UIKeyInput {
         }
     }
 
+    public override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+            if action == #selector(UIResponderStandardEditActions.copy(_:)) || action == #selector(UIResponderStandardEditActions.selectAll(_:)) || action == #selector(UIResponderStandardEditActions.paste(_:)) {
+                return false
+            }
+            // Default
+            return super.canPerformAction(action, withSender: sender)
+        }
+
 
 }
 

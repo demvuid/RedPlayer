@@ -11,7 +11,7 @@ import YoutubeDirectLinkExtractor
 
 class ParseVideoManager {
     static var shared = ParseVideoManager()
-    let provider = YoutubeDirectLinkExtractor()
+    lazy var provider = YoutubeDirectLinkExtractor()
     func parseVideoLinkURL(_ urlString: String, handler: @escaping (String?, Error?) -> ()) {
         provider.extractInfo(for: .urlString(urlString), success: { info in
             handler(info.highestQualityPlayableLink, nil)
@@ -44,5 +44,40 @@ class ParseVideoManager {
         }) { (error) in
             handler(nil, error)
         }
+    }
+    
+    
+    func getVideoIDFromDriveGoogleURL(_ url: String, completion: @escaping (String?, [HTTPCookie]) -> Void) {
+        guard url.contains("drive.google.com"), let range = url.range(of: "file/d/"), let videoId = String(url[range.upperBound..<url.endIndex]).split(separator: "/").first else {
+            completion(nil, [])
+            return
+        }
+        let videoIdString = String(videoId)
+        completion(videoIdString, [])
+    }
+    
+    func getVideoURLFromVideoId(_ videoId: String, completion: @escaping (String?, [HTTPCookie]) -> Void) {
+        let urlVideoInfo = "https://drive.google.com/get_video_info?docid=" + videoId
+        let downloadTask = URLSession.shared.dataTask(with: URL(string: urlVideoInfo)!) { (data, response, error) in
+            if let data = data,
+               let string = String(data: data, encoding: .utf8)?.removingPercentEncoding {
+                if let firstRange = string.range(of: "fmt_stream_map"), let secondRange = string.range(of: "url_encoded_fmt_stream_map") {
+                    if let videoString = string[firstRange.upperBound..<secondRange.lowerBound].split(separator: ",").first?.split(separator: "|").last {
+                        let videoURL = String(videoString)
+                        if let httpResponse = response as? HTTPURLResponse, let responseUrl = httpResponse.url, let allHttpHeaders = httpResponse.allHeaderFields as? [String: String] {
+                            let cookies = HTTPCookie.cookies(withResponseHeaderFields: allHttpHeaders, for: responseUrl)
+                            completion(videoURL, cookies)
+                        } else {
+                            completion(videoURL, [])
+                        }
+                    } else {
+                        completion(nil, [])
+                    }
+                }
+            } else {
+                completion(nil, [])
+            }
+        }
+        downloadTask.resume()
     }
 }

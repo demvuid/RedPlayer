@@ -9,7 +9,9 @@
 import UIKit
 import Viperit
 import MessageUI
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 
 enum SettingsViewSections: Int
 {
@@ -52,9 +54,12 @@ final class SettingsView: BaseUserInterface {
         // Dispose of any resources that can be recreated.
     }
     
+    #if canImport(GoogleMobileAds)
     override func showBannerView(_ bannerView: GADBannerView) {
         self.settingForm.tableView.tableHeaderView = bannerView
     }
+    
+    #endif
 }
 
 extension SettingsView: MFMailComposeViewControllerDelegate {

@@ -8,7 +8,9 @@
 
 import UIKit
 import Viperit
+#if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#endif
 import RxSwift
 import RxCocoa
 
@@ -46,12 +48,16 @@ final class DownloadView: BaseUserInterface {
         PurchaseManager.shared.observerUpgradeVersion {[weak self] in
             self?.formView.tableView.tableHeaderView = nil
         }
+        #if canImport(GoogleMobileAds)
         NavigationManager.shared.createAndLoadAdvertise()
+        #endif
     }
     
+    #if canImport(GoogleMobileAds)
     override func showBannerView(_ bannerView: GADBannerView) {
         self.formView.tableView.tableHeaderView = bannerView
     }
+    #endif
 }
 
 //MARK: - Public interface
@@ -61,7 +67,7 @@ extension DownloadView: DownloadViewInterface {
     }
     
     func handlerPlayerURL(_ url: String) {
-        NavigationManager.shared.showMediaPlayerURL(url)
+        NavigationManager.shared.handlePlayURL(url)
     }
     
     func handlerDownloadURL(_ url: URL, fileName: String?) {
@@ -72,6 +78,7 @@ extension DownloadView: DownloadViewInterface {
             countPresentAdv += 1
         }
         UserSession.shared.countPlayVideo = countPresentAdv
+        #if canImport(GoogleMobileAds)
         if countPresentAdv == 0 {
             NavigationManager.shared.handlerDismissAdvertisement = {[weak self] in
                 guard let self = self else { return }
@@ -93,6 +100,15 @@ extension DownloadView: DownloadViewInterface {
             })
             self.presenter.cancelScreen()
         }
+        #else
+        DownloadManager.shared.downloadURL(url,
+                                           name: fileName,
+                                           inFolder: self.behaviourFolder.value,
+                                           handler: {[weak self] in
+                                            self?.formView.reloadFolderSection()
+        })
+        self.presenter.cancelScreen()
+        #endif
     }
     
     func updateSaveableFolder(_ folder: FolderModel) {

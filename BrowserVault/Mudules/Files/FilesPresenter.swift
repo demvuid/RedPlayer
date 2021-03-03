@@ -94,12 +94,12 @@ class FilesPresenter: Presenter {
             })
         })
         items.append(item)
-        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
-            guard let self = self else { return }
-            let module = AppModules.download.build()
-            module.router.show(from: self._view, embedInNavController: true, setupData: self.saveableFolder)
-        })
-        items.append(item)
+//        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
+//            guard let self = self else { return }
+//            let module = AppModules.download.build()
+//            module.router.show(from: self._view, embedInNavController: true, setupData: self.saveableFolder)
+//        })
+//        items.append(item)
         return items
     }
     

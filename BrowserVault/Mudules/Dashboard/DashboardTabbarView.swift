@@ -68,12 +68,12 @@ extension DashboardTabbarView: UITabBarControllerDelegate {
             }
         })
         items.append(item)
-        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
-            guard let self = self else { return }
-            let module = AppModules.download.build()
-            module.router.show(from: self, embedInNavController: true)
-        })
-        items.append(item)
+//        item = AlertActionItem(title: L10n.Folder.Download.File.network, style: .default, handler: {[weak self] (_) in
+//            guard let self = self else { return }
+//            let module = AppModules.download.build()
+//            module.router.show(from: self, embedInNavController: true)
+//        })
+//        items.append(item)
         item = AlertActionItem(title: L10n.Folder.Browse.File.network, style: .default, handler: {[weak self] (_) in
             guard let self = self else { return }
             let module = AppModules.download.build()
