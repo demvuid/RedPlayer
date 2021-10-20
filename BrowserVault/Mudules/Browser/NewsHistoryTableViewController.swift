@@ -18,18 +18,14 @@ class NewsHistoryTableViewController: UITableViewController {
     var showFavorites: Bool = false
     var newsHistories: [NewsHistory]!
     var delegate: NewsHistoryTableViewControllerDelegate?
-    
+    var segment = UISegmentedControl(items: ["History", "Favorites"])
     override func viewDidLoad() {
         super.viewDidLoad()
-        if showFavorites {
-            self.navigationItem.title = "Favorites"
-            self.newsHistories = ModelManager.shared.fetchObjects(NewsHistory.self, filter: NSPredicate(format: "isFavorites == %@", NSNumber(value: showFavorites))).sorted(byKeyPath: "dateUpdated", ascending: false).map({$0})
-        } else {
-            self.navigationItem.title = "History"
-            self.newsHistories = ModelManager.shared.fetchObjects(NewsHistory.self).sorted(byKeyPath: "dateUpdated", ascending: false).map({$0})
-        }
+        self.segment.addTarget(self, action: #selector(changeHistory), for: .valueChanged)
         self.updateNavigationItem()
         self.tableView.register(cellType: SubTableViewCell.self)
+        self.segment.selectedSegmentIndex = 0
+        self.newsHistories = ModelManager.shared.fetchObjects(NewsHistory.self, filter: NSPredicate(format: "isFavorites == %@", NSNumber(value: showFavorites))).sorted(byKeyPath: "dateUpdated", ascending: false).map({$0})
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,6 +36,13 @@ class NewsHistoryTableViewController: UITableViewController {
     func updateNavigationItem() {
         let leftButtonItem = UIBarButtonItem(image: Asset.General.iconClose.image, style: .done, target: self, action: #selector(closeView))
         self.navigationItem.leftBarButtonItem = leftButtonItem
+        self.navigationItem.titleView = self.segment
+    }
+    
+    @objc func changeHistory() {
+        self.showFavorites = self.segment.selectedSegmentIndex == 1
+        self.newsHistories = ModelManager.shared.fetchObjects(NewsHistory.self, filter: NSPredicate(format: "isFavorites == %@", NSNumber(value: showFavorites))).sorted(byKeyPath: "dateUpdated", ascending: false).map({$0})
+        self.tableView.reloadData()
     }
     
     @objc func closeView() {

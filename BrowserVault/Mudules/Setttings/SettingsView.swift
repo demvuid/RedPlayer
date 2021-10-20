@@ -12,6 +12,7 @@ import MessageUI
 #if canImport(GoogleMobileAds)
 import GoogleMobileAds
 #endif
+import StoreKit
 
 enum SettingsViewSections: Int
 {
@@ -68,6 +69,12 @@ extension SettingsView: MFMailComposeViewControllerDelegate {
             self.showAlertWith(title: "Success", messsage: "The email has been sent successfully.")
         }
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension SettingsView: SKStoreProductViewControllerDelegate {
+    func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
+        viewController.dismiss(animated: true, completion: nil)
     }
 }
 //MARK: - Public interface

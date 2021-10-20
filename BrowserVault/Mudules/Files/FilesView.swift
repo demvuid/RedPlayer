@@ -51,6 +51,9 @@ final class FilesView: BaseUserInterface {
         } else {
             self.view.addSubview(self.filesForm.view)
             self.addChild(self.filesForm)
+            self.filesForm.view.snp.makeConstraints { (make) in
+                make.edges.equalToSuperview()
+            }
         }
     }
     

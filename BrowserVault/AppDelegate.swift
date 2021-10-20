@@ -8,6 +8,8 @@
 
 import UIKit
 import AVKit
+import Siren
+import ReviewKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -28,6 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             entryModule.router.show(inWindow: self.window)
         }
         NavigationManager.shared.createAndLoadAdvertise()
+        PurchaseManager.shared.setupIAP()
+        
+        let ruleManager = RulesManager(majorUpdateRules: .critical, minorUpdateRules: .critical, patchUpdateRules: .critical, revisionUpdateRules: .critical, showAlertAfterCurrentVersionHasBeenReleasedForDays: 0)
+        Siren.shared.rulesManager = ruleManager
+        Siren.shared.wail()
+
+        ReviewManager.default.incrementOccurrence(for: .appLaunches)
+        
         return true
     }
 

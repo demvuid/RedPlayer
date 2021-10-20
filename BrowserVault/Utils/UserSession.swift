@@ -28,10 +28,11 @@ fileprivate let ENABLE_TOUCHID_KEY = "enableTouchdId"
 
 fileprivate let defaultPIN = "cdapanh123nfhtl1gacp154(@98431nr"
 
-fileprivate let UPGRADE_VERSION_KEY = "upgradeVersion"
+fileprivate let UPGRADE_VERSION_KEY = "com.amplayer.browservault_upgradeVersion"
 
 fileprivate let NUMBER_PLAY_VIDEO_KEY = "NumberPlayVideo"
 fileprivate let NUMBER_DETAIL_FOLDER_KEY = "NumberDetailFolder"
+fileprivate let DEVICE_ID_KEY = "device_id"
 
 class UserSession {
     static let shared = UserSession()
@@ -39,7 +40,7 @@ class UserSession {
     private var keyChainStore: Keychain!
     
     private init() {
-        let service = "ls3.lifesitevault.keychain"
+        let service = "com.amplayer.browservault.keychain"
         self.keyChainStore = Keychain(service: service)
     }
     
@@ -188,15 +189,22 @@ class UserSession {
         }
     }
     
+    func disabledVersion() {
+        do {
+            try self.keyChainStore.set("Disable", key: UPGRADE_VERSION_KEY)
+        } catch let error {
+            Logger.debug("Error: \(error.localizedDescription)")
+        }
+    }
+    
     func isUpgradedVersion() -> Bool {
-        return true
-//        if let enable = try? self.keyChainStore?.get(UPGRADE_VERSION_KEY) {
-//            if enable == "Enable" {
-//                return true
-//            }
-//
-//        }
-//        return false
+        if let enable = try? self.keyChainStore?.get(UPGRADE_VERSION_KEY) {
+            if enable == "Enable" {
+                return true
+            }
+
+        }
+        return false
     }
     
     /// Get the username
@@ -215,5 +223,15 @@ class UserSession {
     func setCredentials(username: String, password: String) {
         self.setUsername(username)
         self.setPassword(password: password)
+    }
+    
+    func getDeviceId() -> String {
+        if let store = self.keyChainStore, let deviceId = try? store.get(DEVICE_ID_KEY), let currentDeviceId = deviceId {
+            return currentDeviceId
+        }
+        let currentDevice = UIDevice.current
+        let deviceId = currentDevice.identifierForVendor?.uuidString ?? UUID().uuidString
+        try? self.keyChainStore.set(deviceId, key: DEVICE_ID_KEY)
+        return deviceId
     }
 }

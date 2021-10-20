@@ -1,15 +1,14 @@
 // swiftlint:disable all
-// Generated using SwiftGen, by O.Halligon — https://github.com/SwiftGen/SwiftGen
+// Generated using SwiftGen — https://github.com/SwiftGen/SwiftGen
 
 import Foundation
 
-// swiftlint:disable superfluous_disable_command
-// swiftlint:disable file_length
+// swiftlint:disable superfluous_disable_command file_length implicit_return
 
 // MARK: - Strings
 
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:disable nesting type_body_length type_name
+// swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
 
   internal enum Downloads {
@@ -195,8 +194,8 @@ internal enum L10n {
       /// Authenticate with Face ID
       internal static let faceid = L10n.tr("Localizable", "passcode.biometry.faceid")
       /// Unlock access to %@ app
-      internal static func reason(_ p1: String) -> String {
-        return L10n.tr("Localizable", "passcode.biometry.reason", p1)
+      internal static func reason(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "passcode.biometry.reason", String(describing: p1))
       }
       /// Authenticate with Touch ID
       internal static let touchid = L10n.tr("Localizable", "passcode.biometry.touchid")
@@ -213,8 +212,8 @@ internal enum L10n {
     }
     internal enum Create {
       /// Use this passcode to unlock %@ app
-      internal static func description(_ p1: String) -> String {
-        return L10n.tr("Localizable", "passcode.create.description", p1)
+      internal static func description(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "passcode.create.description", String(describing: p1))
       }
       /// Enter your passcode
       internal static let enter = L10n.tr("Localizable", "passcode.create.enter")
@@ -303,15 +302,25 @@ internal enum L10n {
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
-// swiftlint:enable nesting type_body_length type_name
+// swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
 
 // MARK: - Implementation Details
 
 extension L10n {
   private static func tr(_ table: String, _ key: String, _ args: CVarArg...) -> String {
-    let format = NSLocalizedString(key, tableName: table, bundle: Bundle(for: BundleToken.self), comment: "")
+    let format = BundleToken.bundle.localizedString(forKey: key, value: nil, table: table)
     return String(format: format, locale: Locale.current, arguments: args)
   }
 }
 
-private final class BundleToken {}
+// swiftlint:disable convenience_type
+private final class BundleToken {
+  static let bundle: Bundle = {
+    #if SWIFT_PACKAGE
+    return Bundle.module
+    #else
+    return Bundle(for: BundleToken.self)
+    #endif
+  }()
+}
+// swiftlint:enable convenience_type

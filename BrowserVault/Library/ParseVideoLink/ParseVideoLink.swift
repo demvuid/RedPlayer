@@ -60,10 +60,34 @@ class ParseVideoManager {
         let urlVideoInfo = "https://drive.google.com/get_video_info?docid=" + videoId
         let downloadTask = URLSession.shared.dataTask(with: URL(string: urlVideoInfo)!) { (data, response, error) in
             if let data = data,
-               let string = String(data: data, encoding: .utf8)?.removingPercentEncoding {
+               var string = String(data: data, encoding: .utf8)?.removingPercentEncoding {
                 if let firstRange = string.range(of: "fmt_stream_map"), let secondRange = string.range(of: "url_encoded_fmt_stream_map") {
-                    if let videoString = string[firstRange.upperBound..<secondRange.lowerBound].split(separator: ",").first?.split(separator: "|").last {
-                        let videoURL = String(videoString)
+                    string = String(string[firstRange.upperBound..<secondRange.lowerBound])
+                    if string.hasPrefix("=") {
+                        string = String(string.dropFirst())
+                    }
+                    var urlArray = string.split(separator: ",")
+                    let qualityItags = ["37", "22", "59", "18"]
+                    
+                    var videoURL: String? = nil
+                    
+                    for itag in qualityItags {
+                        for url in urlArray {
+                            if url.contains(itag), let itagURL = url.split(separator: "|").last {
+                                videoURL = String(itagURL)
+                                break
+                            }
+                        }
+                        if videoURL != nil {
+                            break
+                        }
+                    }
+                    if videoURL == nil, let itagURL = urlArray.last?.split(separator: "|").last {
+                        videoURL = String(itagURL)
+                    }
+                    
+                    
+                    if let videoURL = videoURL {
                         if let httpResponse = response as? HTTPURLResponse, let responseUrl = httpResponse.url, let allHttpHeaders = httpResponse.allHeaderFields as? [String: String] {
                             let cookies = HTTPCookie.cookies(withResponseHeaderFields: allHttpHeaders, for: responseUrl)
                             completion(videoURL, cookies)

@@ -43,6 +43,7 @@ class NavigationManager: NSObject {
         
         let playerViewController = PlayerViewController()
         playerViewController.player = videoPlayer
+        #if canImport(GoogleMobileAds)
         UIApplication.topViewController()?.present(playerViewController, animated: true) {
             NavigationManager.shared.presentAdverstive(topViewController: playerViewController)
         }
@@ -52,6 +53,11 @@ class NavigationManager: NSObject {
         playerViewController.dismissBlock = {
             NavigationManager.shared.presentAdverstive(topViewController: UIApplication.shared.keyWindow?.rootViewController)
         }
+        #else
+        UIApplication.topViewController()?.present(playerViewController, animated: true) {[weak playerViewController] in
+            playerViewController?.player?.play()
+        }
+        #endif
     }
     
     func playRichFormatMovie(_ url: String, dismissBlock: (() -> ())? = nil) {

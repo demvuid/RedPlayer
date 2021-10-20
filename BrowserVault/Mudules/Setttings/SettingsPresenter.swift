@@ -10,14 +10,15 @@ import Foundation
 import Viperit
 import RxSwift
 import MessageUI
+import StoreKit
 
 private let reviewAppStoreURLFormat = "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=%d&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8";
 class SettingsPresenter: Presenter {
     override func viewHasLoaded() {
         super.viewHasLoaded()
-        PurchaseManager.shared.observerFallback {
-            
-        }
+//        PurchaseManager.shared.observerFallback {
+//
+//        }
     }
     var observerSelected: AnyObserver<SettingsFormFields> {
         return AnyObserver<SettingsFormFields>(eventHandler: { [weak self] event in
@@ -44,6 +45,12 @@ class SettingsPresenter: Presenter {
                     self?.interactor.restoreApp()
                 case .about:
                     self?._view.performSegue(withIdentifier: "about_app", sender: nil)
+                case .manageSubscriptions:
+                    self?.getSubscriptions()
+                case .privacy:
+                    self?.openTermsAndPrivacy()
+                case .moreapp:
+                    self?.openMoreApp()
                 }
             default: break
             }
@@ -57,6 +64,14 @@ class SettingsPresenter: Presenter {
         let activityController = UIActivityViewController(activityItems: objectToShare, applicationActivities: nil)
         self._view.present(activityController, animated: true, completion: nil)
     }
+    
+    func openMoreApp() {
+        let storeProduct = SKStoreProductViewController()
+        storeProduct.delegate = self._view as? SKStoreProductViewControllerDelegate
+        storeProduct.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: "910797320"], completionBlock: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.present(storeProduct, animated: true, completion: nil)
+    }
+    
     func openEmailAttached() {
         if MFMailComposeViewController.canSendMail() {
             let mailComposeViewController = self.configuredMailComposeViewController()
@@ -90,15 +105,16 @@ class SettingsPresenter: Presenter {
         let appVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         mailCompose.setSubject("[\(appName!) \(appVersion!)] Suggestion")
         mailCompose.setMessageBody("Suggestion for \(appName!)", isHTML: true)
-        mailCompose.setToRecipients(["amplayer.mobi@gmail.com"])
+        mailCompose.setToRecipients(["browservault.help@gmail.com"])
         return mailCompose
     }
     
     func alertError(_ error: Error) {
         self._view.stopActivityLoading()
-        if !PurchaseManager.shared.ignoreError(error) {
-            self._view.showAlertWith(errorString: error.localizedDescription)
-        }
+        self._view.showAlertWith(errorString: error.localizedDescription)
+//        if !PurchaseManager.shared.ignoreError(error) {
+//            self._view.showAlertWith(errorString: error.localizedDescription)
+//        }
     }
     
     func purchasedApp() {
@@ -109,6 +125,29 @@ class SettingsPresenter: Presenter {
     func restorePurchasedApp() {
         self._view.stopActivityLoading()
         self._view.showAlertWith(title: L10n.Generic.success, messsage: L10n.Restore.Purchase.sucesss)
+    }
+    
+    func getSubscriptions() {
+        self._view.startActivityLoading()
+        PurchaseManager.shared.verifyAccountPro { [weak self] (isPurchased, error) in
+            DispatchQueue.main.async {[weak self] in
+                self?._view.stopActivityLoading()
+                let controller = SubscriptionViewController()
+                controller.modalPresentationStyle = .fullScreen
+                self?._view.present(controller, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func openTermsAndPrivacy() {
+        let path = Bundle.main.url(forResource: "index", withExtension: "html")
+        guard let url = path else {
+            return
+        }
+        let controller = WebViewController(localURL: url)
+        let navController = UINavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
+        self._view.present(navController, animated: true, completion: nil)
     }
 }
 

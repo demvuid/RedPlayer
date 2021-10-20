@@ -7,16 +7,17 @@ target 'BrowserVault' do
 
   # Pods for BrowserVault
 # Networking
-pod 'Alamofire'
+pod 'Alamofire', '4.8.1'
 # Architecture
-pod 'Viperit'
+pod 'Viperit', '1.2.0'
 # Utilities
-pod 'SnapKit'
+pod 'SnapKit', '4.2.0'
 pod 'SwiftGen'
 pod 'KeychainAccess'
-pod 'CocoaLumberjack/Swift'
+pod 'CocoaLumberjack/Swift', '3.4.2'
 #pod 'Google-Mobile-Ads-SDK'
 pod 'InAppPurchase'
+pod 'SwiftyStoreKit'
 pod 'MZDownloadManager'
 pod 'YoutubeDirectLinkExtractor', :git => 'https://github.com/OscarVernis/YoutubeDirectLinkExtractor.git' 
 # UI
@@ -25,9 +26,9 @@ pod 'MBProgressHUD'
 pod 'IQKeyboardManagerSwift'
 pod 'Reusable'
 pod 'Eureka'
-pod 'UICircularProgressRing'
+pod 'UICircularProgressRing', '4.1.0'
 pod 'DKImagePickerController', :subspecs => ['PhotoGallery', 'Camera']
-pod 'NotificationBannerSwift'
+pod 'NotificationBannerSwift', '2.0.1'
 pod 'PageMenu', :git => 'https://github.com/orazz/PageMenu.git'
 
 # Database
@@ -38,6 +39,10 @@ pod 'RxCocoa'
 # Player
 pod 'MobileVLCKit'
 pod 'Reachability'
+
+pod 'Siren'
+
+pod 'ReviewKit'
 
   target 'BrowserVaultTests' do
     inherit! :search_paths

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fzk-LB-AFF" customClass="UpgradePlusView" customModule="BrowserVault" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="35"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="gV0-bt-lQL">
+                    <rect key="frame" x="352" y="12" width="15" height="11.5"/>
+                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="15" id="dn4-kM-erX"/>
+                        <constraint firstAttribute="width" constant="15" id="kNv-xW-VEE"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upgrade now to Plus" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sNZ-5d-d7x">
+                    <rect key="frame" x="45" y="8.5" width="302" height="18"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="15"/>
+                    <color key="textColor" red="0.070588235289999995" green="0.50196078430000002" blue="0.58823529409999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="General/baseline_manage_accounts" translatesAutoresizingMaskIntoConstraints="NO" id="C2e-VE-Nlh">
+                    <rect key="frame" x="5" y="-7.5" width="35" height="50"/>
+                    <color key="tintColor" red="0.0" green="0.51764705879999995" blue="0.59215686270000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="35" id="IGk-rQ-Wd3"/>
+                        <constraint firstAttribute="height" constant="50" id="NGj-LX-W4R"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="0zA-mo-bcr"/>
+            <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="gV0-bt-lQL" secondAttribute="trailing" constant="8" id="1D1-9x-Mt6"/>
+                <constraint firstItem="C2e-VE-Nlh" firstAttribute="centerY" secondItem="Fzk-LB-AFF" secondAttribute="centerY" id="1Tk-fF-xn0"/>
+                <constraint firstAttribute="height" constant="35" id="LKZ-Xg-VGX"/>
+                <constraint firstItem="gV0-bt-lQL" firstAttribute="centerY" secondItem="Fzk-LB-AFF" secondAttribute="centerY" id="RyY-og-EVq"/>
+                <constraint firstItem="C2e-VE-Nlh" firstAttribute="leading" secondItem="Fzk-LB-AFF" secondAttribute="leading" constant="5" id="VZp-9U-0e7"/>
+                <constraint firstItem="gV0-bt-lQL" firstAttribute="leading" secondItem="sNZ-5d-d7x" secondAttribute="trailing" constant="5" id="ijQ-2p-im2"/>
+                <constraint firstItem="sNZ-5d-d7x" firstAttribute="centerY" secondItem="Fzk-LB-AFF" secondAttribute="centerY" id="q7Y-5f-WZt"/>
+                <constraint firstItem="sNZ-5d-d7x" firstAttribute="leading" secondItem="C2e-VE-Nlh" secondAttribute="trailing" constant="5" id="zZD-qE-pCx"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="upgradeLabel" destination="sNZ-5d-d7x" id="cJ9-Ki-mEe"/>
+            </connections>
+            <point key="canvasLocation" x="-614" y="-15"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="General/baseline_manage_accounts" width="48" height="48"/>
+        <image name="chevron.right" catalog="system" width="96" height="128"/>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

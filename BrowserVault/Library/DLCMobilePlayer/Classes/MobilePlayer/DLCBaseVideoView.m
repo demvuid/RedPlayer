@@ -1022,6 +1022,13 @@ IB_DESIGNABLE
             break;
         case VLCMediaPlayerStateBuffering:
             self.buffering = YES;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+            [_mediaPlayer performSelector:@selector(setTextRendererFont:) withObject:@"TimesNewRomanPSMT"];
+            [_mediaPlayer performSelector:@selector(setTextRendererFontSize:) withObject:@"12"];
+            [_mediaPlayer performSelector:@selector(setTextRendererFontForceBold:) withObject:@NO];
+#pragma clang diagnostic pop
+            _mediaPlayer.currentVideoSubTitleIndex = -1;
             break;
         case VLCMediaPlayerStatePlaying:
             self.videoSlider.continuous = NO;

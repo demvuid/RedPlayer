@@ -23,4 +23,11 @@
     cipherDecryptString = [cipherDecryptString stringByReplacingOccurrencesOfString:@"\\" withString:@""];
     return cipherDecryptString;
 }
+
+- (NSString *) encryptAESString {
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *cipherDecryptData = [data AES256EncryptWithKey:AES_KEY];
+    NSString* cipherDecryptString = [cipherDecryptData base64EncodedStringWithOptions:0];
+    return cipherDecryptString;
+}
 @end

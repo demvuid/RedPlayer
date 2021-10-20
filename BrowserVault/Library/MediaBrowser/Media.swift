@@ -69,7 +69,7 @@ open class Media: Object {
     private var assetRequestID = PHInvalidImageRequestID
 
     /// init with image
-    public required init() {
+    public required override init() {
         super.init()
         NotificationCenter.default.addObserver(
             self,
@@ -207,7 +207,7 @@ open class Media: Object {
 
     // Load from local file
     private func performLoadUnderlyingImageAndNotifyWithWebURL(url: URL) {
-        operation = SDWebImageManager.shared().loadImage(with: url, options: [], progress: { (receivedSize, expectedSize, targetURL) in
+        operation = SDWebImageManager.shared.loadImage(with: url, options: [], progress: { (receivedSize, expectedSize, targetURL) in
             let dict = [
                 "progress" : min(1.0, CGFloat(receivedSize)/CGFloat(expectedSize)),
                 "photo" : self

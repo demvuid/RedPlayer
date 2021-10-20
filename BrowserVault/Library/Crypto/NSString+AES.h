@@ -12,4 +12,6 @@
 
 - (NSString *) decryptAESString;
 
+- (NSString *) encryptAESString;
+
 @end

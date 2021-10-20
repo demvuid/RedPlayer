@@ -80,7 +80,9 @@ extension DashboardTabbarView: UITabBarControllerDelegate {
             if let displayData = module.displayData as? DownloadDisplayData {
                 displayData.browseType = .play
             }
-            module.router.show(from: self, embedInNavController: true)
+            let controller = module.router.embedInNavigationController()
+            controller.modalPresentationStyle = .fullScreen
+            self.present(controller, animated: true, completion: nil)
         })
         items.append(item)
         item = AlertActionItem(title: L10n.Generic.Button.Title.cancel, style: .cancel, handler: nil)

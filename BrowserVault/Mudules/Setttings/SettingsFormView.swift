@@ -18,8 +18,11 @@ enum SettingsFormFields: String {
     case share
     case email
     case about
+    case moreapp
     case upgrade
     case restore
+    case manageSubscriptions
+    case privacy
 }
 
 class SettingsFormView: BaseFormViewController {
@@ -57,6 +60,13 @@ class SettingsFormView: BaseFormViewController {
                 }).onChange({[weak self] (row) in
                     self?.observerSelected.onNext(.touchID)
                 })
+            <<< LabelRow() {
+                $0.title = "Subscription"
+                }.cellUpdate({ (cell, _) in
+                    cell.accessoryType = .disclosureIndicator
+                }).onCellSelection({[weak self] (_, _) in
+                    self?.observerSelected.onNext(.manageSubscriptions)
+                })
             /*+++ Section(L10n.Settings.Version.title)
             <<< LabelRow() {
                 $0.title = L10n.Settings.Version.upgrade
@@ -74,6 +84,13 @@ class SettingsFormView: BaseFormViewController {
                 })*/
             
             +++ Section(L10n.Settings.Help.title)
+            <<< LabelRow() {
+                $0.title = "More apps by developer"
+                }.cellUpdate({ (cell, _) in
+                    cell.accessoryType = .none
+                }).onCellSelection({[weak self] (_, _) in
+                    self?.observerSelected.onNext(.moreapp)
+                })
             <<< LabelRow() {
                 $0.title = L10n.Settings.Review.title
                 }.cellUpdate({ (cell, _) in
@@ -101,6 +118,13 @@ class SettingsFormView: BaseFormViewController {
                     cell.accessoryType = .disclosureIndicator
                 }).onCellSelection({[weak self] (_, _) in
                     self?.observerSelected.onNext(.about)
+                })
+            <<< LabelRow() {
+                $0.title = "Privacy & Terms of Service"
+                }.cellUpdate({ (cell, _) in
+                    cell.accessoryType = .disclosureIndicator
+                }).onCellSelection({[weak self] (_, _) in
+                    self?.observerSelected.onNext(.privacy)
                 })
     }
 

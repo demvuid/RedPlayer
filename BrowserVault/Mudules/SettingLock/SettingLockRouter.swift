@@ -12,12 +12,18 @@ import Viperit
 class SettingLockRouter: Router {
     func changePass() {
         let entryModule = AppModules.passcode.build()
-        entryModule.router.show(from: self._view, embedInNavController: true, setupData: true)
+        entryModule.presenter.setupView(data: true)
+        let controller = entryModule.router.embedInNavigationController()
+        controller.modalPresentationStyle = .fullScreen
+        self._view.present(controller, animated: true, completion: nil)
     }
     
     func authenticatePasscodeWithCompletionBlock(_ block: ((Bool)->())?) {
         let entryModule = AppModules.passcode.build()
-        entryModule.router.show(from: self._view, embedInNavController: true, setupData: block)
+        entryModule.presenter.setupView(data: block)
+        let controller = entryModule.router.embedInNavigationController()
+        controller.modalPresentationStyle = .fullScreen
+        self._view.present(controller, animated: true, completion: nil)
     }
 }
 

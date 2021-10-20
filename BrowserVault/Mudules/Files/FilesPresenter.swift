@@ -112,7 +112,9 @@ class FilesPresenter: Presenter {
             if let displayData = module.displayData as? DownloadDisplayData {
                 displayData.browseType = .play
             }
-            module.router.show(from: self._view, embedInNavController: true)
+            let controller = module.router.embedInNavigationController()
+            controller.modalPresentationStyle = .fullScreen
+            self._view.present(controller, animated: true, completion: nil)
         })
         items.append(item)
         item = AlertActionItem(title: L10n.Folder.Add.folder, style: .default, handler: {[weak self] (_) in

@@ -30,7 +30,10 @@ class FilesRouter: Router {
     func openPasscodeWithCompletionBlock(_ block: ((Bool)->())?) {
         if UserSession.shared.enabledPasscode() {
             let entryModule = AppModules.passcode.build()
-            entryModule.router.show(from: self._view, embedInNavController: true, setupData: block)
+            entryModule.presenter.setupView(data: block)
+            let controller = entryModule.router.embedInNavigationController()
+            controller.modalPresentationStyle = .fullScreen
+            self._view.present(controller, animated: true, completion: nil)
         } else {
             block?(true)
         }

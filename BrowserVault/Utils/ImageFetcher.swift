@@ -14,8 +14,8 @@ private let nameCachedImage = "bowservault_cached_image"
 
 private let kmaxCacheAge = 60 * 60 * 24
 private var cache: SDImageCache = {
-    let cache = SDImageCache.shared()
-    cache.config.maxCacheAge = kmaxCacheAge
+    let cache = SDImageCache.shared
+    cache.config.maxDiskAge = Double(kmaxCacheAge)
     return cache
 }()
 
@@ -54,7 +54,7 @@ class ImageFetcher {
     }
     
     static func downloadImageURL(_ url: URL, progressBlock:((CGFloat)->())? = nil , completion:((UIImage?)->())?) -> SDWebImageOperation? {
-        let task = SDWebImageManager.shared().loadImage(with: url, options: [], progress: { (receivedSize, expectedSize, targetURL) in
+        let task = SDWebImageManager.shared.loadImage(with: url, options: [], progress: { (receivedSize, expectedSize, targetURL) in
             let progress: CGFloat = min(1.0, CGFloat(receivedSize)/CGFloat(expectedSize))
             progressBlock?(progress)
         }) {(image, _, error, cacheType, finish, imageUrl) in

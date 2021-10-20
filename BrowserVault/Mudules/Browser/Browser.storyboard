@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QQo-g9-i01">
-                                <rect key="frame" x="0.0" y="20" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
                                 <subviews>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="iRk-qg-tSj">
                                         <rect key="frame" x="0.0" y="54" width="375" height="2"/>
@@ -60,6 +58,12 @@
                                             <action selector="addToFavorites:" destination="AXv-Wc-D0I" id="34W-Zy-e05"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="wtX-jB-7pn"/>
+                                    <barButtonItem title="Item" id="kCg-67-kt9">
+                                        <connections>
+                                            <action selector="viewHistory:" destination="AXv-Wc-D0I" id="fuI-dC-Ga8"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="qr7-Xz-p0Q"/>
                                     <barButtonItem systemItem="refresh" id="Hcz-Nq-Ts9">
                                         <connections>
@@ -69,10 +73,11 @@
                                 </items>
                             </toolbar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gEu-GT-oFA">
-                                <rect key="frame" x="0.0" y="76" width="375" height="547"/>
+                                <rect key="frame" x="0.0" y="56" width="375" height="567"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="cvH-Nh-vJB"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="gEu-GT-oFA" firstAttribute="top" secondItem="QQo-g9-i01" secondAttribute="bottom" id="1If-tb-arL"/>
@@ -86,7 +91,6 @@
                             <constraint firstItem="QQo-g9-i01" firstAttribute="trailing" secondItem="cvH-Nh-vJB" secondAttribute="trailing" id="mdh-Ip-r8h"/>
                             <constraint firstItem="Cbk-Z4-7XX" firstAttribute="trailing" secondItem="cvH-Nh-vJB" secondAttribute="trailing" id="zTX-Pf-p4e"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="cvH-Nh-vJB"/>
                     </view>
                     <navigationItem key="navigationItem" id="zP9-ku-oaS"/>
                     <nil key="simulatedTopBarMetrics"/>
@@ -97,6 +101,7 @@
                         <outlet property="containWebView" destination="gEu-GT-oFA" id="wYN-Ma-fax"/>
                         <outlet property="favoritesButton" destination="21v-Sf-3aU" id="tX6-Ph-qE6"/>
                         <outlet property="forwardButton" destination="IAg-YP-4yN" id="OdT-jQ-oMB"/>
+                        <outlet property="historyButton" destination="kCg-67-kt9" id="YOl-hq-wWL"/>
                         <outlet property="progressView" destination="iRk-qg-tSj" id="yeA-sQ-KYb"/>
                         <outlet property="reloadButton" destination="Hcz-Nq-Ts9" id="iJw-Yn-aT9"/>
                         <outlet property="toolBar" destination="Cbk-Z4-7XX" id="P0M-yQ-dx9"/>

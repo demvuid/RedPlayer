@@ -51,6 +51,10 @@ final class PlayerMediaView: BaseUserInterface {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
 }
 
 //MARK: - Public interface

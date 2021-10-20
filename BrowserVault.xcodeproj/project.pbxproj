@@ -71,6 +71,7 @@
 		E2273FF021C69FE500BDA33D /* FolderFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2273FEF21C69FE500BDA33D /* FolderFormView.swift */; };
 		E2273FF321C6A43C00BDA33D /* FolderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2273FF221C6A43C00BDA33D /* FolderModel.swift */; };
 		E23ADDAD21CE235D00B52C48 /* NSTextAttachment+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23ADDAC21CE235D00B52C48 /* NSTextAttachment+Extensions.swift */; };
+		E24126D525F29BCF006CFFFE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24126D425F29BCF006CFFFE /* StoreKit.framework */; };
 		E2477357221AFB4600A842E3 /* Youtube.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2477351221AFB4600A842E3 /* Youtube.storyboard */; };
 		E2477358221AFB4600A842E3 /* YoutubeDisplayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2477352221AFB4600A842E3 /* YoutubeDisplayData.swift */; };
 		E2477359221AFB4600A842E3 /* YoutubePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2477353221AFB4600A842E3 /* YoutubePresenter.swift */; };
@@ -125,6 +126,8 @@
 		E257401B21C90902008BB4FF /* MediaZoomingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E257400F21C90902008BB4FF /* MediaZoomingScrollView.swift */; };
 		E25A16D021F2DD270023DBA0 /* AdvertisePresentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25A16CF21F2DD270023DBA0 /* AdvertisePresentView.swift */; };
 		E25A16D221F32A160023DBA0 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25A16D121F32A160023DBA0 /* PurchaseManager.swift */; };
+		E25C2DD225EF95E700EBEC07 /* SubscriptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E25C2DD025EF95E700EBEC07 /* SubscriptionViewController.xib */; };
+		E25C2DD325EF95E700EBEC07 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25C2DD125EF95E700EBEC07 /* SubscriptionViewController.swift */; };
 		E25E77C625EE2BC2001042FE /* VLCMediaThumbnailerCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25E77BB25EE29D6001042FE /* VLCMediaThumbnailerCache.swift */; };
 		E26023D7221DA28B0087BDAF /* Suggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26023D6221DA28B0087BDAF /* Suggestion.swift */; };
 		E26B2E3421C75DE500A8E0DB /* ImageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26B2E3221C75DE500A8E0DB /* ImageRow.swift */; };
@@ -215,6 +218,11 @@
 		E2AECE0221BCFF9D00BCBD70 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECDFC21BCFF9D00BCBD70 /* SettingsView.swift */; };
 		E2AECE0521BD003000BCBD70 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECE0321BD002F00BCBD70 /* AboutViewController.swift */; };
 		E2AECE0921BD052D00BCBD70 /* BasePushSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2AECE0821BD052D00BCBD70 /* BasePushSegue.swift */; };
+		E2B2AD6225F7340000D9481E /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = E2B2AD6125F7340000D9481E /* index.html */; };
+		E2B2AD6925F753F500D9481E /* UpgradePlusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B2AD6825F753F500D9481E /* UpgradePlusView.swift */; };
+		E2B2AD6E25F7540600D9481E /* UpgradePlusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E2B2AD6D25F7540600D9481E /* UpgradePlusView.xib */; };
+		E2B2AD7A25F76C0E00D9481E /* WebViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E2B2AD7825F76C0E00D9481E /* WebViewController.xib */; };
+		E2B2AD7B25F76C0E00D9481E /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B2AD7925F76C0E00D9481E /* WebViewController.swift */; };
 		E2B676ED221476B90059509B /* NavigationManager+NotificationBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B676EC221476B80059509B /* NavigationManager+NotificationBanner.swift */; };
 		E2C4251122018A8E001C774E /* DownloadFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C4251022018A8E001C774E /* DownloadFormView.swift */; };
 		E2DA6E3121CFD6D100C7CE98 /* ImportFiles.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2DA6E2B21CFD6D100C7CE98 /* ImportFiles.storyboard */; };
@@ -337,6 +345,7 @@
 		E2273FEF21C69FE500BDA33D /* FolderFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderFormView.swift; sourceTree = "<group>"; };
 		E2273FF221C6A43C00BDA33D /* FolderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderModel.swift; sourceTree = "<group>"; };
 		E23ADDAC21CE235D00B52C48 /* NSTextAttachment+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextAttachment+Extensions.swift"; sourceTree = "<group>"; };
+		E24126D425F29BCF006CFFFE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		E2477351221AFB4600A842E3 /* Youtube.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Youtube.storyboard; sourceTree = "<group>"; };
 		E2477352221AFB4600A842E3 /* YoutubeDisplayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeDisplayData.swift; sourceTree = "<group>"; };
 		E2477353221AFB4600A842E3 /* YoutubePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubePresenter.swift; sourceTree = "<group>"; };
@@ -392,6 +401,8 @@
 		E257400F21C90902008BB4FF /* MediaZoomingScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaZoomingScrollView.swift; sourceTree = "<group>"; };
 		E25A16CF21F2DD270023DBA0 /* AdvertisePresentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisePresentView.swift; sourceTree = "<group>"; };
 		E25A16D121F32A160023DBA0 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		E25C2DD025EF95E700EBEC07 /* SubscriptionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SubscriptionViewController.xib; sourceTree = "<group>"; };
+		E25C2DD125EF95E700EBEC07 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		E25E77BB25EE29D6001042FE /* VLCMediaThumbnailerCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCMediaThumbnailerCache.swift; sourceTree = "<group>"; };
 		E26023D6221DA28B0087BDAF /* Suggestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Suggestion.swift; sourceTree = "<group>"; };
 		E26B2E3221C75DE500A8E0DB /* ImageRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageRow.swift; sourceTree = "<group>"; };
@@ -504,6 +515,11 @@
 		E2AECDFC21BCFF9D00BCBD70 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E2AECE0321BD002F00BCBD70 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		E2AECE0821BD052D00BCBD70 /* BasePushSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePushSegue.swift; sourceTree = "<group>"; };
+		E2B2AD6125F7340000D9481E /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		E2B2AD6825F753F500D9481E /* UpgradePlusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlusView.swift; sourceTree = "<group>"; };
+		E2B2AD6D25F7540600D9481E /* UpgradePlusView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpgradePlusView.xib; sourceTree = "<group>"; };
+		E2B2AD7825F76C0E00D9481E /* WebViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WebViewController.xib; sourceTree = "<group>"; };
+		E2B2AD7925F76C0E00D9481E /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		E2B676EC221476B80059509B /* NavigationManager+NotificationBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationManager+NotificationBanner.swift"; sourceTree = "<group>"; };
 		E2C4251022018A8E001C774E /* DownloadFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFormView.swift; sourceTree = "<group>"; };
 		E2DA6E2B21CFD6D100C7CE98 /* ImportFiles.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ImportFiles.storyboard; sourceTree = "<group>"; };
@@ -540,6 +556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				80C7DB7E1AB5EC6B0E23C23D /* Pods_BrowserVault.framework in Frameworks */,
+				E24126D525F29BCF006CFFFE /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +595,7 @@
 		8B71C057AC5C2537421D1951 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E24126D425F29BCF006CFFFE /* StoreKit.framework */,
 				6F208C0CC28B6E95D9E52447 /* Pods_BrowserVault.framework */,
 				46FE7A4F35D067283086F85A /* Pods_BrowserVaultTests.framework */,
 				32267EE57115702FA042941A /* Pods_BrowserVaultUITests.framework */,
@@ -756,6 +774,7 @@
 		E249D28D21BA7A6F00737A02 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E2B2AD6025F733F600D9481E /* privacy */,
 				E249D28F21BA7A6F00737A02 /* Colors.json */,
 				E249D29021BA7A6F00737A02 /* Fonts */,
 				E249D29121BA7A6F00737A02 /* Generated */,
@@ -809,6 +828,8 @@
 				E2AECDD121BCB1C900BCBD70 /* SubTableViewCell.xib */,
 				E2AECDD721BCB1C900BCBD70 /* TableViewCellStyleTitleImage.swift */,
 				E2AECDC921BCB1C800BCBD70 /* TableViewCellStyleTitleImage.xib */,
+				E2B2AD6825F753F500D9481E /* UpgradePlusView.swift */,
+				E2B2AD6D25F7540600D9481E /* UpgradePlusView.xib */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -816,6 +837,7 @@
 		E249D29A21BA7A7000737A02 /* Mudules */ = {
 			isa = PBXGroup;
 			children = (
+				E25C2DCF25EF95BA00EBEC07 /* Subscription */,
 				E2477350221AFB3700A842E3 /* Youtube */,
 				E2EBD9B922004C0B007E5E1F /* Downloads */,
 				E27EC7DE21D36C6E00D643AF /* PlayerMedia */,
@@ -883,6 +905,15 @@
 				E257400F21C90902008BB4FF /* MediaZoomingScrollView.swift */,
 			);
 			path = MediaBrowser;
+			sourceTree = "<group>";
+		};
+		E25C2DCF25EF95BA00EBEC07 /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				E25C2DD025EF95E700EBEC07 /* SubscriptionViewController.xib */,
+				E25C2DD125EF95E700EBEC07 /* SubscriptionViewController.swift */,
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		E25E77BA25EE29CD001042FE /* VLC */ = {
@@ -1209,8 +1240,18 @@
 				E21E1EB4221B9FF200C81864 /* BasePageViewController.swift */,
 				E21E1EB5221B9FF200C81864 /* BasePageViewController.xib */,
 				E21E1EB8221BA36700C81864 /* PageModelController.swift */,
+				E2B2AD7825F76C0E00D9481E /* WebViewController.xib */,
+				E2B2AD7925F76C0E00D9481E /* WebViewController.swift */,
 			);
 			path = BaseClass;
+			sourceTree = "<group>";
+		};
+		E2B2AD6025F733F600D9481E /* privacy */ = {
+			isa = PBXGroup;
+			children = (
+				E2B2AD6125F7340000D9481E /* index.html */,
+			);
+			path = privacy;
 			sourceTree = "<group>";
 		};
 		E2DA6E2A21CFD6B800C7CE98 /* ImportFiles */ = {
@@ -1366,8 +1407,10 @@
 				E21E1EB7221B9FF200C81864 /* BasePageViewController.xib in Resources */,
 				E21E1ECB221BA74A00C81864 /* BaseBasicDetailViewAndImageTableViewCell.xib in Resources */,
 				E2AECDDA21BCB1C900BCBD70 /* TableViewCellStyleTitleImage.xib in Resources */,
+				E2B2AD7A25F76C0E00D9481E /* WebViewController.xib in Resources */,
 				E2DA6E3121CFD6D100C7CE98 /* ImportFiles.storyboard in Resources */,
 				E21E1ED7221BA74A00C81864 /* BaseTextViewTableViewCell.xib in Resources */,
+				E2B2AD6225F7340000D9481E /* index.html in Resources */,
 				E27EC80421D36D4A00D643AF /* DLCBaseVideoContentView.xib in Resources */,
 				E2AECDA421BC0E2D00BCBD70 /* Browser.storyboard in Resources */,
 				E2AECDDD21BCB1C900BCBD70 /* CollectionReusableViewStyleTitle.xib in Resources */,
@@ -1387,6 +1430,7 @@
 				E2AECDE321BCB1C900BCBD70 /* CollectionViewCellStyleTitleImage.xib in Resources */,
 				E21E1EDC221BBEC100C81864 /* ThumbnailTitleCollectionViewCell.xib in Resources */,
 				E214C61E21B6838B0056E56C /* Assets.xcassets in Resources */,
+				E25C2DD225EF95E700EBEC07 /* SubscriptionViewController.xib in Resources */,
 				E21E1ED6221BA74A00C81864 /* BaseTableViewCell.xib in Resources */,
 				E2AECDE221BCB1C900BCBD70 /* SubTableViewCell.xib in Resources */,
 				E21E1ED2221BA74A00C81864 /* BaseSubTitleAndImageTableViewCell.xib in Resources */,
@@ -1397,6 +1441,7 @@
 				E2477357221AFB4600A842E3 /* Youtube.storyboard in Resources */,
 				E21E1ED3221BA74A00C81864 /* BaseSubTitleRightValueAndImageTableViewCell.xib in Resources */,
 				E2273FE921C69FC800BDA33D /* Folder.storyboard in Resources */,
+				E2B2AD6E25F7540600D9481E /* UpgradePlusView.xib in Resources */,
 				E21E1ED4221BA74A00C81864 /* BaseSubTitleTableViewCell.xib in Resources */,
 				E2F902BB21BFBD1300BAC147 /* DefaultURL.storyboard in Resources */,
 				E21610CA21C0E1B60086425B /* Files.storyboard in Resources */,
@@ -1570,6 +1615,7 @@
 				E250D6C8221A8DF300F67341 /* APIConfiguration.swift in Sources */,
 				E2477358221AFB4600A842E3 /* YoutubeDisplayData.swift in Sources */,
 				E291F07C221E41B300A65014 /* URLExtension.swift in Sources */,
+				E25C2DD325EF95E700EBEC07 /* SubscriptionViewController.swift in Sources */,
 				E2234D1B21C1FEF7008F6137 /* TabBrowserPresenter.swift in Sources */,
 				E2AECE0121BCFF9D00BCBD70 /* SettingsInteractor.swift in Sources */,
 				E250D6BE221A8DF300F67341 /* BaseService.swift in Sources */,
@@ -1630,6 +1676,7 @@
 				E247735C221AFB4600A842E3 /* YoutubeView.swift in Sources */,
 				E21610CF21C0E1B60086425B /* FilesView.swift in Sources */,
 				E2AECDE821BCB1C900BCBD70 /* TableViewCellStyleTitleImage.swift in Sources */,
+				E2B2AD6925F753F500D9481E /* UpgradePlusView.swift in Sources */,
 				E2573FFE21C8C140008BB4FF /* FilesFormView.swift in Sources */,
 				E249D2AB21BA7A7000737A02 /* PasscodelField.swift in Sources */,
 				E257401321C90902008BB4FF /* MediaBrowser.swift in Sources */,
@@ -1719,6 +1766,7 @@
 				E2AECDDE21BCB1C900BCBD70 /* PlayerVolumn.swift in Sources */,
 				E2EBD9C322004C3E007E5E1F /* DownloadRouter.swift in Sources */,
 				E2F902BF21BFBD1300BAC147 /* DefaultURLInteractor.swift in Sources */,
+				E2B2AD7B25F76C0E00D9481E /* WebViewController.swift in Sources */,
 				E2AECDBA21BC144E00BCBD70 /* NewsHistoryTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1898,17 +1946,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = 7A2969MHY5;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = BrowserVault/BrowserVaultHeader.pch;
 				INFOPLIST_FILE = BrowserVault/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amplayer.browservault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BrowserVault/BrowserVault-Bridging-Header.h";
@@ -1923,17 +1971,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 20;
 				DEVELOPMENT_TEAM = 7A2969MHY5;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = BrowserVault/BrowserVaultHeader.pch;
 				INFOPLIST_FILE = BrowserVault/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amplayer.browservault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BrowserVault/BrowserVault-Bridging-Header.h";

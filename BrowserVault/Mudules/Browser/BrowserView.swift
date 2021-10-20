@@ -36,6 +36,7 @@ final class BrowserView: BaseUserInterface {
     @IBOutlet weak var reloadButton: UIBarButtonItem!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var favoritesButton: UIBarButtonItem!
+    @IBOutlet weak var historyButton: UIBarButtonItem!
     var defaultColor: UIColor!
     
     var webView: WKWebView = WKWebView(frame: CGRect.zero)
@@ -47,6 +48,8 @@ final class BrowserView: BaseUserInterface {
     private var imgURL: String = "", timer: Timer! = nil
     private var countPresentAdv: Int = UserSession.shared.countPlayVideo
     var autocompleteController: AutocompleteViewController?
+    var currentInfo: String? = nil
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,6 +59,7 @@ final class BrowserView: BaseUserInterface {
         self.backButton.image = Asset.Browser.backIcon.image
         self.forwardButton.image = Asset.Browser.forwardIcon.image
         self.favoritesButton.image = Asset.Browser.iconBrowserFavorites.image
+        self.historyButton.image = Asset.Browser.iconBrowserHistory.image
         self.updateNavigationItem()
         self.updateFavoritesButton()
         self.url = URL(string: self.defaultURLString ?? BrowserDefaultURL)!
@@ -66,6 +70,10 @@ final class BrowserView: BaseUserInterface {
         }
         #endif
         NavigationManager.shared.createAndLoadAdvertise()
+//        let aes = "TmB2tBDDQ68A74mw4h2CpJC621Wy3XlVpVWGAxR1qFGgNUOGf03X76yJG6zmGdNhHpF4eRupa4xfoPQMXmsyHw1r9sPCOyxs TVX/n3XV8A="
+//        if let encode = (aes as NSString).encryptAES() {
+//            debugPrint(encode)
+//        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -82,6 +90,13 @@ final class BrowserView: BaseUserInterface {
         }
     }
     
+    override var prefersStatusBarHidden: Bool {
+        return statusBarHidden
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
     override func setupUI() {
         //Refresh Control
         backButton.isEnabled = false
@@ -92,12 +107,13 @@ final class BrowserView: BaseUserInterface {
     
     func updateNavigationItem() {
         self.navigationItem.title = titleLoading
-        
-        let historyButtonItem = UIBarButtonItem(image: Asset.Browser.iconBrowserHistory.image, style: .done, target: self, action: #selector(openHistory))
-        self.navigationItem.leftBarButtonItem = historyButtonItem
-        
-        let favoritesButtonItem = UIBarButtonItem(image: Asset.Browser.iconBrowserFavorites.image, style: .done, target: self, action: #selector(openFavorites))
-        self.navigationItem.rightBarButtonItem = favoritesButtonItem
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+//
+//        let historyButtonItem = UIBarButtonItem(image: Asset.Browser.iconBrowserHistory.image, style: .done, target: self, action: #selector(openHistory))
+//        self.navigationItem.leftBarButtonItem = historyButtonItem
+//
+//        let favoritesButtonItem = UIBarButtonItem(image: Asset.Browser.iconBrowserFavorites.image, style: .done, target: self, action: #selector(openFavorites))
+//        self.navigationItem.rightBarButtonItem = favoritesButtonItem
     }
     
     func configureWebView() {
@@ -119,11 +135,33 @@ final class BrowserView: BaseUserInterface {
     }
     // MARK: - Public
     public func loadRequest(_ request: URLRequest) {
-        webView.load(request)
+        if var urlPath = request.url?.absoluteString, urlPath.contains("flixmoviehd.net") {
+            if urlPath.hasSuffix("/") {
+                urlPath = String(urlPath.dropLast())
+            }
+            guard var urlComponents = URLComponents(string: urlPath), urlPath.contains("info=") == false else {
+                webView.load(request)
+                return
+            }
+            // Create array of existing query items
+            var queryItems: [URLQueryItem] = urlComponents.queryItems ??  []
+
+            // Create query item
+            let queryItem = URLQueryItem(name: "info", value: self.getInfoEncode())
+            // Append the new query item in the existing query items array
+            queryItems.append(queryItem)
+
+            // Append updated query items array in the url component object
+            urlComponents.queryItems = queryItems
+            
+            webView.load(URLRequest(url: urlComponents.url ?? request.url!))
+        } else {
+            webView.load(request)
+        }
     }
     
     public func loadURL(_ url: URL) {
-        webView.load(URLRequest(url: url))
+        self.loadRequest(URLRequest(url: url))
     }
     
     public func searchUrl(text: String) -> URL {
@@ -146,7 +184,7 @@ final class BrowserView: BaseUserInterface {
     public func loadURLString(_ urlString: String) {
         let urlUpdate = urlString.lowercased()
         let url = self.urlForQuery(urlUpdate)
-        webView.load(URLRequest(url: url))
+        self.loadURL(url)
     }
     
     public func loadHTMLString(_ htmlString: String, baseURL: URL?) {
@@ -191,13 +229,37 @@ final class BrowserView: BaseUserInterface {
         forwardButton.isEnabled = webView.canGoForward;
         backButton.isEnabled = webView.canGoBack;
         if webView.isLoading {
-            if let urlString = webView.url?.absoluteString {
+            if var urlString = webView.url?.absoluteString {
+                if urlString.hasSuffix("/") {
+                    urlString = String(urlString.dropLast())
+                }
+                if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                    if var urlComponents = URLComponents(string: urlString) {
+                        // Create array of existing query items
+                        let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                        // Append updated query items array in the url component object
+                        urlComponents.queryItems = queryItems
+                        urlString = urlComponents.url?.absoluteString ?? urlString
+                    }
+                }
+                if urlString.hasSuffix("/?") {
+                    urlString = String(urlString.dropLast(2))
+                }
                 self.searchBar.text = urlString
             }
         }
         refreshControl.endRefreshing()
         if webView.isLoading {
-            if let urlString = webView.url?.absoluteString {
+            if var urlString = webView.url?.absoluteString {
+                if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                    if var urlComponents = URLComponents(string: urlString) {
+                        // Create array of existing query items
+                        let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                        // Append updated query items array in the url component object
+                        urlComponents.queryItems = queryItems
+                        urlString = urlComponents.url?.absoluteString ?? urlString
+                    }
+                }
                 var titleString = urlString.replacingOccurrences(of: "http://", with: "", options: .literal, range: nil)
                 titleString = titleString.replacingOccurrences(of: "https://", with: "", options: .literal, range: nil)
                 navigationItem.title = titleString
@@ -259,24 +321,38 @@ final class BrowserView: BaseUserInterface {
         ModelManager.shared.addObject(history)
     }
     func currentHistory() -> NewsHistory? {
-        if let urlString = webView.url?.absoluteString {
+        if var urlString = webView.url?.absoluteString {
+            if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                if var urlComponents = URLComponents(string: urlString) {
+                    // Create array of existing query items
+                    let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                    // Append updated query items array in the url component object
+                    urlComponents.queryItems = queryItems
+                    urlString = urlComponents.url?.absoluteString ?? urlString
+                }
+                if urlString.hasSuffix("/?") {
+                    urlString = String(urlString.dropLast(2))
+                }
+            }
             return ModelManager.shared.fetchObject(NewsHistory.self, filter: NSPredicate(format: "pageURL == %@", urlString))
         }
         return nil
     }
     
     func showHistoryViewWithFavorites(_ favorites: Bool) {
-        self.presenter.openPasscodeWithCompletionBlock {(finished) in
-            if finished {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {[weak self] in
-                    let controller = NewsHistoryTableViewController()
-                    controller.delegate = self
-                    controller.showFavorites = favorites
-                    let navController = UINavigationController(rootViewController: controller)
-                    self?.present(navController, animated: true, completion: nil)
-                })
-            }
-        }
+        let controller = NewsHistoryTableViewController()
+        controller.delegate = self
+        controller.showFavorites = favorites
+        let navController = UINavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
+        self.present(navController, animated: true, completion: nil)
+//        self.presenter.openPasscodeWithCompletionBlock {(finished) in
+//            if finished {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {[weak self] in
+//
+//                })
+//            }
+//        }
     }
     
     @objc func saveImage(sender: UIMenuItem) {
@@ -300,6 +376,10 @@ final class BrowserView: BaseUserInterface {
         }
     }
     
+    @IBAction func viewHistory(_ sender: Any) {
+        self.openHistory()
+    }
+    
     @IBAction func stop(_ sender: Any) {
         self.webView.stopLoading()
         self.progressView.setProgress(0, animated: true);
@@ -308,12 +388,35 @@ final class BrowserView: BaseUserInterface {
     
     @IBAction func back(_ sender: UIBarButtonItem) {
         self.webView.goBack()
-        self.searchBar.text = webView.url?.absoluteString
+        var urlString = webView.url?.absoluteString
+        if urlString?.contains("flixmoviehd.net") == true, urlString?.contains("info=") == true {
+            if var urlComponents = URLComponents(string: urlString!) {
+                // Create array of existing query items
+                let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                // Append updated query items array in the url component object
+                urlComponents.queryItems = queryItems
+                urlString = urlComponents.url?.absoluteString ?? urlString
+            }
+        }
+        self.searchBar.text = urlString
     }
     
     @IBAction func forward(_ sender: UIBarButtonItem) {
         self.webView.goForward()
-        self.searchBar.text = webView.url?.absoluteString
+        var urlString = webView.url?.absoluteString
+        if urlString?.contains("flixmoviehd.net") == true, urlString?.contains("info=") == true {
+            if var urlComponents = URLComponents(string: urlString!) {
+                // Create array of existing query items
+                let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                // Append updated query items array in the url component object
+                urlComponents.queryItems = queryItems
+                urlString = urlComponents.url?.absoluteString ?? urlString
+            }
+        }
+        if urlString?.hasSuffix("/?") == true {
+            urlString = String(urlString!.dropLast(2))
+        }
+        self.searchBar.text = urlString
     }
     
     @IBAction func reload(_ sender: UIBarButtonItem) {
@@ -362,45 +465,59 @@ final class BrowserView: BaseUserInterface {
     }
     
     func endSearchWebView() {
-        if let urlString = webView.url?.absoluteString {
+        if var urlString = webView.url?.absoluteString {
+            if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                if var urlComponents = URLComponents(string: urlString) {
+                    // Create array of existing query items
+                    let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                    // Append updated query items array in the url component object
+                    urlComponents.queryItems = queryItems
+                    urlString = urlComponents.url?.absoluteString ?? urlString
+                }
+            }
+            if urlString.hasSuffix("/?") {
+                urlString = String(urlString.dropLast(2))
+            }
             self.searchBar.text = urlString
         }
         self.searchBar.textField?.textAlignment = .center
     }
     
     func updateOtherViews(hidden: Bool, animated: Bool) {
-        guard let tabBar = tabBarController?.tabBar else {
-            return
-        }
-        let offset = UIScreen.main.bounds.maxY - tabBar.frame.minY
-        if offset != 0 && offset != tabBar.frame.height {
-            // Animating, return
-            return
-        }
-        
-        var tabBarFrame = tabBar.frame
-        let bottomConstraint = view.constraints.filter({ $0.firstAttribute == .bottom && $0.secondAttribute == .bottom }).first
+//        guard let tabBar = tabBarController?.tabBar else {
+//            return
+//        }
+//        let offset = UIScreen.main.bounds.maxY - tabBar.frame.minY
+//        if offset != 0 && offset != tabBar.frame.height {
+//            // Animating, return
+//            return
+//        }
+//
+//        var tabBarFrame = tabBar.frame
+//        let bottomConstraint = view.constraints.filter({ $0.firstAttribute == .bottom && $0.secondAttribute == .bottom }).first
         let topConstraint = view.constraints.filter({ $0.firstAttribute == .top && $0.secondAttribute == .bottom }).first
-        var bottomConstraintValue: CGFloat = 0
+//        var bottomConstraintValue: CGFloat = 0
         var topConstraintValue: CGFloat = 0
         
         if hidden {
-            tabBarFrame.origin.y = UIScreen.main.bounds.maxY
-            bottomConstraintValue = tabBarFrame.height
-            topConstraintValue = -(self.containSearchBar.frame.height + self.statusBarHeight())
+//            tabBarFrame.origin.y = UIScreen.main.bounds.maxY
+//            bottomConstraintValue = tabBarFrame.height
+//            topConstraintValue = -(self.containSearchBar.frame.height + self.statusBarHeight())
+            topConstraintValue = -self.containSearchBar.frame.height
         } else {
-            tabBarFrame.origin.y = UIScreen.main.bounds.maxY - tabBar.frame.height
+//            tabBarFrame.origin.y = UIScreen.main.bounds.maxY - tabBar.frame.height
         }
         statusBarHidden = hidden
         self.setNeedsStatusBarAppearanceUpdate()
         
         let duration:TimeInterval = animated ? 0.3 : 0.0
         UIView.animate(withDuration: duration, animations: {
-            bottomConstraint?.constant = bottomConstraintValue
+//            bottomConstraint?.constant = bottomConstraintValue
             topConstraint?.constant = topConstraintValue
-            self.navigationController?.setNavigationBarHidden(hidden, animated: false)
+//            self.navigationController?.setNavigationBarHidden(hidden, animated: false)
+            self.navigationController?.setNavigationBarHidden(!hidden, animated: true)
             self.view.setNeedsLayout()
-            tabBar.frame = tabBarFrame
+//            tabBar.frame = tabBarFrame
         })
     }
     
@@ -537,7 +654,19 @@ extension BrowserView: UISearchBarDelegate, UITableViewDataSource, UITableViewDe
         self.loadURLString(self.searchBar.text!)
         self.dismissAutcompleteSuggestions()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {[weak self] in
-            if let urlString = self?.webView.url?.absoluteString {
+            if var urlString = self?.webView.url?.absoluteString {
+                if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                    if var urlComponents = URLComponents(string: urlString) {
+                        // Create array of existing query items
+                        let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                        // Append updated query items array in the url component object
+                        urlComponents.queryItems = queryItems
+                        urlString = urlComponents.url?.absoluteString ?? urlString
+                    }
+                }
+                if urlString.hasSuffix("/?") {
+                    urlString = String(urlString.dropLast(2))
+                }
                 self?.searchBar.text = urlString
             }
         }
@@ -589,7 +718,19 @@ extension BrowserView: WKNavigationDelegate {
 //        webView.evaluateJavaScript(kTouchJavaScriptString, completionHandler: nil)
         self.updateToolBar()
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        if let urlString = webView.url?.absoluteString {
+        if var urlString = webView.url?.absoluteString {
+            if urlString.contains("flixmoviehd.net"), urlString.contains("info=") == true {
+                if var urlComponents = URLComponents(string: urlString) {
+                    // Create array of existing query items
+                    let queryItems: [URLQueryItem] = urlComponents.queryItems?.filter({$0.name != "info"}) ??  []
+                    // Append updated query items array in the url component object
+                    urlComponents.queryItems = queryItems
+                    urlString = urlComponents.url?.absoluteString ?? urlString
+                }
+                if urlString.hasSuffix("/?") {
+                    urlString = String(urlString.dropLast(2))
+                }
+            }
             if let currentHistory = self.currentHistory() {
                 ModelManager.shared.updateObject {
                     [unowned self] in
@@ -616,12 +757,34 @@ extension BrowserView: WKNavigationDelegate {
     }
     
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let requestString: String = navigationAction.request.url?.absoluteString
+        if var requestString: String = navigationAction.request.url?.absoluteString
         {
             Logger.debug("\(requestString)")
             if (requestString == "about:blank") {
                 decisionHandler(.cancel)
                 return
+            } else if requestString.contains("/shared#") {
+                decisionHandler(.allow)
+                return
+            } else if requestString.contains("flixmoviehd.net"), requestString.contains("info=") == false {
+                if requestString.hasSuffix("/") {
+                    requestString = String(requestString.dropLast())
+                }
+                if var urlComponents = URLComponents(string: requestString) {
+                    // Create array of existing query items
+                    var queryItems: [URLQueryItem] = urlComponents.queryItems ??  []
+
+                    // Create query item
+                    let queryItem = URLQueryItem(name: "info", value: self.getInfoEncode())
+                    // Append the new query item in the existing query items array
+                    queryItems.append(queryItem)
+                    // Append updated query items array in the url component object
+                    urlComponents.queryItems = queryItems
+                    requestString = urlComponents.url?.absoluteString ?? requestString
+                    decisionHandler(.cancel)
+                    self.loadURL(URL(string: requestString)!)
+                    return
+                }
             }
 //            var components: [String] = requestString.components(separatedBy: ":")
 //            if (components.count > 1 && components[0] == "myweb") {
@@ -793,7 +956,7 @@ extension BrowserView: WKUIDelegate {
         }
         
         if let mainFrame = navigationAction.targetFrame?.isMainFrame, mainFrame == false {
-            webView.load(navigationAction.request)
+            self.loadRequest(navigationAction.request)
         }
         return nil
     }
@@ -810,6 +973,46 @@ extension BrowserView: WKUIDelegate {
         ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(ac, animated: true)
         completionHandler(true)
+    }
+}
+
+extension BrowserView {
+    func getInfo() -> String {
+        let sub = PurchaseManager.shared.shouldGettingVersion() ? 2 : PurchaseManager.shared.isProVersion() ? 1:0
+        let device_id = UserSession.shared.getDeviceId()
+        var info = "sub=\(sub)&device_id=\(device_id)"
+        if let itemValid = PurchaseManager.shared.receiptItemValid {
+            info += "&transactionId=\(itemValid.transactionId)"
+            info += "&purchased=\(itemValid.purchaseDate.timeIntervalSince1970)"
+            info += "&created=\(itemValid.originalPurchaseDate.timeIntervalSince1970)"
+            if let expiredDate = itemValid.subscriptionExpirationDate {
+                info += "&expried=\(expiredDate.timeIntervalSince1970)"
+            }
+            if let expiredDate = itemValid.cancellationDate {
+                info += "&cancel=\(expiredDate.timeIntervalSince1970)"
+            }
+        } else if let itemValid = PurchaseManager.shared.receiptItemExpired {
+            info += "&transactionId=\(itemValid.transactionId)"
+            info += "&purchased=\(itemValid.purchaseDate.timeIntervalSince1970)"
+            info += "&created=\(itemValid.originalPurchaseDate.timeIntervalSince1970)"
+            if let expiredDate = itemValid.subscriptionExpirationDate {
+                info += "&expried=\(expiredDate.timeIntervalSince1970)"
+            }
+            if let expiredDate = itemValid.cancellationDate {
+                info += "&cancel=\(expiredDate.timeIntervalSince1970)"
+            }
+        }
+        info += "&isTrialPeriod=\(PurchaseManager.shared.isTrialPeriod)"
+        info += "&time=\(Date().timeIntervalSince1970)"
+        return info
+    }
+    
+    func getInfoEncode() -> String {
+        let info = self.getInfo()
+        debugPrint("info:\(info)")
+        let currentInfo = (info as NSString).encryptAES() ?? ""
+        self.currentInfo = currentInfo
+        return currentInfo
     }
 }
 

@@ -29,6 +29,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Our application needs permission to take a photo and import it into a folder.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs Location services. Photos will be not tagged with the location without your permission.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Our application needs permission to write photos and import it into a folder.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -65,17 +67,6 @@
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-<!--    <key>GADApplicationIdentifier</key>-->
-<!--    <string>ca-app-pub-9119259386159657~6928176134</string>-->
-<!--    <key>SKAdNetworkItems</key>-->
-<!--      <array>-->
-<!--        <dict>-->
-<!--          <key>SKAdNetworkIdentifier</key>-->
-<!--          <string>cstr6suwn9.skadnetwork</string>-->
-<!--        </dict>-->
-<!--      </array>-->
-<!--    <key>NSUserTrackingUsageDescription</key>-->
-<!--    <string>This identifier will be used to deliver personalized ads to you.</string>-->
+	<true/>
 </dict>
 </plist>
