@@ -103,8 +103,8 @@ class SettingsPresenter: Presenter {
         }
         let appName: String? = Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
         let appVersion: String? = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        mailCompose.setSubject("[\(appName!) \(appVersion!)] Suggestion")
-        mailCompose.setMessageBody("Suggestion for \(appName!)", isHTML: true)
+        let device_id = UserSession.shared.getDeviceId()
+        mailCompose.setSubject("[\(appName!) \(appVersion!) ][\(device_id.lowercased())][Vip \(UserSession.shared.getSubscriptionFlag())] Suggestion")
         mailCompose.setToRecipients(["browservault.help@gmail.com"])
         return mailCompose
     }

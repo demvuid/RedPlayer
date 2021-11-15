@@ -19,7 +19,7 @@ pod 'CocoaLumberjack/Swift', '3.4.2'
 pod 'InAppPurchase'
 pod 'SwiftyStoreKit'
 pod 'MZDownloadManager'
-pod 'YoutubeDirectLinkExtractor', :git => 'https://github.com/OscarVernis/YoutubeDirectLinkExtractor.git' 
+pod 'XCDYouTubeKit' 
 # UI
 pod 'SVPullToRefresh'
 pod 'MBProgressHUD'

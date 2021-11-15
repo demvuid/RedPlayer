@@ -58,12 +58,22 @@ class AppBranding: NSObject {
     
     class func customizeOnAppLoad() {
         IQKeyboardManager.shared.enable = true
-        UINavigationBar.appearance().tintColor = ColorName.navigationBarTintColor
-        UINavigationBar.appearance().barTintColor = ColorName.navigationBarColor
-        UIToolbar.appearance().tintColor = ColorName.navigationBarColor
         let attrs = [
             NSAttributedString.Key.foregroundColor: ColorName.navigationBarTitleColor
         ]
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = ColorName.navigationBarColor
+            appearance.titleTextAttributes = attrs
+            UINavigationBar.appearance().standardAppearance = appearance;
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        } else {
+            UINavigationBar.appearance().barTintColor = ColorName.navigationBarColor
+        }
+        UINavigationBar.appearance().largeTitleTextAttributes = attrs
+        UINavigationBar.appearance().tintColor = ColorName.navigationBarTintColor
+        UIToolbar.appearance().tintColor = ColorName.navigationBarColor
         UINavigationBar.appearance().titleTextAttributes = attrs
     }
     

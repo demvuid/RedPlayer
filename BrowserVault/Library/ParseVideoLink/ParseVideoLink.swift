@@ -7,42 +7,64 @@
 //
 
 import Foundation
-import YoutubeDirectLinkExtractor
+import XCDYouTubeKit
 
 class ParseVideoManager {
     static var shared = ParseVideoManager()
-    lazy var provider = YoutubeDirectLinkExtractor()
-    func parseVideoLinkURL(_ urlString: String, handler: @escaping (String?, Error?) -> ()) {
-        provider.extractInfo(for: .urlString(urlString), success: { info in
-            handler(info.highestQualityPlayableLink, nil)
-        }) { error in
-            handler(nil, error)
+    private func videoId(from url: URL) -> String? {
+        guard let host = url.host else {
+            return nil
+        }
+        
+        let components = url.pathComponents
+        
+        switch host {
+            
+        case _ where host.contains("youtu.be"):
+            return components[1]
+            
+        case _ where host.contains("m.youtube.com"):
+            return url.absoluteString.components(separatedBy: "?").last?.queryComponents()["v"]
+            
+        case _ where host.contains("youtube.com")
+            && components[1] == "embed":
+            return components[2]
+            
+        case _ where host.contains("youtube.com")
+            && components[1] != "embed":
+            return url.query?.queryComponents()["v"]
+            
+        default:
+            return nil
         }
     }
     
+    func parseVideoLinkURL(_ urlString: String, handler: @escaping (String?, Error?) -> ()) {
+        guard let url = URL(string: urlString), let videoId = self.videoId(from: url) else {
+            handler(nil, nil)
+            return
+        }
+        
+        self.parseVideoById(videoId, handler: handler)
+    }
+    
     func parseVideoById(_ videoId: String, duration: String = "", handler: @escaping (String?, Error?) -> ()) {
-        provider.extractInfo(for: .id(videoId), success: { (info) in
-            var urlString: String? = nil
-            if duration != "" {
-                let durationTime = duration.parseISO8601Time()
-                if durationTime.years > 0 || durationTime.months > 0 || durationTime.weeks > 0 || durationTime.days > 0 || durationTime.hours > 2 {
-                    let urls = info.rawInfo.compactMap { $0["url"] }
-                    if urls.count > 1 {
-                        urlString = urls[1]
-                    } else {
-                        urlString = urls.last
-                    }
-                } else {
-                    let urls = info.rawInfo.compactMap { $0["url"] }
-                    urlString = urls.first
+        XCDYouTubeClient.default().getVideoWithIdentifier(videoId) { (video, error) in
+            if let video = video {
+                var videoURL: URL?
+                if let url = video.streamURLs[XCDYouTubeVideoQualityHTTPLiveStreaming] {
+                    videoURL = url
+                } else if let url = video.streamURLs[XCDYouTubeVideoQuality.HD720.rawValue] {
+                    videoURL = url
+                } else if let url = video.streamURLs[XCDYouTubeVideoQuality.medium360.rawValue] {
+                    videoURL = url
+                } else if let url = video.streamURLs[XCDYouTubeVideoQuality.small240.rawValue] {
+                    videoURL = url
                 }
+                handler(videoURL?.absoluteString, error)
             } else {
-                let urls = info.rawInfo.compactMap { $0["url"] }
-                urlString = urls.first
+                handler(nil, error)
             }
-            handler(urlString, nil)
-        }) { (error) in
-            handler(nil, error)
         }
     }
     
@@ -66,14 +88,14 @@ class ParseVideoManager {
                     if string.hasPrefix("=") {
                         string = String(string.dropFirst())
                     }
-                    var urlArray = string.split(separator: ",")
-                    let qualityItags = ["37", "22", "59", "18"]
+                    let urlArray = string.split(separator: ",")
+                    let qualityItags = ["37|", "22|", "59|", "18|"]
                     
                     var videoURL: String? = nil
                     
                     for itag in qualityItags {
                         for url in urlArray {
-                            if url.contains(itag), let itagURL = url.split(separator: "|").last {
+                            if url.hasPrefix(itag) == true, let itagURL = url.split(separator: "|").last {
                                 videoURL = String(itagURL)
                                 break
                             }

@@ -10,7 +10,7 @@ import UIKit
 import SafariServices
 
 let upgradeAccountDescription = """
-Now upgrade to Plus by clicking Buy the "Plus Yearly" subscription. You will get more features and support from our team.
+Now upgrade to Plus by clicking Buy the "Plus Monthly" subscription. You will get more features and support from our team.
 """
 let startTrialPeridText = """
 You will not be charged until 1 month free trial expires. You can cancel your subscription at any time.
@@ -47,7 +47,7 @@ class SubscriptionViewController: UIViewController {
         pageControl.currentPage = 0
         pageControl.addTarget(self, action: #selector(changePage), for: .valueChanged)
         // Do any additional setup after loading the view.
-        if PurchaseManager.shared.isUpgradePro == true {
+        if UserSession.shared.getSubscriptionFlag() == 1 {
             self.purchasedView.isHidden = false
             if let validDate = PurchaseManager.shared.validDate {
                 let dateFormmat = DateFormatter()

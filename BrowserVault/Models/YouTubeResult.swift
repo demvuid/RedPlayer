@@ -54,7 +54,7 @@ class YoutubeItem: BaseModel, Decodable {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             if let videoItem = try? container.decodeIfPresent([String: Any].self, forKey: .itemId) {
-                self.itemId = (videoItem?["videoId"] as? String) ?? ""
+                self.itemId = (videoItem["videoId"] as? String) ?? ""
             } else if let itemId = try? container.decodeIfPresent(String.self, forKey: .itemId) {
                 self.itemId = itemId ?? ""
             }
@@ -70,13 +70,13 @@ class YoutubeItem: BaseModel, Decodable {
                 
             }
             if let snippet = try? container.decodeIfPresent([String: Any].self, forKey: .snippet) {
-                if let channelId = snippet?[Snippet.channelId.rawValue] as? String {
+                if let channelId = snippet[Snippet.channelId.rawValue] as? String {
                     self.channelId = channelId
                 }
-                if let channelTitle = snippet?[Snippet.channelTitle.rawValue] as? String {
+                if let channelTitle = snippet[Snippet.channelTitle.rawValue] as? String {
                     self.channelTitle = channelTitle
                 }
-                if let title = snippet?[Snippet.title.rawValue] as? String {
+                if let title = snippet[Snippet.title.rawValue] as? String {
                     self.title = title
                 }
                 if let thumnailDefaultUrl = (snippet as NSDictionary?)?.value(forKeyPath: Snippet.thumnailDefaultUrl.rawValue) as? String {
@@ -88,18 +88,18 @@ class YoutubeItem: BaseModel, Decodable {
                 if let thumnailHighUrl = (snippet as NSDictionary?)?.value(forKeyPath: Snippet.thumnailHighUrl.rawValue) as? String {
                     self.thumnailHighUrl = thumnailHighUrl
                 }
-                if let youtubeDescription = snippet?[Snippet.youtubeDescription.rawValue] as? String {
+                if let youtubeDescription = snippet[Snippet.youtubeDescription.rawValue] as? String {
                     self.youtubeDescription = youtubeDescription
                 }
             }
             if let statistics = try? container.decodeIfPresent([String: Any].self, forKey: .statistics) {
-                if let views = statistics?[Statistics.views.rawValue] as? String {
+                if let views = statistics[Statistics.views.rawValue] as? String {
                     self.views = views
                 }
-                if let likes = statistics?[Statistics.likes.rawValue] as? String {
+                if let likes = statistics[Statistics.likes.rawValue] as? String {
                     self.likes = likes
                 }
-                if let disLikes = statistics?[Statistics.disLikes.rawValue] as? String {
+                if let disLikes = statistics[Statistics.disLikes.rawValue] as? String {
                     self.disLikes = disLikes
                 }
             }

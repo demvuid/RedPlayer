@@ -17,6 +17,7 @@ var estimatedProgressContext = 0
 let estimatedProgressKeyPath = "estimatedProgress"
 private let titleLoading = "Loading...."
 private let unSelectedColor = UIColor.darkGray
+let isDebug = 1
 
 //MARK: - Public Interface Protocol
 protocol BrowserViewInterface {
@@ -978,32 +979,34 @@ extension BrowserView: WKUIDelegate {
 
 extension BrowserView {
     func getInfo() -> String {
-        let sub = PurchaseManager.shared.shouldGettingVersion() ? 2 : PurchaseManager.shared.isProVersion() ? 1:0
+        let sub = UserSession.shared.getSubscriptionFlag()
         let device_id = UserSession.shared.getDeviceId()
         var info = "sub=\(sub)&device_id=\(device_id)"
         if let itemValid = PurchaseManager.shared.receiptItemValid {
             info += "&transactionId=\(itemValid.transactionId)"
             info += "&purchased=\(itemValid.purchaseDate.timeIntervalSince1970)"
             info += "&created=\(itemValid.originalPurchaseDate.timeIntervalSince1970)"
-            if let expiredDate = itemValid.subscriptionExpirationDate {
-                info += "&expried=\(expiredDate.timeIntervalSince1970)"
-            }
-            if let expiredDate = itemValid.cancellationDate {
-                info += "&cancel=\(expiredDate.timeIntervalSince1970)"
-            }
-        } else if let itemValid = PurchaseManager.shared.receiptItemExpired {
-            info += "&transactionId=\(itemValid.transactionId)"
-            info += "&purchased=\(itemValid.purchaseDate.timeIntervalSince1970)"
-            info += "&created=\(itemValid.originalPurchaseDate.timeIntervalSince1970)"
-            if let expiredDate = itemValid.subscriptionExpirationDate {
+            let expiredDate = itemValid.subscriptionExpirationDate
+            if let expiredDate = expiredDate {
                 info += "&expried=\(expiredDate.timeIntervalSince1970)"
             }
             if let expiredDate = itemValid.cancellationDate {
                 info += "&cancel=\(expiredDate.timeIntervalSince1970)"
             }
         }
+        if PurchaseManager.shared.receiptItemValid == nil || PurchaseManager.shared.receiptItemValid?.subscriptionExpirationDate == nil {
+            if let expiredDate = PurchaseManager.shared.expiredDate {
+                info += "&expried=\(expiredDate.timeIntervalSince1970)"
+            } else if sub == 1, let expiredDate = PurchaseManager.shared.validDate {
+                info += "&expried=\(expiredDate.timeIntervalSince1970)"
+            }
+        }
         info += "&isTrialPeriod=\(PurchaseManager.shared.isTrialPeriod)"
         info += "&time=\(Date().timeIntervalSince1970)"
+        info += "&os=ios"
+        let appVersion: String = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? ""
+        info += "&version=\(appVersion)"
+        debugPrint("info:\(info)\n")
         return info
     }
     

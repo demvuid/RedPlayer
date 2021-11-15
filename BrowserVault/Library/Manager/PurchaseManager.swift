@@ -12,6 +12,7 @@ import SwiftyStoreKit
 
 private let productId = "com.amplayer.browservault.yearly"
 private let sharedSecret = "08934d44316846d9a10d0e8f129963f2"
+private let monthlySubscriptionId = "com.amplayer.browservault.monthly.support"
 
 struct ErrorMessageResult {
     let title: String
@@ -24,11 +25,10 @@ class PurchaseManager {
     var gettingSubscriptionSubject = PublishSubject<Void>()
     let bag = DisposeBag()
     var isUpgradePro: Bool = false
-    var isTrialPeriod: Bool = false
-    var expiredDate: Date? = nil
-    var validDate: Date? = nil
-    var receiptItemValid: ReceiptItem? = nil
-    var receiptItemExpired: ReceiptItem? = nil
+    var expiredDate: Date? = UserSession.shared.getExpiredDateReceipt()
+    var validDate: Date? = UserSession.shared.getExpiredDateReceipt()
+    var receiptItemValid: ReceiptItem? = UserSession.shared.getLatestReceiptItem()
+    lazy var isTrialPeriod: Bool = self.receiptItemValid?.isTrialPeriod == true
     
     func setupIAP() {
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
@@ -88,7 +88,7 @@ class PurchaseManager {
                 if purchase.needsFinishTransaction {
                     SwiftyStoreKit.finishTransaction(purchase.transaction)
                 }
-                self?.verifyReceipt(completion: { (_) in
+                self?.verifyPurchase(nil, completion: { _, _ in
                     let handler = self ?? PurchaseManager.shared
                     let errorResult = handler.alertForPurchaseResult(result)
                     completion(errorResult)
@@ -108,7 +108,7 @@ class PurchaseManager {
     }
     
     func upgradeToProVersion(_ completion: @escaping (ErrorMessageResult?) -> Void) {
-        self.purchase(productId, completion: completion)
+        self.purchase(monthlySubscriptionId, completion: completion)
     }
     
     func restorePurchases(completion: @escaping (Bool, ErrorMessageResult) -> Void) {
@@ -137,25 +137,37 @@ class PurchaseManager {
     }
 
     func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
-        self.disableProVersion()
         let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: sharedSecret)
         SwiftyStoreKit.verifyReceipt(using: appleValidator, completion: completion)
     }
     
-    func verifyPurchase(_ productId: String, name: String? = nil, completion: @escaping (Bool, ErrorMessageResult) -> Void) {
+    func verifyPurchase(_ name: String? = nil, completion: @escaping (Bool, ErrorMessageResult) -> Void) {
         verifyReceipt { result in
             let name = name ?? productId
             switch result {
             case .success(let receipt):
-                let purchaseResult = SwiftyStoreKit.verifySubscription(
+                var purchaseResult = SwiftyStoreKit.verifySubscription(
                     ofType: .autoRenewable,
                     productId: productId,
                     inReceipt: receipt)
-                let result = self.getSubscriptions(purchaseResult, name: name)
-                let isPurchased: Bool = result.0
-                let message = result.1
-                self.gettingSubscriptionSubject.onNext(())
-                completion(isPurchased, message)
+                var result = self.getSubscriptions(purchaseResult, name: name)
+                var isPurchased: Bool = result.0
+                if isPurchased == true {
+                    let message = result.1
+                    self.gettingSubscriptionSubject.onNext(())
+                    completion(isPurchased, message)
+                } else {
+                    purchaseResult = SwiftyStoreKit.verifySubscription(ofType: .autoRenewable,
+                                                                       productId: monthlySubscriptionId,
+                                                                       inReceipt: receipt)
+                    result = self.getSubscriptions(purchaseResult, name: name, isMonthly: true)
+                    UserSession.shared.updatedGettingSubscription()
+                    isPurchased = result.0
+                    let message = result.1
+                    
+                    self.gettingSubscriptionSubject.onNext(())
+                    completion(isPurchased, message)
+                }
                 
             case .error:
                 let message = self.alertForVerifyReceipt(result)
@@ -168,11 +180,7 @@ class PurchaseManager {
     func verifyAccountPro(_ completion: @escaping (Bool, ErrorMessageResult) -> Void) {
         self.isTrialPeriod = false
         self.isUpgradePro = false
-        self.expiredDate = nil
-        self.validDate = nil
-        self.receiptItemValid = nil
-        self.receiptItemExpired = nil
-        self.verifyPurchase(productId, completion: completion)
+        self.verifyPurchase(completion: completion)
     }
     
     func alertForPurchaseResult(_ result: PurchaseResult) -> ErrorMessageResult? {
@@ -250,9 +258,16 @@ class PurchaseManager {
         }
     }
     
-    func getSubscriptions(_ result: VerifySubscriptionResult, name: String) -> (Bool, ErrorMessageResult) {
+    func getSubscriptions(_ result: VerifySubscriptionResult, name: String, isMonthly: Bool = false) -> (Bool, ErrorMessageResult) {
         switch result {
         case .purchased(let expiryDate, let items):
+            UserSession.shared.updateSubscriptionFlag(1)
+            let jsonnEncode = JSONEncoder()
+            if let data = try? jsonnEncode.encode(items) {
+                UserSession.shared.updateLatestReceipt(data)
+            }
+            UserSession.shared.updateExpiredDateReceipt(expiryDate)
+            
             self.validDate = expiryDate
             self.receiptItemValid = items.first
             self.upgradeVersion(isTrialPeriod: items.first?.isTrialPeriod == true)
@@ -264,17 +279,27 @@ class PurchaseManager {
             }
             return (true, ErrorMessageResult(title: "Product is purchased", message: "Product is valid until \(expiryDate)"))
         case .expired(let expiryDate, let items):
+            UserSession.shared.updateSubscriptionFlag(0)
+            let jsonnEncode = JSONEncoder()
+            if let data = try? jsonnEncode.encode(items) {
+                UserSession.shared.updateLatestReceipt(data)
+            }
+            UserSession.shared.updateExpiredDateReceipt(expiryDate)
             self.expiredDate = expiryDate
             debugPrint("\(name) is expired since \(expiryDate)\n\(items)\n")
-            self.receiptItemExpired = items.first
+            self.receiptItemValid = items.first
             self.disableProVersion()
             return (false, ErrorMessageResult(title: "Product expired", message: "Product is expired since \(expiryDate)"))
         case .notPurchased:
-            debugPrint("\(name) has never been purchased")
-            self.receiptItemExpired = nil
-            self.receiptItemValid = nil
-            self.disableProVersion()
-            return (false, ErrorMessageResult(title: "Not purchased", message: "This product has never been purchased"))
+            if isMonthly == true && UserSession.shared.getSubscriptionFlag() != 2 {
+                return (false, ErrorMessageResult(title: "Not purchased", message: "This product has never been purchased"))
+            } else {
+                UserSession.shared.updateSubscriptionFlag(2)
+                debugPrint("\(name) has never been purchased")
+                self.receiptItemValid = nil
+                self.disableProVersion()
+                return (false, ErrorMessageResult(title: "Not purchased", message: "This product has never been purchased"))
+            }
         }
     }
     
@@ -293,7 +318,7 @@ class PurchaseManager {
 
 extension PurchaseManager {
     func isProVersion() -> Bool {
-        return UserDefaults.standard.bool(forKey: productId) == true
+        return UserSession.shared.getSubscriptionFlag() == 1
     }
     
     func enableProVersion(_ enable: Bool) {

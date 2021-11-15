@@ -8,6 +8,7 @@
 
 import Foundation
 import KeychainAccess
+import SwiftyStoreKit
 
 fileprivate let PASSWORD_KEY = "password"
 fileprivate let PASSWORD_SALT_KEY = "passwordSalt"
@@ -33,6 +34,11 @@ fileprivate let UPGRADE_VERSION_KEY = "com.amplayer.browservault_upgradeVersion"
 fileprivate let NUMBER_PLAY_VIDEO_KEY = "NumberPlayVideo"
 fileprivate let NUMBER_DETAIL_FOLDER_KEY = "NumberDetailFolder"
 fileprivate let DEVICE_ID_KEY = "device_id"
+fileprivate let CheckedMonthlySubscription = "CheckedMonthlySubscription"
+
+fileprivate let Receipt_Items_Key = "ReceiptItems"
+fileprivate let Expired_Date_Key = "ReceiptExpiredDate"
+fileprivate let Sub_Flag_Key = "SubscriptionFlagKey"
 
 class UserSession {
     static let shared = UserSession()
@@ -53,7 +59,7 @@ class UserSession {
             }
         }
         get {
-            guard let numberPlay = try? self.keyChainStore.getString(NUMBER_PLAY_VIDEO_KEY), numberPlay != nil, let number = Int(numberPlay!) else {
+            guard let numberPlay = try? self.keyChainStore.getString(NUMBER_PLAY_VIDEO_KEY), let number = Int(numberPlay) else {
                 return 0
             }
             return number
@@ -69,7 +75,7 @@ class UserSession {
             }
         }
         get {
-            guard let numberDetailFolder = try? self.keyChainStore.getString(NUMBER_DETAIL_FOLDER_KEY), numberDetailFolder != nil, let number = Int(numberDetailFolder!) else {
+            guard let numberDetailFolder = try? self.keyChainStore.getString(NUMBER_DETAIL_FOLDER_KEY), let number = Int(numberDetailFolder) else {
                 return 0
             }
             return number
@@ -207,6 +213,83 @@ class UserSession {
         return false
     }
     
+    
+    func updatedGettingSubscription() {
+        try? self.keyChainStore.set("Enable", key: CheckedMonthlySubscription)
+    }
+    
+    func isGotSubscription() -> Bool {
+        if let enable = try? self.keyChainStore?.get(CheckedMonthlySubscription) {
+            if enable == "Enable" {
+                return true
+            }
+
+        }
+        return false
+    }
+    
+    func updateLatestReceipt(_ items: Data) {
+        try? self.keyChainStore.set(items, key: Receipt_Items_Key)
+    }
+    
+    func getLatestReceipt() -> Data? {
+        guard let data = try? self.keyChainStore?.getData(Receipt_Items_Key) else {
+            return nil
+        }
+        return data
+    }
+    
+    func getLatestReceiptItem() -> ReceiptItem? {
+        if let data = self.getLatestReceipt() {
+            let jsonDecode = JSONDecoder()
+            let receiptItems = try? jsonDecode.decode([ReceiptItem].self, from: data)
+            return receiptItems?.first
+        }
+        return nil
+    }
+    
+    func getPurchaseReceipt() -> ReceiptItem? {
+        if self.getSubscriptionFlag() == 1, let data = self.getLatestReceipt() {
+            let jsonDecode = JSONDecoder()
+            let receiptItems = try? jsonDecode.decode([ReceiptItem].self, from: data)
+            return receiptItems?.first
+        }
+        return nil
+    }
+    
+    func getExpiredReceipt() -> ReceiptItem? {
+        if self.getSubscriptionFlag() == 0, let data = self.getLatestReceipt() {
+            let jsonDecode = JSONDecoder()
+            let receiptItems = try? jsonDecode.decode([ReceiptItem].self, from: data)
+            return receiptItems?.first
+        }
+        return nil
+    }
+    
+    func updateExpiredDateReceipt(_ date: Date) {
+        try? self.keyChainStore.set(date.timeIntervalSince1970.description, key: Expired_Date_Key)
+    }
+    
+    func getExpiredDateReceipt() -> Date? {
+        guard let date = try? self.keyChainStore?.get(Expired_Date_Key) else {
+            return nil
+        }
+        guard let time = TimeInterval(date) else { return nil}
+        return Date(timeIntervalSince1970: time)
+    }
+    
+    func updateSubscriptionFlag(_ flag: Int) {
+        try? self.keyChainStore.set(flag.description, key: Sub_Flag_Key)
+    }
+    
+    func getSubscriptionFlag() -> Int {
+        guard let flag = try? self.keyChainStore?.get(Sub_Flag_Key) else {
+            return 2
+        }
+        let flagInt: Int = Int(flag) ?? 2
+        return flagInt
+    }
+    
     /// Get the username
     func username() -> String? {
         return try! self.keyChainStore.getString(USERNAME_KEY)
@@ -226,8 +309,8 @@ class UserSession {
     }
     
     func getDeviceId() -> String {
-        if let store = self.keyChainStore, let deviceId = try? store.get(DEVICE_ID_KEY), let currentDeviceId = deviceId {
-            return currentDeviceId
+        if let store = self.keyChainStore, let deviceId = try? store.get(DEVICE_ID_KEY) {
+            return deviceId
         }
         let currentDevice = UIDevice.current
         let deviceId = currentDevice.identifierForVendor?.uuidString ?? UUID().uuidString

@@ -52,7 +52,7 @@ final class YoutubeView: BaseUserInterface {
             make.top.equalTo(self.categories.snp.bottom)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.bottom.equalTo(self.view.snp.bottom).priority(ConstraintPriority.low)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         })
         self.pageViewController.dataSourceDelegate = self
     }

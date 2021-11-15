@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import WebKit
 
 class WebViewController: UIViewController {
 
     private var localURL: URL!
-    @IBOutlet weak var myWebView: UIWebView!
+    @IBOutlet weak var myWebView: WKWebView!
     
     convenience init(localURL: URL) {
         self.init()
@@ -22,7 +23,7 @@ class WebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let request = URLRequest(url: localURL)
-        myWebView.loadRequest(request)
+        myWebView.load(request)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: Asset.General.iconClose.image, style: .plain, target: self, action: #selector(dismissScreen))
     }
 
